@@ -1,0 +1,77 @@
+.shinyText {
+  position: relative;
+  display: inline-block;
+  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  font-family: 'Bebas Neue', sans-serif;
+  color: #9ca3af; /* base text */
+  overflow: hidden;
+}
+
+/* Each letter animation */
+.shinyText .letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: letterIn 0.6s ease forwards;
+}
+
+/* Stagger delay for letters */
+.shinyText .letter:nth-child(1) { animation-delay: 0.2s; }
+.shinyText .letter:nth-child(2) { animation-delay: 0.4s; }
+.shinyText .letter:nth-child(3) { animation-delay: 0.6s; }
+.shinyText .letter:nth-child(4) { animation-delay: 0.8s; }
+.shinyText .letter:nth-child(5) { animation-delay: 1s; }
+.shinyText .letter:nth-child(6) { animation-delay: 1.2s; }
+.shinyText .letter:nth-child(7) { animation-delay: 1.4s; }
+/* add more if needed */
+
+@keyframes letterIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Shine overlay */
+.shinyText::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  /* Start hidden */
+  opacity: 0;
+  animation: shine 5s linear infinite;
+  animation-delay: 2s; /* wait for letters */
+  animation-fill-mode: forwards;
+  z-index: 2; /* put above letters */
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0%   { background-position: -200% 0; opacity: 1; }
+  100% { background-position: 200% 0; opacity: 1; }
+}
+
+/* Disabled state */
+.shinyText.disabled::before {
+  animation: none !important;
+}
