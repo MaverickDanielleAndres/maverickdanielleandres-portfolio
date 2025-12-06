@@ -124,24 +124,33 @@ const DownloadModal = memo<DownloadModalProps>(({ isOpen, onClose }) => {
 
     const handleDownload = useCallback(() => {
         setDownloadStatus('downloading');
-        
+
         // Simulate download process
         setTimeout(() => {
-            // Randomly simulate success or failure for demo
-            const success = Math.random() > 0.3; // 70% success rate
-            setDownloadStatus(success ? 'success' : 'error');
-            
-            if (success) {
-                // In a real app, you would trigger the actual download here
-                // For example: window.open('/path-to-your-cv.pdf', '_blank');
-                console.log('Download successful');
+            try {
+                // Create a temporary link to trigger the download
+                const link = document.createElement('a');
+                link.href = '/Files/Resume.pdf';
+                link.download = 'Maverick_Danielle_Andres_Resume.pdf';
+                link.style.display = 'none';
+
+                // Add to DOM, click, and remove
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setDownloadStatus('success');
+                console.log('Resume download initiated successfully');
+            } catch (error) {
+                console.error('Download failed:', error);
+                setDownloadStatus('error');
             }
-            
+
             // Auto close after showing result
             setTimeout(() => {
                 handleClose();
             }, 2000);
-        }, 2000);
+        }, 1500); // Reduced time since we're actually downloading
     }, [handleClose]);
 
     const handleBackdropClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -573,26 +582,14 @@ export default function AboutSection(): JSX.Element {
                                         : 'opacity-0 translate-y-8'
                                 }`}>
                                     <h3 className="text-2xl font-semibold text-white mb-4 flex items-center gap-3">
-                                        About Me
+                                        Hey there! 👋
                                     </h3>
                                     <p className="text-neutral-300 text-base leading-relaxed mb-4">
-                                        Hi, I'm Maverick Danielle P. Andres, a dedicated Information Technology student at Pamantasan ng Lungsod ng Pasig
-                                        with a strong passion for web development and technology. Currently pursuing my B.S. in Information Technology
-                                        with an impressive GWA of 1.50, I combine academic excellence with hands-on experience in creating innovative
-                                        digital solutions.
-                                    </p>
-                                    <p className="text-neutral-400 text-base leading-relaxed mb-4">
-                                        My technical expertise spans across modern web technologies including HTML, CSS, JavaScript, PHP, SQL, Node.js,
-                                        Python, and frameworks like React.js, Next.js, Tailwind CSS, and Express.js. I've gained valuable professional
-                                        experience working as a Spes Clerk at the Department of Education, where I processed and encoded over 1,000
-                                        documents with 99% accuracy, and as a freelance developer delivering end-to-end web applications for student clients.
+                                        I'm Maverick, a dedicated full-stack web developer and IT specialist who enjoys building systems that truly solve real-world problems. With experience in PHP, JavaScript, React, Node.js, and database-driven applications, I focus on creating clean, efficient, and user-centered digital solutions that make an impact.
+
                                     </p>
                                     <p className="text-neutral-400 text-base leading-relaxed">
-                                        Beyond academics, I've led development of comprehensive systems including a Learning Management System with AI features,
-                                        an E-Community Engagement Platform, and various barangay management systems. My commitment to continuous learning
-                                        is reflected in my Udemy certifications covering full-stack development, networking fundamentals, and UI/UX design.
-                                        I believe in leveraging technology to solve real-world problems and am always eager to take on new challenges
-                                        in the ever-evolving field of software development.
+When I'm not coding, you’ll find me learning new technologies, working on freelance projects, or sharpening my networking and system administration skills. I’m committed to continuous growth and love turning ideas into functional, meaningful applications for users and communities.
                                     </p>
                                 </div>
 
@@ -607,10 +604,14 @@ export default function AboutSection(): JSX.Element {
                                         <h4 className="text-lg font-semibold text-white">Education Background</h4>
                                     </div>
                                     <div className="space-y-3">
-                                        <div>
-                                            <h5 className="text-white font-medium">Pamantasan ng Lungsod ng Pasig</h5>
-                                            <p className="text-neutral-400 text-sm">B.S. in Information Technology, GWA: 1.50</p>
-                                            <p className="text-neutral-400 text-sm">Aug 2022 - May 2026</p>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h5 className="text-white font-medium">Pamantasan ng Lungsod ng Pasig</h5>
+                                                <p className="text-neutral-400 text-sm">2022 - Present</p>
+                                            </div>
+                                            <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg px-3 py-1">
+                                                <span className="text-yellow-400 font-semibold text-sm">GWA: 1.50</span>
+                                            </div>
                                         </div>
                                         <button
                                             onClick={handleAwardsClick}
@@ -699,7 +700,7 @@ export default function AboutSection(): JSX.Element {
                                 >
                                     <div className="w-full max-w-md">
                                         <ProfileCard
-                                            name="Maverick Danielle P. Andres"
+                                            name="Andres"
                                             title="Web Developer"
                                             handle="andres"
                                             status="Online"
