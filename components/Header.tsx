@@ -123,9 +123,13 @@ export default function Header() {
             {/* Menu Toggle */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="cursor-pointer ml-2 p-2 rounded-full border border-gray-500/40 bg-black/70 text-white shadow-md hover:bg-black hover:scale-105 transition-all duration-200"
+              className="cursor-pointer ml-2 p-1.5 sm:p-2 bg-neutral-800 hover:bg-red-900/80 rounded-full transition-all duration-300 hover:scale-110 hover:rotate-90 group border border-neutral-600 hover:border-red-600"
             >
-              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              {isMenuOpen ? (
+                <X className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-300 group-hover:text-red-300 transition-colors" />
+              ) : (
+                <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-300 group-hover:text-red-300 transition-colors" />
+              )}
             </button>
 
             {/* Popup Navigation */}
@@ -136,7 +140,7 @@ export default function Header() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -10 }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="absolute right-0 top-14 w-56 rounded-2xl border border-gray-700 bg-black/95 shadow-2xl backdrop-blur-md"
+                  className="absolute justify-center align-center right-0 top-14 w-46 rounded-2xl border border-gray-700 bg-black/95 shadow-2xl backdrop-blur-md"
                 >
                   <ul className="flex flex-col p-4 space-y-3">
                     {items.map((item) => (

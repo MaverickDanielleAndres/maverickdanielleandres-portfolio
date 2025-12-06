@@ -472,31 +472,28 @@ export default function Skills() {
               </div>
             ) : (
               // Show All Grid - Logo Only
-              <div className="w-full max-w-4xl px-4 animate-fadeIn">
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-6 md:gap-8">
+              <div className="w-full max-w-4xl px-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
                   {skills.map((skill, i) => (
                     <div
                       key={i}
-                      className="group relative flex flex-col items-center justify-center p-6 bg-neutral-900 border border-neutral-700 rounded-xl hover:border-neutral-500 transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:shadow-neutral-800/50 cursor-pointer"
-                      style={{
-                        animation: `fadeInUp 0.5s ease-out ${i * 0.05}s both`
-                      }}
+                      className="group relative flex flex-col items-center justify-center p-3 sm:p-4 md:p-5 bg-neutral-900 border border-neutral-700 rounded-xl hover:border-neutral-500 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-neutral-800/50 cursor-pointer"
                     >
                       {/* Tooltip on hover */}
                       <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-neutral-800 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10 shadow-lg border border-neutral-600">
                         {skill.title}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-neutral-800"></div>
                       </div>
-                      
+
                       {/* Icon */}
-                      <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center">
                         <img
                           src={skill.icon}
                           alt={skill.title}
                           className={`w-full h-full object-contain ${skill.invert ? "filter invert" : ""} transition-all duration-300 group-hover:scale-110`}
                         />
                       </div>
-                      
+
                       {/* Title - visible on mobile, hidden on larger screens */}
                       <p className="mt-2 text-xs text-center text-neutral-300 group-hover:text-white transition-colors duration-300 md:hidden">
                         {skill.title}

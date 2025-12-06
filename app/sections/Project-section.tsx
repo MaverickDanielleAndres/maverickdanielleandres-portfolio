@@ -1,7 +1,7 @@
 import React, { useState, useCallback, memo, useRef } from 'react';
 import { Calendar, Code, ExternalLink, Github, Eye } from 'lucide-react';
 import BlurText from '@/components/BlurText';
-import ProjectModal from './ProjectModal';
+import ProjectModalWithStyles from './ProjectModal';
 
 // Types
 interface Project {
@@ -12,6 +12,8 @@ interface Project {
   techStack: string[];
   dateCreated: string;
   mainImage: string;
+  features: string[];
+  videoUrl?: string;
   screenshots: string[];
   githubUrl?: string;
   liveUrl?: string;
@@ -22,62 +24,157 @@ interface ProjectCardProps {
   onViewDetails: (project: Project) => void;
   index: number;
 }
-
 // Mock project data
 const projectsData: Project[] = [
   {
-    id: '1',
-    title: 'Graduates and Alumni DB System',
-    description: 'A centralized platform using K-means clustering to manage alumni records and evaluate institutional impact through graduate tracer data.',
-    contribution: 'Full-stack development including database design, clustering algorithms implementation, responsive UI/UX design, and deployment configuration.',
-    techStack: ['Laravel', 'Blade', 'PHP', 'MySQL', 'JavaScript', 'Tailwind CSS'],
-    dateCreated: '2024-01-15',
-    mainImage: 'https://via.placeholder.com/600x400/1e40af/ffffff?text=Alumni+Tracer+System',
-    screenshots: [
-      'https://via.placeholder.com/800x600/1e40af/ffffff?text=Dashboard+View',
-      'https://via.placeholder.com/800x600/2563eb/ffffff?text=Alumni+Records',
-      'https://via.placeholder.com/800x600/3b82f6/ffffff?text=Analytics+Page',
-      'https://via.placeholder.com/800x600/3b82f6/ffffff?text=Analytics+Page',
-      'https://via.placeholder.com/800x600/3b82f6/ffffff?text=Analytics+Page',
-      'https://via.placeholder.com/800x600/60a5fa/ffffff?text=Reports+Section'
-    ],
-    githubUrl: 'https://github.com/example/alumni-system',
-    liveUrl: 'https://alumni-system.demo.com'
-  },
-  {
-    id: '2',
-    title: 'E-Commerce Platform',
-    description: 'Modern e-commerce platform with real-time inventory management, payment integration, and advanced analytics dashboard.',
-    contribution: 'Led the development of the entire platform including payment gateway integration, inventory management system, and admin dashboard.',
-    techStack: ['React', 'Node.js', 'Express', 'MongoDB', 'Stripe', 'Redux'],
-    dateCreated: '2023-08-20',
-    mainImage: 'https://via.placeholder.com/600x400/059669/ffffff?text=E-Commerce+Platform',
-    screenshots: [
-      'https://via.placeholder.com/800x600/059669/ffffff?text=Product+Catalog',
-      'https://via.placeholder.com/800x600/065f46/ffffff?text=Shopping+Cart',
-      'https://via.placeholder.com/800x600/047857/ffffff?text=Checkout+Process',
-      'https://via.placeholder.com/800x600/0d9488/ffffff?text=Admin+Dashboard'
-    ],
-    githubUrl: 'https://github.com/example/ecommerce-platform',
-    liveUrl: 'https://ecommerce-demo.com'
-  },
-  {
-    id: '3',
-    title: 'Task Management System',
-    description: 'Collaborative task management application with real-time updates, team collaboration features, and project analytics.',
-    contribution: 'Designed and implemented the entire application architecture, real-time communication system, and user interface components.',
-    techStack: ['Vue.js', 'Firebase', 'TypeScript', 'Vuetify', 'Socket.io'],
-    dateCreated: '2023-05-10',
-    mainImage: 'https://via.placeholder.com/600x400/7c3aed/ffffff?text=Task+Management+System',
-    screenshots: [
-      'https://via.placeholder.com/800x600/7c3aed/ffffff?text=Task+Board',
-      'https://via.placeholder.com/800x600/8b5cf6/ffffff?text=Project+Overview',
-      'https://via.placeholder.com/800x600/a855f7/ffffff?text=Team+Chat',
-      'https://via.placeholder.com/800x600/c084fc/ffffff?text=Analytics+View'
-    ],
-    githubUrl: 'https://github.com/example/task-management',
-    liveUrl: 'https://taskmanager-demo.com'
-  }
+  id: '1',
+  title: 'Web Design UI/UX Collection',
+  description:
+    'A curated collection of modern and responsive UI/UX design samples created in Figma, showcasing landing pages, dashboards, mobile app layouts, and component systems.',
+  contribution:
+    'End-to-end UI/UX design including wireframing, prototyping, component creation, color systems, typography, and responsive layout design using Figma.',
+  techStack: ['Figma', 'UI/UX Design', 'Prototyping', 'Wireframing'],
+  dateCreated: '2024-01-15',
+  mainImage: '/Figma.jpg',
+  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+  screenshots: [
+    '/Projects/figma-sample1.png',
+    '/Projects/figma-sample2.png',
+    '/Projects/figma-sample3.png',
+    '/Projects/figma-sample4.png'
+  ],
+  features: [
+    'Responsive desktop and mobile layouts',
+    'Reusable component system (buttons, cards, forms)',
+    'Consistent color palettes and typography tokens',
+    'Prototype-ready screens for user testing',
+    'Wireframes, mockups, and high-fidelity UI samples'
+  ],
+  githubUrl: '',
+  liveUrl: ''
+},
+
+{
+  id: '2',
+  title: 'Learning Management System with AI-Generated Reviewer',
+  description:
+    'A full LMS designed for 1,000+ students and teachers, featuring AI-powered summarization, auto-generated exam reviewers, flashcards, predictive analytics, chatbot assistance, and a complete grading & class management workflow.',
+  contribution:
+    'Led the full development of the LMS including system architecture, UI/UX, multi-role authentication, AI modules, analytics dashboard, and deployment on IONOS.',
+  techStack: ['PHP', 'HTML', 'CSS', 'Bootstrap', 'JavaScript', 'MySQL'],
+  dateCreated: '2025-11-20',
+  mainImage:
+    'https://via.placeholder.com/600x400/3b82f6/ffffff?text=LMS+with+AI+Features',
+  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+  screenshots: [
+    'https://via.placeholder.com/800x600/2563eb/ffffff?text=Student+Dashboard',
+    'https://via.placeholder.com/800x600/1e40af/ffffff?text=AI+Reviewer',
+    'https://via.placeholder.com/800x600/3b82f6/ffffff?text=Flashcard+Generator',
+    'https://via.placeholder.com/800x600/60a5fa/ffffff?text=Analytics'
+  ],
+  features: [
+    'AI-powered reviewer and flashcard generator',
+    'Multi-role authentication with secure login',
+    'Student performance analytics and predictions',
+    'Complete class, grading, and module management',
+    'Deployment with database & hosting optimization'
+  ],
+  githubUrl: 'https://github.com/example/lms-ai-reviewer',
+  liveUrl: 'https://lms-ai.demo.com'
+},
+
+{
+  id: '3',
+  title: 'E-Community Engagement Platform',
+  description:
+    'A modern web platform for community engagement with features including voting & surveys, complaint reporting, real-time messaging, group channels, notifications, community data insights, and sentiment analysis.',
+  contribution:
+    'Developed the entire system including frontend UI, backend API, real-time messaging, role-based permissions, AI sentiment analysis, and Supabase integration.',
+  techStack: [
+    'Next.js',
+    'React',
+    'Tailwind CSS',
+    'Node.js',
+    'Express',
+    'Supabase',
+    'PostgreSQL'
+  ],
+  dateCreated: '2025-11-05',
+  mainImage:
+    'https://via.placeholder.com/600x400/059669/ffffff?text=Community+Platform',
+  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+  screenshots: [
+    'https://via.placeholder.com/800x600/059669/ffffff?text=Dashboard',
+    'https://via.placeholder.com/800x600/047857/ffffff?text=Messaging+Channels',
+    'https://via.placeholder.com/800x600/0d9488/ffffff?text=Voting+Module',
+    'https://via.placeholder.com/800x600/065f46/ffffff?text=AI+Sentiment+Insights'
+  ],
+  features: [
+    'Real-time messaging and group channels',
+    'AI-powered sentiment analysis for community insights',
+    'Voting, surveys, and participatory engagement tools',
+    'Role-based access control for admins and users',
+    'Supabase authentication and PostgreSQL integration'
+  ],
+  githubUrl: 'https://github.com/example/community-engagement',
+  liveUrl: 'https://community.demo.com'
+},
+
+{
+  id: '4',
+  title: 'Barangay Ugong Gym Registration System',
+  description:
+    'A streamlined membership registration and tracking system for Barangay Ugong gym users featuring automated approvals, membership ID generation, and centralized user management.',
+  contribution:
+    'Designed the entire UI and led the development team. Implemented main workflows, ID generation, and user management interface using Python & Streamlit.',
+  techStack: ['Python', 'Streamlit', 'CSS', 'C++', 'Jupyter Notebook'],
+  dateCreated: '2024-11-10',
+  mainImage:
+    'https://via.placeholder.com/600x400/f59e0b/ffffff?text=Gym+Registration+System',
+  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+  screenshots: [
+    'https://via.placeholder.com/800x600/f59e0b/ffffff?text=Registration+Page',
+    'https://via.placeholder.com/800x600/d97706/ffffff?text=Membership+ID',
+    'https://via.placeholder.com/800x600/b45309/ffffff?text=Admin+Panel'
+  ],
+  features: [
+    'Automated membership approval workflow',
+    'Generated membership IDs with QR codes',
+    'Centralized admin dashboard for user management',
+    'Streamlit-powered clean and responsive UI',
+    'Integrated logs for attendance and monitoring'
+  ],
+  githubUrl: 'https://github.com/example/gym-registration',
+  liveUrl: 'https://gym.demo.com'
+},
+
+{
+  id: '5',
+  title: 'Barangay Health System',
+  description:
+    'A complete barangay-level health record management system with patient profiles, check-up logs, medical history tracking, and administrative monitoring tools.',
+  contribution:
+    'Led a 4–6 member development team. Designed full UI/UX and implemented the front-end, back-end CRUD modules, and admin workflows.',
+  techStack: ['PHP', 'HTML', 'CSS', 'Bootstrap', 'JavaScript', 'MySQL'],
+  dateCreated: '2024-05-18',
+  mainImage:
+    'https://via.placeholder.com/600x400/ef4444/ffffff?text=Barangay+Health+System',
+  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
+  screenshots: [
+    'https://via.placeholder.com/800x600/ef4444/ffffff?text=Patient+Profiles',
+    'https://via.placeholder.com/800x600/dc2626/ffffff?text=Checkup+Logs',
+    'https://via.placeholder.com/800x600/b91c1c/ffffff?text=Admin+Dashboard'
+  ],
+  features: [
+    'Complete patient profile and health history records',
+    'Check-up logging and medical monitoring workflow',
+    'Admin dashboard with CRUD operations',
+    'Secure login and role-based access',
+    'Designed for barangay-level health operations'
+  ],
+  githubUrl: 'https://github.com/example/barangay-health',
+  liveUrl: 'https://health.demo.com'
+}
 ];
 
 // Custom hook for intersection observer
@@ -158,15 +255,28 @@ const ProjectCard = memo<ProjectCardProps>(({ project, onViewDetails, index }) =
 
       {/* Card Content */}
       <div className="flex flex-col lg:flex-row h-full">
-        {/* Image Section - TOP on mobile, LEFT on desktop */}
+        {/* Video/Image Section - TOP on mobile, LEFT on desktop */}
         <div className="w-full lg:w-80 h-48 lg:h-auto relative overflow-hidden rounded-t-2xl lg:rounded-l-2xl lg:rounded-t-none">
-          <img
-            src={project.mainImage}
-            alt={`${project.title} preview`}
-            className={`w-full h-full object-cover transition-all duration-500 ${
-              isHovered ? 'scale-110' : 'scale-100'
-            }`}
-          />
+          {project.videoUrl ? (
+            <video
+              src={project.videoUrl}
+              className={`w-full h-full object-cover transition-all duration-500 ${
+                isHovered ? 'scale-110' : 'scale-100'
+              }`}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : (
+            <img
+              src={project.mainImage}
+              alt={`${project.title} preview`}
+              className={`w-full h-full object-cover transition-all duration-500 ${
+                isHovered ? 'scale-110' : 'scale-100'
+              }`}
+            />
+          )}
           <div className={`absolute inset-0 bg-gradient-to-r from-black/30 to-transparent transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`} />
@@ -339,7 +449,7 @@ const ProjectsSection: React.FC = () => {
         </div>
 
         {/* Project Modal */}
-        <ProjectModal
+        <ProjectModalWithStyles
           project={selectedProject}
           isOpen={isModalOpen}
           onClose={handleCloseModal}

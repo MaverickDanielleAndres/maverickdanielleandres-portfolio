@@ -34,69 +34,134 @@ interface FullScreenImageModalProps {
   onClose: () => void;
 }
 
-// Mock certificate data - expanded to 6 certificates
 const certificatesData: Certificate[] = [
   {
     id: '1',
-    title: 'React Advanced Certification',
-    shortDescription: 'Advanced concepts in React development including hooks, context, and performance optimization.',
-    fullDescription: 'This comprehensive certification covers advanced React concepts including custom hooks, context API, performance optimization techniques, server-side rendering, and modern React patterns. The course included hands-on projects and real-world applications.',
-    issuer: 'Meta',
-    date: '2024',
-    image:'/Figma.jpg',
-    skills: ['React', 'JavaScript', 'Performance', 'Hooks']
+    title: 'The Complete Networking Fundamentals Course (CCNA Start)',
+    shortDescription: 'Networking fundamentals including CCNA-level concepts, protocols, and hands-on labs.',
+    fullDescription: `
+A comprehensive course covering the fundamentals of networking including OSI model, IP addressing, routing, switching, VLANs, subnetting, and CCNA preparation. Hands-on labs included.
+
+Instructor: David Bombal
+Certificate No.: UC-50ea970c-2821-456a-Bd69-02bae0840888
+Certificate URL: ude.my/UC-50ea970c-282f-456a-8d69-02bae0840888
+Reference Number: 0004
+Hours: 73 total hours`,
+    issuer: 'Udemy',
+    date: 'Dec 7, 2025',
+    image: '/Cetificates/Networking.jpg',
+    skills: ['Networking', 'CCNA', 'Cisco', 'Infrastructure']
   },
+
   {
     id: '2',
-    title: 'Full Stack Web Development',
-    shortDescription: 'Complete web development stack including frontend, backend, and database technologies.',
-    fullDescription: 'Comprehensive full-stack development certification covering modern web technologies including React, Node.js, Express, MongoDB, and deployment strategies. Includes multiple real-world projects and industry best practices.',
-    issuer: 'freeCodeCamp',
-    date: '2023',
-    image: 'https://via.placeholder.com/800x600/4b5563/ffffff?text=Full+Stack+Web+Development',
-    skills: ['React', 'Node.js', 'MongoDB', 'Express']
+    title: 'Figma Essential for UI/UX',
+    shortDescription: 'Foundational skills in UI/UX design using Figma for modern product design.',
+    fullDescription: `
+A complete introduction to Figma covering UI components, auto-layout, prototyping, wireframing, and visual design principles.
+
+Instructor: Learnify IT
+Certificate No.: UC-fd7d2c70-9f82-45db-8853-82b844684650
+Certificate URL: ude.my/UC-fd7d2c70-9182-45db-8853-82b844684650
+Reference Number: 0004
+Hours: 4 total hours`,
+    issuer: 'Udemy',
+    date: 'Aug 13, 2025',
+    image: '/Cetificates/Figma Essential for User Interface and User Experience UI UX.jpg',
+    skills: ['Figma', 'UI/UX', 'Prototyping', 'Design Systems']
   },
+
   {
     id: '3',
-    title: 'AWS Cloud Practitioner',
-    shortDescription: 'Cloud computing fundamentals and AWS services for modern application deployment.',
-    fullDescription: 'AWS Cloud Practitioner certification demonstrating foundational knowledge of AWS Cloud concepts, services, security, architecture, pricing, and support. Covers compute, networking, storage, and database AWS services.',
-    issuer: 'Amazon Web Services',
-    date: '2023',
-    image: 'https://via.placeholder.com/800x600/374151/ffffff?text=AWS+Cloud+Practitioner',
-    skills: ['AWS', 'Cloud Computing', 'DevOps', 'Security']
+    title: 'The Complete Full-Stack Web Development Bootcamp',
+    shortDescription: 'Full-stack development using HTML, CSS, JS, Node, APIs, and databases.',
+    fullDescription: `
+A full-stack bootcamp covering frontend, backend, databases, authentication, deployment, and modern JS development.
+
+Instructor: Dr. Angela Yu
+Certificate No.: UC-1bcdab1e-303e-4d35-8aaB-ceeeb589183f
+Certificate URL: ude.my/UC-1bcdable-303e-4d35-8aa8-ceeeb589f83f
+Reference Number: 0004
+Hours: 61.5 total hours`,
+    issuer: 'Udemy',
+    date: 'Aug 8, 2025',
+    image: '/Cetificates/The Complete Full-Stack Web Development Bootcamp.jpg',
+    skills: ['HTML', 'CSS', 'JavaScript', 'Node.js', 'Full-Stack']
   },
+
   {
     id: '4',
-    title: 'UI/UX Design Fundamentals',
-    shortDescription: 'User interface and user experience design principles for modern web applications.',
-    fullDescription: 'Comprehensive UI/UX design certification covering design thinking, user research, wireframing, prototyping, and usability testing. Includes hands-on projects with real clients and industry-standard tools.',
-    issuer: 'Google',
-    date: '2022',
-    image: 'https://via.placeholder.com/800x600/1f2937/ffffff?text=UI/UX+Design+Fundamentals',
-    skills: ['Figma', 'Design Systems', 'User Research', 'Prototyping']
+    title: 'GIT, GitLab, GitHub Fundamentals for Software Developers',
+    shortDescription: 'Complete version control workflow for modern software development.',
+    fullDescription: `
+A practical guide to Git fundamentals including commits, branching, merging, GitHub workflows, and GitLab CI basics.
+
+Instructor: MTF Institute of Management, Technology and Finance
+Certificate No.: UC-119f2b27-c24a-41de-8874-e2569c3eB651
+Certificate URL: ude.my/UC-1f9f2b27-c24a-41de-8874-e2569c3e8651
+Reference Number: 0004
+Hours: 1 total hour`,
+    issuer: 'Udemy',
+    date: 'Aug 8, 2025',
+    image: '/Cetificates/Git.jpg',
+    skills: ['Git', 'GitHub', 'Version Control', 'Collaboration']
   },
+
   {
     id: '5',
-    title: 'Python Machine Learning',
-    shortDescription: 'Machine learning algorithms and data science techniques using Python programming.',
-    fullDescription: 'Advanced machine learning certification covering supervised and unsupervised learning, neural networks, deep learning, data preprocessing, and model evaluation. Includes real-world projects with scikit-learn, TensorFlow, and pandas.',
-    issuer: 'IBM',
-    date: '2023',
-    image: 'https://via.placeholder.com/800x600/059669/ffffff?text=Python+Machine+Learning',
-    skills: ['Python', 'Machine Learning', 'TensorFlow', 'Data Science']
+    title: 'Complete MS Office and Web Design Development Course',
+    shortDescription: 'MS Office productivity combined with beginner-friendly web design.',
+    fullDescription: `
+A combined course covering advanced MS Office skills and foundational web design (HTML, CSS, PHP, MySQL, WordPress).
+
+Instructor: Nerding I/O, Zechariah Tech
+Certificate No.: UC-a21449e9-249a-4tde-8e56-43b287742ed9
+Certificate URL: ude.my/UC-a2f449e9-249a-4fde-8e56-43b287742ed9
+Reference Number: 0004
+Hours: 10.5 total hours`,
+    issuer: 'Udemy',
+    date: 'Aug 8, 2025',
+    image: '/Cetificates/Ms Office.jpg',
+    skills: ['MS Office', 'HTML', 'CSS', 'Web Design']
   },
+
   {
     id: '6',
-    title: 'Digital Marketing Analytics',
-    shortDescription: 'Data-driven marketing strategies and analytics tools for digital campaigns.',
-    fullDescription: 'Professional certification in digital marketing analytics covering Google Analytics, social media metrics, conversion optimization, A/B testing, and ROI measurement. Includes hands-on experience with marketing automation tools.',
-    issuer: 'Google Digital Marketing',
-    date: '2022',
-    image: 'https://via.placeholder.com/800x600/7c2d12/ffffff?text=Digital+Marketing+Analytics',
-    skills: ['Google Analytics', 'SEO', 'Marketing Automation', 'Data Analysis']
+    title: 'Hands-On React JS: Beginner to Expert',
+    shortDescription: 'React development from fundamentals to advanced component patterns.',
+    fullDescription: `
+A hands-on React course covering JSX, components, props, state, hooks, routing, and application structure.
+
+Instructor: Learnify IT
+Certificate No.: UC-b829430c-7bbd-407b-827a-e6bdc094f4ea
+Certificate URL: ude.my/UC-b829430c-7bbd-407b-827a-e6bdc094f4ea
+Reference Number: 0004
+Hours: 4.5 total hours`,
+    issuer: 'Udemy',
+    date: 'Aug 8, 2025',
+    image: '/Cetificates/React.jpg',
+    skills: ['React', 'JavaScript', 'Hooks', 'Frontend']
+  },
+
+  {
+    id: '7',
+    title: 'Web Development Bootcamp with HTML, CSS, PHP, MySQL & WordPress',
+    shortDescription: 'Web development fundamentals and CMS-based website creation.',
+    fullDescription: `
+A beginner-to-intermediate course covering static website design, PHP backend, MySQL database, and WordPress CMS setup.
+
+Instructor: Marcus Menti, Zechariah Tech
+Certificate No.: UC-b82f9c7d-dab5-434e-afab-11e1f9b6b446
+Certificate URL: ude.my/UC-b82f9c7d-dab5-434e-afab-11e1f9b6b446
+Reference Number: 0004
+Hours: 13.5 total hours`,
+    issuer: 'Udemy',
+    date: 'Aug 8, 2025',
+    image: '/Cetificates/Web Development Bootcamp with HTML CSS PHP MySQL Wordpress.jpg',
+    skills: ['HTML', 'CSS', 'PHP', 'MySQL', 'WordPress']
   }
 ];
+
 
 // Focus trap hook for accessibility
 const useFocusTrap = (isOpen: boolean) => {
@@ -763,10 +828,7 @@ const CertificateModal = memo<CertificateModalProps>(({ certificate, isOpen, onC
                 {certificate.title}
               </h2>
 
-              {/* Description */}
-              <p className="text-neutral-300 leading-relaxed mb-6 text-sm md:text-base">
-                {certificate.fullDescription}
-              </p>
+              
 
               {/* Skills */}
               <div className="mb-6">
@@ -786,15 +848,35 @@ const CertificateModal = memo<CertificateModalProps>(({ certificate, isOpen, onC
 
             {/* Certificate Badge */}
             <div className="bg-gradient-to-r from-neutral-800 to-neutral-700 rounded-xl p-4 border border-neutral-600">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-semibold text-neutral-100 mb-1">Certified Achievement</h4>
-                  <p className="text-sm text-neutral-300">Click image to view full size</p>
-                </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-neutral-700 to-neutral-600 rounded-full flex items-center justify-center border border-neutral-500">
-                  <Award className="w-6 h-6 text-neutral-200" />
-                </div>
-              </div>
+              {/* Description */}
+              {(() => {
+                const parts = certificate.fullDescription.trim().split('\n\n');
+                const description = parts[0];
+                const details = parts.slice(1).join('\n\n');
+                return (
+                  <>
+                    <p className="text-neutral-300 leading-relaxed mb-4 text-sm md:text-base">
+                      {description}
+                    </p>
+                    <p className="text-neutral-300 leading-relaxed mb-6 text-sm md:text-base">
+                      {details.split('\n').map((line, index) => {
+                        const trimmed = line.trim();
+                        if (trimmed.includes(':')) {
+                          const [label, ...valueParts] = trimmed.split(':');
+                          const value = valueParts.join(':').trim();
+                          return (
+                            <span key={index}>
+                             <span className='font-bold'>{label}</span>  : <span> </span>
+                               {value}<br />
+                            </span>
+                          );
+                        }
+                        return <span key={index}>{trimmed}<br /></span>;
+                      })}
+                    </p>
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
