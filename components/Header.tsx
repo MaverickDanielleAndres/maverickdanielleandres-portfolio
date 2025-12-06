@@ -8,6 +8,7 @@ export default function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const items = [
@@ -40,6 +41,15 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
+  // scroll effect for background
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
       <style jsx global>{`
@@ -70,28 +80,45 @@ export default function Header() {
         }
       `}</style>
 
-      <header className="bg-transparent w-full fixed top-0 left-0 z-[1100]">
+      <header className={`${isScrolled ? 'bg-black/70 backdrop-blur-md' : 'bg-transparent'} w-full fixed top-0 left-0 z-[1100] transition-all duration-300`}>
         <div
           className={`flex justify-between items-center px-6 md:px-8 py-4 md:py-6 relative nav-item-enter ${
             isLoaded ? "nav-item-enter-active" : ""
           }`}
         >
           {/* Logo */}
-          <div className="text-white font-bold text-xl md:text-2xl tracking-tight cursor-pointer hover:scale-110 transition-transform duration-300">
-            MAVS
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="h-8 md:h-10 w-auto cursor-pointer hover:scale-110 transition-transform duration-300"
+          />
 
           {/* Right side (Resume + Popup Nav) */}
           <div className="flex items-center gap-4 relative" ref={menuRef}>
             {/* Resume Button */}
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => {
+                try {
+                  // Create a temporary link to trigger the download
+                  const link = document.createElement('a');
+                  link.href = '/Files/Resume.pdf';
+                  link.download = 'Maverick_Danielle_Andres_Resume.pdf';
+                  link.style.display = 'none';
+
+                  // Add to DOM, click, and remove
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+
+                  console.log('Resume download initiated successfully');
+                } catch (error) {
+                  console.error('Download failed:', error);
+                }
+              }}
               className="px-4 py-2 rounded-full border border-gray-500/40 bg-gradient-to-r from-gray-800 to-gray-900 text-white text-sm font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
             >
               Resume
-            </a>
+            </button>
 
             {/* Menu Toggle */}
             <button

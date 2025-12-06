@@ -7,7 +7,8 @@ import Header from "@/components/Header";
 import LightRays from "@/components/LightRays";
 
 interface AnimatedButtonProps {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   delay?: number;
@@ -23,6 +24,7 @@ export default function HeroSection() {
 
   const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     href,
+    onClick,
     children,
     variant = "primary",
     delay = 0,
@@ -39,32 +41,61 @@ export default function HeroSection() {
         "bg-white/5 border border-white/20 text-white backdrop-blur-md hover:border-white/40 hover:bg-white/10 hover:shadow-lg",
     };
 
+    const commonProps = {
+      className: `${baseClasses} ${variants[variant]} ${
+        animate ? "animate-slideUp" : "opacity-0"
+      }`,
+      style: { animationDelay: `${delay}ms` } as React.CSSProperties,
+      onMouseEnter: () => setIsHovered(true),
+      onMouseLeave: () => setIsHovered(false),
+    };
+
     return (
-      <a
-        href={href}
-        className={`${baseClasses} ${variants[variant]} ${
-          animate ? "animate-slideUp" : "opacity-0"
-        }`}
-        style={{ animationDelay: `${delay}ms` } as React.CSSProperties}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Animated background effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+      <>
+        {onClick ? (
+          <button
+            {...commonProps}
+            onClick={onClick}
+          >
+            {/* Animated background effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
-        {/* Hover glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            {/* Hover glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
 
-        {/* Button content */}
-        <span className="relative z-10 group-hover:scale-105 transition-transform duration-200">
-          {children}
-        </span>
+            {/* Button content */}
+            <span className="relative z-10 group-hover:scale-105 transition-transform duration-200">
+              {children}
+            </span>
 
-        {/* Ripple effect on hover */}
-        {isHovered && (
-          <div className="absolute inset-0 rounded-full animate-pulse bg-white/10"></div>
+            {/* Ripple effect on hover */}
+            {isHovered && (
+              <div className="absolute inset-0 rounded-full animate-pulse bg-white/10"></div>
+            )}
+          </button>
+        ) : (
+          <a
+            href={href}
+            {...commonProps}
+          >
+            {/* Animated background effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
+            {/* Hover glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+
+            {/* Button content */}
+            <span className="relative z-10 group-hover:scale-105 transition-transform duration-200">
+              {children}
+            </span>
+
+            {/* Ripple effect on hover */}
+            {isHovered && (
+              <div className="absolute inset-0 rounded-full animate-pulse bg-white/10"></div>
+            )}
+          </a>
         )}
-      </a>
+      </>
     );
   };
 
@@ -72,6 +103,25 @@ export default function HeroSection() {
     const aboutSection = document.querySelector('#about');
     if (aboutSection) {
       aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleDownloadResume = () => {
+    try {
+      // Create a temporary link to trigger the download
+      const link = document.createElement('a');
+      link.href = '/Files/Resume.pdf';
+      link.download = 'Maverick_Danielle_Andres_Resume.pdf';
+      link.style.display = 'none';
+
+      // Add to DOM, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      console.log('Resume download initiated successfully');
+    } catch (error) {
+      console.error('Download failed:', error);
     }
   };
 
@@ -150,7 +200,7 @@ export default function HeroSection() {
           }`}
           style={{ animationDelay: "400ms" } as React.CSSProperties}
         >
-          <AnimatedButton href="#resume" variant="secondary" delay={400}>
+          <AnimatedButton onClick={handleDownloadResume} variant="secondary" delay={400}>
             Resume
           </AnimatedButton>
 

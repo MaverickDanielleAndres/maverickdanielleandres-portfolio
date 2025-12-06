@@ -556,22 +556,14 @@ export default function AboutSection(): JSX.Element {
 
     return (
         <>
-            <section id='about' ref={sectionRef} className="relative z-10 px-6 py-16 md:py-20 -mt-10 md:mt-10 mb-4 md:mb-8">
-                <div className="py-12 md:py-20 px-4">
+            <section id='about' ref={sectionRef} className="relative z-10 px-6 py-4 md:py-8 lg:py-16 -mt-10 md:mt-10 mb-4 md:mb-8">
+                <div className="py-3 md:py-6 lg:py-12 px-4">
                     <div className="max-w-6xl mx-auto">
                         <div className="text-neutral-400 text-xs leading-snug -mb-4 ml-4">
-                        <ScrollFloat
-                            animationDuration={1}
-                            ease="back.inOut(2)"
-                            scrollStart="center bottom+=50%"
-                            scrollEnd="bottom bottom-=40%"
-                            stagger={0.03}
-                        >
-                            Get to know me...
-                        </ScrollFloat>
+                        
                         </div>
 
-                        {/* Main Content Grid */}
+                        
                         <div className="grid lg:grid-cols-12 gap-20">
                             {/* Left Side - Content Grid */}
                             <div className="lg:col-span-7 space-y-6">
@@ -607,7 +599,7 @@ When I'm not coding, you’ll find me learning new technologies, working on free
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <h5 className="text-white font-medium">Pamantasan ng Lungsod ng Pasig</h5>
-                                                <p className="text-neutral-400 text-sm">2022 - Present</p>
+                                                <p className="text-neutral-400 text-sm">2022 - 2026</p>
                                             </div>
                                             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg px-3 py-1">
                                                 <span className="text-yellow-400 font-semibold text-sm">GWA: 1.50</span>
