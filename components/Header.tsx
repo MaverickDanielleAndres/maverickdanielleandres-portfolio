@@ -1,45 +1,136 @@
 "use client";
-import GooeyNav from "@/components/GooeyNav";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-export default function Home() {
+export default function Header() {
   const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const items = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Projects", href: "/projects" },
-    { label: "Certificates", href: "/certificates" },
-    { label: "Contact", href: "/contact" },
-  ];
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
+  { label: "Projects", href: "#cert/proj" },
+  { label: "Contact", href: "#contact" },
+];
 
-  // Fix: Only use the found index if it's valid, otherwise default to 0
-  const foundIndex = items.findIndex(i => i.href === pathname);
-  const initialActiveIndex = foundIndex !== -1 ? foundIndex : 0;
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // close menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMenuOpen]);
 
   return (
     <>
       <style jsx global>{`
-        :root {
-          --color-1: #ffffff;
-          --color-2: #ff00ff;
-          --color-3: #8a2be2;
-          --color-4: #00bfff;
+        .nav-item-enter {
+          opacity: 0;
+          transform: translateY(-50px);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .nav-item-enter-active {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .nav-link {
+          position: relative;
+        }
+        .nav-link::after {
+          content: "";
+          position: absolute;
+          width: 0%;
+          height: 2px;
+          left: 0;
+          bottom: -4px;
+          background: white;
+          transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+          width: 100%;
         }
       `}</style>
 
-      <div className="bg-black w-full pt-7 pb-4 flex justify-center">
-        <GooeyNav
-          items={items}
-          initialActiveIndex={initialActiveIndex}
-          particleCount={15}
-          particleDistances={[90, 10]}
-          particleR={100}
-          animationTime={600}
-          timeVariance={300}
-          colors={[1, 2, 3, 1, 2, 3, 1, 4]}
-        />
-      </div>
+      <header className="bg-transparent w-full fixed top-0 left-0 z-[1100]">
+        <div
+          className={`flex justify-between items-center px-6 md:px-8 py-4 md:py-6 relative nav-item-enter ${
+            isLoaded ? "nav-item-enter-active" : ""
+          }`}
+        >
+          {/* Logo */}
+          <div className="text-white font-bold text-xl md:text-2xl tracking-tight cursor-pointer hover:scale-110 transition-transform duration-300">
+            MAVS
+          </div>
+
+          {/* Right side (Resume + Popup Nav) */}
+          <div className="flex items-center gap-4 relative" ref={menuRef}>
+            {/* Resume Button */}
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-full border border-gray-500/40 bg-gradient-to-r from-gray-800 to-gray-900 text-white text-sm font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
+            >
+              Resume
+            </a>
+
+            {/* Menu Toggle */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="cursor-pointer ml-2 p-2 rounded-full border border-gray-500/40 bg-black/70 text-white shadow-md hover:bg-black hover:scale-105 transition-all duration-200"
+            >
+              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+
+            {/* Popup Navigation */}
+            <AnimatePresence>
+              {isMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  className="absolute right-0 top-14 w-56 rounded-2xl border border-gray-700 bg-black/95 shadow-2xl backdrop-blur-md"
+                >
+                  <ul className="flex flex-col p-4 space-y-3">
+                    {items.map((item) => (
+                      <li key={item.href}>
+                        <a
+                          href={item.href}
+                          className={`block px-4 py-2 rounded-lg text-white text-sm font-medium hover:bg-gray-800/60 transition ${
+                            pathname === item.href ? "bg-gray-800/40 font-bold" : ""
+                          }`}
+                        >
+                          {item.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </header>
     </>
   );
 }

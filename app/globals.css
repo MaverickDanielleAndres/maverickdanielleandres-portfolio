@@ -18,3 +18,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@font-face {
+  font-family: 'Big John';
+  src: url('/fonts/BigJohn.woff2') format('woff2'),
+       url('/fonts/BigJohn.woff') format('woff');
+  /* Add other formats (ttf, eot) if needed */
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Good practice for performance */
+}
