@@ -362,7 +362,7 @@ const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
             child.props.onClick?.(e);
             onCardClick?.(i);
           },
-        })
+        } as any)
       : child
   );
 
