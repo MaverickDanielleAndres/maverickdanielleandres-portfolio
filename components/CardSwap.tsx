@@ -2,6 +2,14 @@
 import React, { Children, cloneElement, forwardRef, isValidElement, ReactElement, ReactNode, useEffect, useMemo, useRef, useImperativeHandle } from "react";
 import gsap from "gsap";
 
+export interface CardSwapRef {
+  swapNext: () => void;
+  swapPrev: () => void;
+  pauseAutoPlay: () => void;
+  resumeAutoPlay: () => void;
+  container: HTMLDivElement | null;
+}
+
 export interface CardSwapProps {
   width?: number | string;
   height?: number | string;
@@ -74,7 +82,7 @@ const placeNow = (el: HTMLElement, slot: Slot, skew: number) => {
   });
 };
 
-const CardSwap = forwardRef<any, CardSwapProps>(({
+const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   width = 350,
   height = 300,
   delay = 5000,
@@ -350,11 +358,11 @@ const CardSwap = forwardRef<any, CardSwapProps>(({
             height,
             ...(child.props.style ?? {}),
           },
-          onClick: (e: any) => {
-            child.props.onClick?.(e as React.MouseEvent<HTMLDivElement>);
+          onClick: (e: React.MouseEvent<HTMLDivElement>) => {
+            child.props.onClick?.(e);
             onCardClick?.(i);
           },
-        } as any)
+        })
       : child
   );
 

@@ -1,6 +1,6 @@
 "use client"
 
-import CardSwap, { Card } from '@/components/CardSwap'
+import CardSwap, { Card, CardSwapRef } from '@/components/CardSwap'
 import RotatingText from '@/components/RotatingText'
 import ScrollFloat from '@/components/ScrollFloat'
 import SpotlightCard from '@/components/SpotlightCard'
@@ -158,7 +158,7 @@ export default function Skills() {
   const [isVisible, setIsVisible] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const cardSwapRef = useRef<any>(null);
+  const cardSwapRef = useRef<CardSwapRef>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

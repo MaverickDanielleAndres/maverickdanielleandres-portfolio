@@ -96,7 +96,7 @@ function DockItem({
         if (React.isValidElement(child)) {
           // Only pass isHovered to DockLabel components
           if (child.type === DockLabel) {
-            return cloneElement(child as React.ReactElement<any>, { isHovered });
+            return cloneElement(child as React.ReactElement<DockLabelProps>, { isHovered });
           }
           return child;
         }

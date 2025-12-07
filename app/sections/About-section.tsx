@@ -577,11 +577,11 @@ export default function AboutSection(): JSX.Element {
                                         Hey there! 👋
                                     </h3>
                                     <p className="text-neutral-300 text-base leading-relaxed mb-4">
-                                        I'm Maverick, a dedicated full-stack web developer and IT specialist who enjoys building systems that truly solve real-world problems. With experience in PHP, JavaScript, React, Node.js, and database-driven applications, I focus on creating clean, efficient, and user-centered digital solutions that make an impact.
+                                        I&apos;m Maverick, a dedicated full-stack web developer and IT specialist who enjoys building systems that truly solve real-world problems. With experience in PHP, JavaScript, React, Node.js, and database-driven applications, I focus on creating clean, efficient, and user-centered digital solutions that make an impact.
 
                                     </p>
                                     <p className="text-neutral-400 text-base leading-relaxed">
-When I'm not coding, you’ll find me learning new technologies, working on freelance projects, or sharpening my networking and system administration skills. I’m committed to continuous growth and love turning ideas into functional, meaningful applications for users and communities.
+When I&apos;m not coding, you&apos;ll find me learning new technologies, working on freelance projects, or sharpening my networking and system administration skills. I&apos;m committed to continuous growth and love turning ideas into functional, meaningful applications for users and communities.
                                     </p>
                                 </div>
 
