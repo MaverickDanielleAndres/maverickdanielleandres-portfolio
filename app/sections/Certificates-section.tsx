@@ -352,7 +352,7 @@ const FullScreenImageModal = memo<FullScreenImageModalProps>(({ certificate, isO
   if (!isOpen || !certificate || !modalRoot) return null;
 
   const modalContent = (
-    <div 
+    <div
       ref={modalRef}
       style={{
         position: 'fixed',
@@ -361,12 +361,11 @@ const FullScreenImageModal = memo<FullScreenImageModalProps>(({ certificate, isO
         right: 0,
         bottom: 0,
         zIndex: 60000,
-        margin: 0,
-        padding: 0
+        margin: 0
       }}
-      className={`flex items-center justify-center transition-all duration-300 ${
-        isClosing 
-          ? 'bg-black/0' 
+      className={`flex items-center justify-center transition-all duration-300 p-2 sm:p-4 lg:p-6 ${
+        isClosing
+          ? 'bg-black/0'
           : 'bg-black/95'
       }`}
       onClick={handleBackdropClick}
@@ -374,26 +373,26 @@ const FullScreenImageModal = memo<FullScreenImageModalProps>(({ certificate, isO
       aria-modal="true"
       aria-label="Full screen certificate image"
     >
-      {/* Close Button - Top Center with highest z-index */}
+      {/* Close Button - Top Right */}
       <button
         onClick={handleClose}
-        className={`absolute top-4 sm:top-6 md:top-8 left-1/2 transform -translate-x-1/2 z-[61000] p-3 sm:p-4 bg-black/70 hover:bg-red-900/90 rounded-full transition-all duration-300 hover:scale-125 hover:rotate-90 group border-2 border-white/30 hover:border-red-500 shadow-2xl ${
+        className={`absolute top-6 right-6 lg:top-12 lg:right-12 z-[61000] p-2 bg-black/70 hover:bg-red-900/90 rounded-full transition-all duration-300 hover:scale-110 hover:rotate-90 group border border-white/30 hover:border-red-500 shadow-lg ${
           isClosing ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
         }`}
         aria-label="Close full screen view"
-        style={{ 
+        style={{
           backdropFilter: 'blur(10px)',
-          boxShadow: '0 0 30px rgba(0, 0, 0, 0.8)',
+          boxShadow: '0 0 20px rgba(0, 0, 0, 0.6)',
           pointerEvents: 'auto'
         }}
       >
-        <X className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:text-red-300 transition-all duration-200" />
+        <X className="w-5 h-5 text-white group-hover:text-red-300 transition-all duration-200" />
       </button>
 
       {/* Full Screen Image */}
-      <div className={`relative max-w-[65vw] max-h-[25] transition-all duration-300 ${
-        isClosing 
-          ? 'opacity-0 scale-90' 
+      <div className={`relative max-w-2xl max-h-[60vh] mb-16 transition-all duration-300 ${
+        isClosing
+          ? 'opacity-0 scale-90'
           : 'opacity-100 scale-100'
       }`}>
         <img
@@ -401,14 +400,6 @@ const FullScreenImageModal = memo<FullScreenImageModalProps>(({ certificate, isO
           alt={`${certificate.title} certificate full size`}
           className="w-full h-full object-contain rounded-lg shadow-2xl"
         />
-        
-        {/* Image Title Overlay */}
-        <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent rounded-b-lg p-6 transition-all duration-300 ${
-          isClosing ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-        }`}>
-          <h3 className="text-white text-xl font-semibold mb-1">{certificate.title}</h3>
-          <p className="text-white/80 text-sm">{certificate.issuer} • {certificate.date}</p>
-        </div>
       </div>
     </div>
   );
