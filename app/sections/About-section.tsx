@@ -425,13 +425,17 @@ const AcademicAwardsModal = memo<AwardsModalProps>(({ awards, isOpen, onClose })
                         ))}
                     </div>
 
-                    <div className="mt-8 text-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-800/30 rounded-lg border border-neutral-700/30">
-                            <Award className="w-4 h-4 text-yellow-500" />
-                            <span className="text-neutral-300 text-sm font-medium">
-                                Consistently maintaining high academic standards
+                    <div className="mt-8 text-center space-y-4">
+                        <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 rounded-lg border border-yellow-500/30">
+                            <Award className="w-5 h-5 text-yellow-500" />
+                            <span className="text-yellow-400 text-lg font-semibold">
+                                Consistent Dean's Lister (1st Year to 4th Year)
                             </span>
                         </div>
+                        <p className="text-neutral-300 text-sm max-w-2xl mx-auto leading-relaxed">
+                            Demonstrating unwavering commitment to academic excellence throughout the entire college journey,
+                            consistently achieving Dean's Lister status across all four years of study.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -452,32 +456,40 @@ export default function AboutSection(): JSX.Element {
     const academicAwards: AcademicAward[] = [
         {
             id: 1,
-            title: "President's Lister",
-            semester: "1st Semester AY 2023-2024",
-            gpa: "1.25 GPA",
-            image: "/api/placeholder/400/300"
+            title: "Dean's Lister",
+            semester: "2024-2025",
+            gpa: "1.40 GPA",
+            image: "/Academic Awards/dean's lister.png"
         },
         {
             id: 2,
-            title: "Dean's Lister",
-            semester: "2nd Semester AY 2022-2023",
-            gpa: "1.45 GPA",
-            image: "/api/placeholder/400/300"
+            title: "President's Lister",
+            semester: "2024-2025",
+            gpa: "1.40 GPA",
+            image: "/Academic Awards/president lister.png"
         },
         {
             id: 3,
-            title: "President's Lister",
-            semester: "1st Semester AY 2022-2023",
-            gpa: "1.30 GPA",
-            image: "/api/placeholder/400/300"
+            title: "Dean's Lister",
+            semester: "2023-2024",
+            gpa: "1.52 GPA",
+            image: "/Academic Awards/awards.png"
         },
         {
             id: 4,
             title: "Dean's Lister",
-            semester: "2nd Semester AY 2021-2022",
-            gpa: "1.50 GPA",
-            image: "/api/placeholder/400/300"
+            semester: "2022-2023",
+            gpa: "1.49 GPA",
+            image: "/Academic Awards/1awards.png"
+        },
+        {
+            id: 5,
+            title: "Dean's Lister",
+            semester: "2023-2024",
+            gpa: "1.30 GPA",
+            image: "/Academic Awards/2awards.png"
         }
+        
     ];
 
     useEffect(() => {
@@ -523,19 +535,19 @@ export default function AboutSection(): JSX.Element {
     };
 
     const handleGithubClick = (): void => {
-        console.log('GitHub clicked');
+        window.open('https://github.com/MaverickDanielleAndres', '_blank');
     };
 
     const handleFacebookClick = (): void => {
-        console.log('Facebook clicked');
+        window.open('https://www.facebook.com/maverickdanielle.andres/', '_blank');
     };
 
     const handleInstagramClick = (): void => {
-        console.log('Instagram clicked');
+        window.open('https://www.instagram.com/maverickdanielle.andres/', '_blank');
     };
 
     const handleLinkedinClick = (): void => {
-        console.log('LinkedIn clicked');
+        window.open('https://www.linkedin.com/in/maverick-danielle-andres/', '_blank');
     };
 
     const handleAwardsClick = (): void => {

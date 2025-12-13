@@ -444,24 +444,6 @@ const ProjectModal = memo<ProjectModalProps>(({ project, isOpen, onClose }) => {
           
           {/* External Links */}
           <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2" style={{ zIndex: 50001 }}>
-            {project.githubUrl && (
-              <button
-                onClick={() => handleExternalLink(project.githubUrl)}
-                className="p-1 sm:p-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-full transition-all duration-300 hover:scale-110 group border border-neutral-600"
-                aria-label="View GitHub repository"
-              >
-                <Github className="w-3 h-3 sm:w-4 sm:h-4 text-neutral-300 group-hover:text-white transition-colors" />
-              </button>
-            )}
-            {project.liveUrl && (
-              <button
-                onClick={() => handleExternalLink(project.liveUrl)}
-                className="p-1 sm:p-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-full transition-all duration-300 hover:scale-110 group border border-neutral-600"
-                aria-label="View live project"
-              >
-                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-neutral-300 group-hover:text-white transition-colors" />
-              </button>
-            )}
             <button
               onClick={handleClose}
               className="p-1.5 sm:p-2 bg-neutral-800 hover:bg-red-900/80 rounded-full transition-all duration-300 hover:scale-110 hover:rotate-90 group border border-neutral-600 hover:border-red-600"

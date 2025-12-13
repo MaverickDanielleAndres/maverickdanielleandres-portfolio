@@ -27,154 +27,226 @@ interface ProjectCardProps {
 // Mock project data
 const projectsData: Project[] = [
   {
-  id: '1',
-  title: 'Web Design UI/UX Collection',
-  description:
-    'A curated collection of modern and responsive UI/UX design samples created in Figma, showcasing landing pages, dashboards, mobile app layouts, and component systems.',
-  contribution:
-    'End-to-end UI/UX design including wireframing, prototyping, component creation, color systems, typography, and responsive layout design using Figma.',
-  techStack: ['Figma', 'UI/UX Design', 'Prototyping', 'Wireframing'],
-  dateCreated: '2024-01-15',
-  mainImage: '/Figma.jpg',
-  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-  screenshots: [
-    '/Projects/figma-sample1.png',
-    '/Projects/figma-sample2.png',
-    '/Projects/figma-sample3.png',
-    '/Projects/figma-sample4.png'
-  ],
-  features: [
-    'Responsive desktop and mobile layouts',
-    'Reusable component system (buttons, cards, forms)',
-    'Consistent color palettes and typography tokens',
-    'Prototype-ready screens for user testing',
-    'Wireframes, mockups, and high-fidelity UI samples'
-  ],
-  githubUrl: '',
-  liveUrl: ''
-},
-
-{
-  id: '2',
-  title: 'Learning Management System with AI-Generated Reviewer',
-  description:
-    'A full LMS designed for 1,000+ students and teachers, featuring AI-powered summarization, auto-generated exam reviewers, flashcards, predictive analytics, chatbot assistance, and a complete grading & class management workflow.',
-  contribution:
-    'Led the full development of the LMS including system architecture, UI/UX, multi-role authentication, AI modules, analytics dashboard, and deployment on IONOS.',
-  techStack: ['PHP', 'HTML', 'CSS', 'Bootstrap', 'JavaScript', 'MySQL'],
-  dateCreated: '2025-11-20',
-  mainImage:
-    'https://via.placeholder.com/600x400/3b82f6/ffffff?text=LMS+with+AI+Features',
-  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-  screenshots: [
-    'https://via.placeholder.com/800x600/2563eb/ffffff?text=Student+Dashboard',
-    'https://via.placeholder.com/800x600/1e40af/ffffff?text=AI+Reviewer',
-    'https://via.placeholder.com/800x600/3b82f6/ffffff?text=Flashcard+Generator',
-    'https://via.placeholder.com/800x600/60a5fa/ffffff?text=Analytics'
-  ],
-  features: [
-    'AI-powered reviewer and flashcard generator',
-    'Multi-role authentication with secure login',
-    'Student performance analytics and predictions',
-    'Complete class, grading, and module management',
-    'Deployment with database & hosting optimization'
-  ],
-  githubUrl: 'https://github.com/example/lms-ai-reviewer',
-  liveUrl: 'https://lms-ai.demo.com'
-},
-
-{
-  id: '3',
-  title: 'E-Community Engagement Platform',
-  description:
-    'A modern web platform for community engagement with features including voting & surveys, complaint reporting, real-time messaging, group channels, notifications, community data insights, and sentiment analysis.',
-  contribution:
-    'Developed the entire system including frontend UI, backend API, real-time messaging, role-based permissions, AI sentiment analysis, and Supabase integration.',
-  techStack: [
-    'Next.js',
-    'React',
-    'Tailwind CSS',
-    'Node.js',
-    'Express',
-    'Supabase',
-    'PostgreSQL'
-  ],
-  dateCreated: '2025-11-05',
-  mainImage:
-    'https://via.placeholder.com/600x400/059669/ffffff?text=Community+Platform',
-  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-  screenshots: [
-    'https://via.placeholder.com/800x600/059669/ffffff?text=Dashboard',
-    'https://via.placeholder.com/800x600/047857/ffffff?text=Messaging+Channels',
-    'https://via.placeholder.com/800x600/0d9488/ffffff?text=Voting+Module',
-    'https://via.placeholder.com/800x600/065f46/ffffff?text=AI+Sentiment+Insights'
-  ],
-  features: [
-    'Real-time messaging and group channels',
-    'AI-powered sentiment analysis for community insights',
-    'Voting, surveys, and participatory engagement tools',
-    'Role-based access control for admins and users',
-    'Supabase authentication and PostgreSQL integration'
-  ],
-  githubUrl: 'https://github.com/example/community-engagement',
-  liveUrl: 'https://community.demo.com'
-},
-
-{
-  id: '4',
-  title: 'Barangay Ugong Gym Registration System',
-  description:
-    'A streamlined membership registration and tracking system for Barangay Ugong gym users featuring automated approvals, membership ID generation, and centralized user management.',
-  contribution:
-    'Designed the entire UI and led the development team. Implemented main workflows, ID generation, and user management interface using Python & Streamlit.',
-  techStack: ['Python', 'Streamlit', 'CSS', 'C++', 'Jupyter Notebook'],
-  dateCreated: '2024-11-10',
-  mainImage:
-    'https://via.placeholder.com/600x400/f59e0b/ffffff?text=Gym+Registration+System',
-  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-  screenshots: [
-    'https://via.placeholder.com/800x600/f59e0b/ffffff?text=Registration+Page',
-    'https://via.placeholder.com/800x600/d97706/ffffff?text=Membership+ID',
-    'https://via.placeholder.com/800x600/b45309/ffffff?text=Admin+Panel'
-  ],
-  features: [
-    'Automated membership approval workflow',
-    'Generated membership IDs with QR codes',
-    'Centralized admin dashboard for user management',
-    'Streamlit-powered clean and responsive UI',
-    'Integrated logs for attendance and monitoring'
-  ],
-  githubUrl: 'https://github.com/example/gym-registration',
-  liveUrl: 'https://gym.demo.com'
-},
-
-{
-  id: '5',
-  title: 'Barangay Health System',
-  description:
-    'A complete barangay-level health record management system with patient profiles, check-up logs, medical history tracking, and administrative monitoring tools.',
-  contribution:
-    'Led a 4–6 member development team. Designed full UI/UX and implemented the front-end, back-end CRUD modules, and admin workflows.',
-  techStack: ['PHP', 'HTML', 'CSS', 'Bootstrap', 'JavaScript', 'MySQL'],
-  dateCreated: '2024-05-18',
-  mainImage:
-    'https://via.placeholder.com/600x400/ef4444/ffffff?text=Barangay+Health+System',
-  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
-  screenshots: [
-    'https://via.placeholder.com/800x600/ef4444/ffffff?text=Patient+Profiles',
-    'https://via.placeholder.com/800x600/dc2626/ffffff?text=Checkup+Logs',
-    'https://via.placeholder.com/800x600/b91c1c/ffffff?text=Admin+Dashboard'
-  ],
-  features: [
-    'Complete patient profile and health history records',
-    'Check-up logging and medical monitoring workflow',
-    'Admin dashboard with CRUD operations',
-    'Secure login and role-based access',
-    'Designed for barangay-level health operations'
-  ],
-  githubUrl: 'https://github.com/example/barangay-health',
-  liveUrl: 'https://health.demo.com'
-}
+    id: '1',
+    title: 'Web Design UI/UX Collection',
+    description:
+      'Collection of modern and responsive UI/UX design samples created in Figma, showcasing landing pages, dashboards, and component systems.',
+    contribution:
+      'End-to-end UI/UX design including wireframing, prototyping, component creation, color systems, typography, and responsive layout design using Figma.',
+    techStack: ['Figma', 'UI/UX Design', 'Prototyping', 'Wireframing'],
+    dateCreated: '2025',
+    mainImage: '/Figma.jpg',
+    videoUrl: '/Projects/Figma Designs/vid/figma vid preview.mp4',
+    screenshots: [
+      '/Projects/Figma Designs/screenshots/maverick.png',
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-11 204902.png',
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-12 125848.png',
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-12 124548.png',
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-11 205433.png'
+    ],
+    features: [
+      'Responsive desktop and mobile layouts',
+      'Reusable component system (buttons, cards, forms)',
+      'Consistent color palettes and typography tokens',
+      'Prototype-ready screens for user testing',
+      'Wireframes, mockups, and high-fidelity UI samples'
+    ],
+    githubUrl: '',
+    liveUrl: ''
+  },
+  {
+    id: '2',
+    title: 'Learning Management System with AI-Generated Reviewer',
+    description:
+      'A full LMS designed for 1,000+ students and teachers, featuring AI-powered summarization, auto-generated exam reviewers, flashcards, predictive analytics, chatbot assistance, and a complete grading & class management workflow.',
+    contribution:
+      'Led the full development of the LMS including system architecture, UI/UX, multi-role authentication, AI modules, analytics dashboard, and deployment on IONOS.',
+    techStack: ['PHP', 'HTML', 'CSS', 'Bootstrap', 'JavaScript', 'MySQL'],
+    dateCreated: '2025-11-20',
+    mainImage: 'https://via.placeholder.com/600x400/3b82f6/ffffff?text=LMS+with+AI+Features',
+    videoUrl: '/Projects/Learning Management System/vid/lms vid.mp4',
+    screenshots: [
+      '/Projects/Learning Management System/screenshots/Priority (1).png',
+      '/Projects/Learning Management System/screenshots/Priority (2).png',
+      '/Projects/Learning Management System/screenshots/Priority (3).png',
+      '/Projects/Learning Management System/screenshots/Priority (4).png',
+      '/Projects/Learning Management System/screenshots/Priority (5).png',
+      '/Projects/Learning Management System/screenshots/Priority (6).png',
+      '/Projects/Learning Management System/screenshots/Priority (7).png',
+      '/Projects/Learning Management System/screenshots/Priority (8).png',
+      '/Projects/Learning Management System/screenshots/Priority.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 233459.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234431.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234456.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234503.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234514.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234520.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234527.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234532.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234540.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234546.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234609.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234615.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234944.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 234953.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235000.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235007.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235125.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235140.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235151.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235157.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235229.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235240.png',
+      '/Projects/Learning Management System/screenshots/Screenshot 2025-12-10 235249.png'
+    ],
+    features: [
+      'AI-powered reviewer and flashcard generator',
+      'Multi-role authentication with secure login',
+      'Student performance analytics and predictions',
+      'Complete class, grading, and module management',
+      'Deployment with database & hosting optimization'
+    ],
+    githubUrl: 'https://github.com/example/lms-ai-reviewer',
+    liveUrl: 'https://lms-ai.demo.com'
+  },
+  {
+    id: '3',
+    title: 'E-Community Engagement Platform',
+    description:
+      'A modern web platform for community engagement with features including voting & surveys, complaint reporting, real-time messaging, group channels, notifications, community data insights, and sentiment analysis.',
+    contribution:
+      'Developed the entire system including frontend UI, backend API, real-time messaging, role-based permissions, AI sentiment analysis, and Supabase integration.',
+    techStack: [
+      'Next.js',
+      'React',
+      'Tailwind CSS',
+      'Node.js',
+      'Express',
+      'Supabase',
+      'PostgreSQL'
+    ],
+    dateCreated: '2025-11-05',
+    mainImage: 'https://via.placeholder.com/600x400/059669/ffffff?text=Community+Platform',
+    videoUrl: '/Projects/E-Community/vid/ECOM vid.mp4',
+    screenshots: [
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110325.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110332.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110342.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110351.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110417.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110425.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110435.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110452.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110503.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110518.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110541.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110601.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110614.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110638.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110652.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110701.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110725.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110733.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 110804.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111628.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111637.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111702.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111710.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111730.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111751.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111759.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111813.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111845.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111929.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 111952.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112007.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112016.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112032.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112048.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112111.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112123.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112141.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112229.png',
+      '/Projects/E-Community/screenshots/Screenshot 2025-12-11 112303.png'
+    ],
+    features: [
+      'Real-time messaging and group channels',
+      'AI-powered sentiment analysis for community insights',
+      'Voting, surveys, and participatory engagement tools',
+      'Role-based access control for admins and users',
+      'Supabase authentication and PostgreSQL integration'
+    ],
+    githubUrl: 'https://github.com/example/community-engagement',
+    liveUrl: 'https://community.demo.com'
+  },
+  {
+    id: '4',
+    title: 'Barangay Ugong Gym Registration System',
+    description:
+      'A streamlined membership registration and tracking system for Barangay Ugong gym users featuring automated approvals, ID verification, and centralized user management.',
+    contribution:
+      'Designed the entire UI and led the development team. Implemented main workflows, registration and user management',
+    techStack: ['PHP', 'HTML', 'CSS', 'JS', 'Bootstrap', 'MySQL', 'XML'],
+    dateCreated: '2024-11-10',
+    mainImage: '/Projects/Gym Registration/preview image/Preview gym.png',
+    screenshots: [
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140203.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140216.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140225.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140242.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140313.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140323.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140343.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140653.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140711.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140757.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 141009.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 141019.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 141029.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 141036.png',
+      '/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 141051.png'
+    ],
+    features: [
+      'Automated membership approval workflow',
+      'Centralized admin dashboard for user management',
+      'Streamlit-powered clean and responsive UI',
+      'Integrated logs for attendance and monitoring'
+    ],
+    githubUrl: 'https://github.com/example/gym-registration',
+    liveUrl: 'https://gym.demo.com'
+  },
+  {
+    id: '5',
+    title: 'Barangay Health System',
+    description:
+      'A complete barangay-level health record management system with patient profiles, check-up logs, medicine inventory tracking, and administrative monitoring tools.',
+    contribution:
+      'Led a 4–6 member development team. Designed full UI/UX and implemented the front-end, back-end CRUD modules, and admin workflows.',
+    techStack: ['PHP', 'HTML', 'CSS', 'Bootstrap', 'JavaScript', 'MySQL'],
+    dateCreated: '2024-05-18',
+    mainImage: '/Projects/Barangay Health System/preview image/Preview.png',
+    screenshots: [
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133108.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133117.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133129.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133141.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133228.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133608.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133634.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133659.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133710.png',
+      '/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133753.png'
+    ],
+    features: [
+      'Complete patient profile and health history records',
+      'Check-up logging and medical monitoring workflow',
+      'Admin dashboard with CRUD operations',
+      'Medicine Inventory Management',
+      'Secure login and role-based access',
+    ],
+    githubUrl: 'https://github.com/example/barangay-health',
+    liveUrl: 'https://health.demo.com'
+  }
 ];
 
 // Custom hook for intersection observer

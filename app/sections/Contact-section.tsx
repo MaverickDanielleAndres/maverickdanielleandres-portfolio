@@ -37,7 +37,7 @@ const Notification: React.FC<NotificationProps> = ({ type, message, isVisible, o
   if (!isVisible) return null;
 
   return (
-    <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-[9999] animate-pop-in">
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[10000] animate-pop-in">
       <div className={`
         px-8 py-5 rounded-xl border backdrop-blur-md shadow-2xl min-w-[320px] max-w-md
         transform transition-all duration-300 ease-out

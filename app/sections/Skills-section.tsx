@@ -68,7 +68,7 @@ const skills = [
   },
   {
     title: "Tailwind CSS",
-    bg: "bg-zinc-800",
+    bg: "bg-white-800",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg",
     desc: "Utility-first CSS framework",
     percentage: 90,
@@ -97,7 +97,7 @@ const skills = [
   {
     title: "Supabase",
     bg: "bg-neutral-700",
-    icon: "https://supabase.com/brand-assets/supabase-logo-icon.svg",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg",
     desc: "Backend-as-a-Service platform",
     percentage: 85,
   },

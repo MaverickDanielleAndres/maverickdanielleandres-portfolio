@@ -184,7 +184,7 @@ export default function HeroSection() {
           style={{ animationDelay: "200ms" } as React.CSSProperties}
         >
           <TrueFocus
-            sentence="Web_Developer Designer IT_Support"
+            sentence="Web_Developer Designer Networking"
             manualMode={false}
             blurAmount={2}
             borderColor="white"
