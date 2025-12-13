@@ -370,7 +370,7 @@ const AcademicAwardsModal = memo<AwardsModalProps>(({ awards, isOpen, onClose })
         >
             <div 
                 ref={modalRef}
-                className={`relative bg-neutral-900 rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-neutral-700 transition-all duration-300 ${
+                className={`mt-20 relative bg-neutral-900 rounded-2xl shadow-2xl max-w-4xl w-full mx-3 max-h-[80vh] overflow-y-auto border border-neutral-700 transition-all duration-300 ${
                     isClosing 
                         ? 'opacity-0 scale-95 translate-y-4' 
                         : 'opacity-100 scale-100 translate-y-0'
@@ -589,11 +589,11 @@ export default function AboutSection(): JSX.Element {
                                         Hey there! 👋
                                     </h3>
                                     <p className="text-neutral-300 text-base leading-relaxed mb-4">
-                                        I&apos;m Maverick, a dedicated full-stack web developer and IT specialist who enjoys building systems that truly solve real-world problems. With experience in PHP, JavaScript, React, Node.js, and database-driven applications, I focus on creating clean, efficient, and user-centered digital solutions that make an impact.
+                                        I&apos;m Maverick, a dedicated full-stack web developer and IT specialist who enjoys designing and web development. With experience in PHP, JavaScript, React, Node.js, and database-driven applications, I focus on creating clean, efficient, and user-centered digital solutions that make an impact.
 
                                     </p>
                                     <p className="text-neutral-400 text-base leading-relaxed">
-When I&apos;m not coding, you&apos;ll find me learning new technologies, working on freelance projects, or sharpening my networking and system administration skills. I&apos;m committed to continuous growth and love turning ideas into functional, meaningful applications for users and communities.
+When I&apos;m not coding, you&apos;ll find me learning new technologies, working on side projects, or sharpening my networking and system administration skills. I&apos;m committed to continuous growth and love turning ideas into functional, meaningful applications for users and communities.
                                     </p>
                                 </div>
 

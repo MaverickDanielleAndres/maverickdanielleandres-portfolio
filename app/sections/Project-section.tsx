@@ -40,9 +40,13 @@ const projectsData: Project[] = [
     screenshots: [
       '/Projects/Figma Designs/screenshots/maverick.png',
       '/Projects/Figma Designs/screenshots/Screenshot 2025-12-11 204902.png',
-      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-12 125848.png',
+            '/Projects/Figma Designs/screenshots/Screenshot 2025-12-12 125848.png',
       '/Projects/Figma Designs/screenshots/Screenshot 2025-12-12 124548.png',
-      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-11 205433.png'
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-13 224307.png',
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-13 020916.png',
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-13 224639.png',
+      '/Projects/Figma Designs/screenshots/Screenshot 2025-12-13 224656.png',
+       '/Projects/Figma Designs/screenshots/Screenshot 2025-12-11 205433.png'
     ],
     features: [
       'Responsive desktop and mobile layouts',
@@ -493,7 +497,7 @@ const ProjectsSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative z-10 px-4 sm:px-6 py-20 mt-10">
+    <section id='projects' className="relative z-10 px-4 sm:px-6 py-20 mt-10">
       <div className="py-20 -mt-20">
         <div className="max-w-7xl mx-auto">
           <div className='justify-center flex'>

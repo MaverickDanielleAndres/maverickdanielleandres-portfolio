@@ -68,9 +68,10 @@ const skills = [
   },
   {
     title: "Tailwind CSS",
-    bg: "bg-white-800",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg",
+    bg: "bg-cyan-400",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
     desc: "Utility-first CSS framework",
+    invert: true,
     percentage: 90,
   },
   {
@@ -304,7 +305,7 @@ export default function Skills() {
               <span>I am</span>
               <div className="relative">
                 <RotatingText
-                  texts={['Detail-oriented.','Team-oriented.','Problem-solver.', 'Quick learner.','Adaptable.', 'Reliable.', 'Innovative.', 'Results-driven.']}
+                  texts={['Detail-oriented.','Team-oriented.','Problem-solver.', 'Quick learner.','Adaptable.', 'Reliable.', 'Innovative.', 'Hardworking', 'Task-Oriented', 'Results-driven.']}
                   mainClassName="px-2 sm:px-3 md:px-4 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl text-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-1 border border-gray-600 overflow-hidden py-1 sm:py-2 md:py-2 shadow-md"
                   splitLevelClassName="overflow-hidden"
                   staggerFrom="last"

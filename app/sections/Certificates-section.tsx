@@ -35,6 +35,7 @@ interface FullScreenImageModalProps {
 }
 
 const certificatesData: Certificate[] = [
+
   {
     id: '1',
     title: 'The Complete Networking Fundamentals Course (CCNA Start)',
@@ -74,9 +75,9 @@ Hours: 4 total hours`,
   {
     id: '3',
     title: 'The Complete Full-Stack Web Development Bootcamp',
-    shortDescription: 'Full-stack development using HTML, CSS, JS, Node, APIs, and databases.',
+    shortDescription: 'Full-stack development using HTML, CSS, JS, React, Node, PostgreSQL, APIs, and databases.',
     fullDescription: `
-A full-stack bootcamp covering frontend, backend, databases, authentication, deployment, and modern JS development.
+A full-stack bootcamp covering frontend, backend, databases, authentication, deployment, and modern JS development. HTML, CSS, Javascript, Node, React, PostgreSQL, Web3
 
 Instructor: Dr. Angela Yu
 Certificate No.: UC-1bcdab1e-303e-4d35-8aaB-ceeeb589183f
@@ -159,6 +160,23 @@ Hours: 13.5 total hours`,
     date: 'Aug 8, 2025',
     image: '/Cetificates/Web Development Bootcamp with HTML CSS PHP MySQL Wordpress.jpg',
     skills: ['HTML', 'CSS', 'PHP', 'MySQL', 'WordPress']
+  },
+   {
+    id: '8',
+    title: 'Information Security Crash Course: Quick Steps to Safety',
+    shortDescription: 'Cybersecurity principles, secure coding, data protection, encryption, and lots more to safeguard systems.',
+    fullDescription: `
+A comprehensive course covering cybersecurity fundamentals including secure coding practices, data protection, encryption techniques, and system security measures.
+
+Instructor: Andrii Piatakha
+Certificate No.: UC-18fb0c48-44c8-44b1-86aa-e926d02107f9
+Certificate URL: ude.my/UC-18fb0c48-44c8-44b1-86aa-e926d02107f9
+Reference Number: 0004
+Hours: 7 total hours`,
+    issuer: 'Udemy',
+    date: 'Oct 30, 2025',
+    image: '/Cetificates/Security.png',
+    skills: ['Cybersecurity', 'Secure Coding', 'Data Protection', 'Encryption', 'System Security']
   }
 ];
 
@@ -915,7 +933,7 @@ const CertificatesSection: React.FC = () => {
 
   return (
     <>
-      <section className="relative z-10 px-4 sm:px-6 py-20 mt-10">
+      <section id='certificates' className="relative z-10 px-4 sm:px-6 py-20 mt-10">
         <div className="py-20 -mt-20">
           <div className="max-w-7xl mx-auto">
             {/* Animated Header */}

@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
   const quickLinks = [
     { name: 'Home', href: '#home' },
     { name: 'About', href: '#about' },
-    { name: 'What I Offer', href: '#what-i-offer' },
+    { name: 'What I Offer', href: '#skills' },
     { name: 'Projects', href: '#projects' },
     { name: 'Certificates', href: '#certificates' },
     { name: 'Contact', href: '#contact' }
@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
               </div>
               
               <p className="text-neutral-400 text-sm leading-relaxed max-w-xs mx-auto md:mx-0 transition-colors duration-300 hover:text-neutral-300">
-                Full-stack developer passionate about creating exceptional digital experiences.
+                Full-stack development, Networking, Web Design, System Administration, Cybersecurity
               </p>
               
               {/* Social Links */}
