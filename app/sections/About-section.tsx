@@ -555,7 +555,13 @@ export default function AboutSection(): JSX.Element {
     };
 
     const handleContactClick = (): void => {
-        console.log('Contact clicked');
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+            contactSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     };
 
     const handleCloseAwardsModal = useCallback(() => {
