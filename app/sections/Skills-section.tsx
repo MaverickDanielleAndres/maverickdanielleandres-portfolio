@@ -160,6 +160,11 @@ export default function Skills() {
   const [showAll, setShowAll] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const cardSwapRef = useRef<CardSwapRef>(null);
+  const showAllRef = useRef(showAll);
+
+  useEffect(() => {
+    showAllRef.current = showAll;
+  }, [showAll]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -168,7 +173,10 @@ export default function Skills() {
           if (entry.isIntersecting) {
             setIsVisible(true);
           } else {
-            setIsVisible(false);
+            // Only set invisible if not in showAll mode
+            if (!showAllRef.current) {
+              setIsVisible(false);
+            }
           }
         });
       },

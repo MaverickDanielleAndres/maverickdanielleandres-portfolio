@@ -25,7 +25,7 @@ export default function Home() {
     particleSpread={20}
     speed={0.1}
     particleBaseSize={70}
-    moveParticlesOnHover={true}
+    moveParticlesOnHover={false}
     alphaParticles={false}
     disableRotation={false}
   />
