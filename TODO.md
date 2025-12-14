@@ -1,5 +1,30 @@
-# TODO: Update About Section with Resume Details
+# Performance Optimization Plan
 
-- [x] Update ProfileCard name from "Andres" to "Maverick Danielle P. Andres"
-- [x] Update education section to include "B.S. in Information Technology, GWA: 1.50" and change dates to "Aug 2022 - May 2026"
-- [x] Expand personal introduction into detailed "About Me" section incorporating resume details (skills, experiences, passion for web development)
+## Current Issues
+- LCP: 3.39s (ShinyText component bottleneck)
+- INP: 1048ms (Complex animations causing lag)
+- Multiple animation libraries increasing bundle size
+
+## Optimization Tasks
+
+### Phase 1: Hero Section Optimization
+- [ ] Replace ShinyText complex animations with simple CSS transitions
+- [ ] Change hero font to more appropriate, performant font
+- [ ] Optimize font loading and rendering
+
+### Phase 2: Animation Simplification
+- [ ] Simplify CardSwap GSAP animations
+- [ ] Reduce CardSwap auto-play frequency
+- [ ] Optimize RotatingText stagger animations
+- [ ] Add lazy loading for heavy components
+
+### Phase 3: Bundle Optimization
+- [ ] Optimize image loading and formats
+- [ ] Review and optimize font loading
+- [ ] Consider code splitting for heavy components
+
+### Phase 4: Testing & Validation
+- [ ] Test LCP improvements
+- [ ] Test INP improvements
+- [ ] Validate animation smoothness
+- [ ] Check bundle size reduction

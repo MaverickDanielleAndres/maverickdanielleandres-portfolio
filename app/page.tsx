@@ -10,22 +10,25 @@ import CertificatesSection from "./sections/Certificates-section";
 import Footer from "@/components/Footer";
 import ProjectsSection from "./sections/Project-section";
 import CertProj from "./sections/CertProj";
+import Particles from "@/components/background/Particles";
 
 
 export default function Home() {
   return (
     <main className="relative flex flex-col items-center justify-center min-h-screen bg-black text-white overflow-hidden">
       {/* Background effects - positioned absolutely to cover entire viewport */}
-      <div className="fixed inset-0 z-0">
+      <div className="fixed inset-0 z-0 w-100%">
   
-        <Galaxy 
-         mouseRepulsion={false}
-          mouseInteraction={true}
-          density={0.3}
-          glowIntensity={0.1}
-          saturation={0.0}
-          hueShift={0}
-        />
+        <Particles
+    particleColors={['#ffffff', '#ffffff']}
+    particleCount={500}
+    particleSpread={20}
+    speed={0.1}
+    particleBaseSize={70}
+    moveParticlesOnHover={true}
+    alphaParticles={false}
+    disableRotation={false}
+  />
       </div>
       
       {/* Content layer - positioned above background */}
