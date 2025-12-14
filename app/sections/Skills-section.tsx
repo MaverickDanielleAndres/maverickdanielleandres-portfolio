@@ -267,8 +267,8 @@ export default function Skills() {
               <SpotlightCard
                 spotlightColor="rgba(139, 92, 246, 0.2)"
                 icon={<Network className="w-5 h-5 text-blue-400" />}
-                title="Networking"
-                description="LAN/WAN setup, Cisco config, and troubleshooting"
+                title="Networking & Security"
+                description="LAN/WAN setup, Cisco config, cybersecurity, and troubleshooting"
               />
               <SpotlightCard
                 spotlightColor="rgba(139, 92, 246, 0.2)"
