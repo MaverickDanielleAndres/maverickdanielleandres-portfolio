@@ -147,6 +147,19 @@ export default function Header() {
                       <li key={item.href}>
                         <a
                           href={item.href}
+                          onClick={(e) => {
+                            setIsMenuOpen(false);
+                            // Smooth scroll to section
+                            const targetId = item.href.replace('#', '');
+                            const targetElement = document.getElementById(targetId);
+                            if (targetElement) {
+                              e.preventDefault();
+                              targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                              });
+                            }
+                          }}
                           className={`block px-4 py-2 rounded-lg text-white text-sm font-medium hover:bg-gray-800/60 transition ${
                             pathname === item.href ? "bg-gray-800/40 font-bold" : ""
                           }`}

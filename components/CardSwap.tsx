@@ -85,7 +85,7 @@ const placeNow = (el: HTMLElement, slot: Slot, skew: number) => {
 const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
   width = 350,
   height = 300,
-  delay = 5000,
+  delay = 2000,
   pauseOnHover = true,
   onCardClick,
   skewAmount = 6,

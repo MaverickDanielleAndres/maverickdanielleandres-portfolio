@@ -117,7 +117,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
             `}</style>
             
             <div
-                className="relative flex gap-2 sm:gap-3 md:gap-4 justify-center items-center flex-wrap"
+                className="mb-10 relative flex gap-2 sm:gap-3 md:gap-4 justify-center items-center flex-wrap"
                 ref={containerRef}
             >
                 {words.map((word, index) => {

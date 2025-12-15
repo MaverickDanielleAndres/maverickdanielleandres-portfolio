@@ -149,33 +149,38 @@ export default function HeroSection() {
         }
 
         .hero-spacing {
-          padding-top: clamp(5rem, 15vh, 15rem);
-          padding-bottom: clamp(3rem, 10vh, 5rem);
+          padding-top: clamp(2rem, 10vh, 8rem);
+          padding-bottom: clamp(1rem, 5vh, 3rem);
         }
 
         .hero-content-spacing {
-          margin-bottom: clamp(1rem, 3vh, 1.5rem);
+          margin-bottom: clamp(0.5rem, 1vh, 1rem);
         }
 
         .hero-buttons-spacing {
-          margin-top: clamp(2rem, 6vh, 3rem);
+          margin-top: clamp(1rem, 3vh, 2rem);
         }
 
         .hero-scroll-spacing {
-          margin-top: clamp(3rem, 8vh, 5rem);
+          margin-top: clamp(1.5rem, 4vh, 3rem);
         }
 
         .hero-scroll-bottom-spacing {
-          margin-bottom: clamp(2rem, 10vh, 10rem);
+          margin-bottom: clamp(1rem, 5vh, 5rem);
+        }
+
+        .responsive-shiny-text {
+          font-size: clamp(1.25rem, 5vw, 3rem);
+          line-height: 1.2;
         }
       `}</style>
 
-      <section id='home' className="mt-35 relative z-10 text-center px-4 sm:px-6 hero-spacing">
+      <section id='home' className="mt-30 relative z-10 text-center px-4 sm:px-6 hero-spacing">
         <ShinyText
           text="Maverick Danielle P. Andres"
           disabled={false}
           speed={3}
-          className="hero-content-spacing text-2xl sm:text-2xl md:text-4xl font-bigjohn"
+          className="mb-2 mt-5 hero-content-spacing font-bigjohn leading-tight whitespace-nowrap"
         />
 
         {/* TrueFocus with responsive styling */}
@@ -222,7 +227,7 @@ export default function HeroSection() {
             onClick={handleScrollToAbout}
             className="flex flex-col items-center justify-center text-white/50 hover:text-white/80 transition-colors duration-500 cursor-pointer group bg-transparent border-none w-full"
           >
-            <span className="text-[0.6rem] sm:text-xs font-light mb-2 sm:mb-3 tracking-wider uppercase">
+            <span className="mt-7 text-[0.6rem] sm:text-xs font-light mb-2 sm:mb-3 tracking-wider uppercase">
               Learn More About Me
             </span>
             <div className="w-px h-6 sm:h-8 bg-gradient-to-b from-white/20 to-transparent group-hover:from-white/40 transition-colors duration-300"></div>

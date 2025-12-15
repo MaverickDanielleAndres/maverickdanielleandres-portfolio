@@ -13,7 +13,7 @@ module.exports = {
     extend: {
       fontFamily: {
         'oxygen': ['Oxygen', 'sans-serif'], // This creates a 'font-oxygen' class
-        'bigjohn': ['Big John', 'sans-serif'],
+        'bigjohn': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
     },
   },

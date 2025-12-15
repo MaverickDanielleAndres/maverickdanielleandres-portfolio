@@ -1,16 +1,19 @@
 "use client";
+import { lazy, Suspense } from "react";
 import LightRays from "@/components/LightRays";
 import HeroSection from "@/app/sections/Hero-section";
 import AboutSection from "@/app/sections/About-section";
-import Galaxy from "@/components/Galaxy";
-import Skills from "./sections/Skills-section";
-import Certificates from "./sections/Certificates-section";
-import ContactSection from "./sections/Contact-section";
-import CertificatesSection from "./sections/Certificates-section";
 import Footer from "@/components/Footer";
-import ProjectsSection from "./sections/Project-section";
-import CertProj from "./sections/CertProj";
-import Particles from "@/components/background/Particles";
+
+// Lazy load heavy components
+const Galaxy = lazy(() => import("@/components/Galaxy"));
+const Skills = lazy(() => import("./sections/Skills-section"));
+const Certificates = lazy(() => import("./sections/Certificates-section"));
+const ContactSection = lazy(() => import("./sections/Contact-section"));
+const CertificatesSection = lazy(() => import("./sections/Certificates-section"));
+const ProjectsSection = lazy(() => import("./sections/Project-section"));
+const CertProj = lazy(() => import("./sections/CertProj"));
+const Particles = lazy(() => import("@/components/background/Particles"));
 
 
 export default function Home() {
@@ -18,19 +21,20 @@ export default function Home() {
     <main className="relative flex flex-col items-center justify-center min-h-screen bg-black text-white overflow-hidden">
       {/* Background effects - positioned absolutely to cover entire viewport */}
       <div className="fixed inset-0 z-0 w-100%">
-  
-        <Particles
-    particleColors={['#ffffff', '#ffffff']}
-    particleCount={500}
-    particleSpread={20}
-    speed={0.1}
-    particleBaseSize={70}
-    moveParticlesOnHover={false}
-    alphaParticles={false}
-    disableRotation={false}
-  />
+        <Suspense fallback={<div className="w-full h-screen bg-black"></div>}>
+          <Particles
+            particleColors={['#ffffff', '#ffffff']}
+            particleCount={500}
+            particleSpread={20}
+            speed={0.1}
+            particleBaseSize={70}
+            moveParticlesOnHover={false}
+            alphaParticles={false}
+            disableRotation={false}
+          />
+        </Suspense>
       </div>
-      
+
       {/* Content layer - positioned above background */}
       <div className="relative z-10 w-full">
         <HeroSection />
@@ -39,15 +43,21 @@ export default function Home() {
         <AboutSection />
       </div>
       <div className="relative z-10 w-full">
-        <Skills />
+        <Suspense fallback={<div className="w-full min-h-[50vh] bg-black"></div>}>
+          <Skills />
+        </Suspense>
       </div>
       <div className="relative z-10 w-full">
-        <CertProj />
-      </div> 
-      
+        <Suspense fallback={<div className="w-full min-h-[50vh] bg-black"></div>}>
+          <CertProj />
+        </Suspense>
+      </div>
+
       <div className="relative z-10 w-full">
-        <ContactSection />
-      </div> 
+        <Suspense fallback={<div className="w-full min-h-[50vh] bg-black"></div>}>
+          <ContactSection />
+        </Suspense>
+      </div>
       <div className="relative z-10 w-full">
         <Footer />
       </div>

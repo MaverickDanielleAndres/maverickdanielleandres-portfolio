@@ -614,22 +614,24 @@ When I&apos;m not coding, you&apos;ll find me learning new technologies, working
                                         <h4 className="text-lg font-semibold text-white">Education Background</h4>
                                     </div>
                                     <div className="space-y-3">
-                                        <div className="flex items-center justify-between">
-                                            <div>
+                                        <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 sm:gap-0">
+                                            <div className="text-center sm:text-left">
                                                 <h5 className="text-white font-medium">Pamantasan ng Lungsod ng Pasig</h5>
                                                 <p className="text-neutral-400 text-sm">2022 - 2026</p>
                                             </div>
-                                            <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg px-3 py-1">
-                                                <span className="text-yellow-400 font-semibold text-sm">GWA: 1.50</span>
+                                            <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg px-2 py-1 sm:px-3 sm:py-1">
+                                                <span className="text-yellow-400 font-semibold text-xs sm:text-sm">GWA: 1.50</span>
                                             </div>
                                         </div>
-                                        <button
-                                            onClick={handleAwardsClick}
-                                            className="group flex items-center gap-2 px-3 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-white text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-black/20 hover:-translate-y-1 border border-neutral-600"
-                                        >
-                                            <Award className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300 text-yellow-500" />
-                                            Academic Awards
-                                        </button>
+                                        <div className="flex justify-center sm:justify-start">
+                                            <button
+                                                onClick={handleAwardsClick}
+                                                className="group flex items-center gap-2 px-3 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-white text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-black/20 hover:-translate-y-1 border border-neutral-600"
+                                            >
+                                                <Award className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300 text-yellow-500" />
+                                                Academic Awards
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
