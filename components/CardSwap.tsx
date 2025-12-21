@@ -130,16 +130,23 @@ const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(({
 
   // Initial placement
   useEffect(() => {
-    refs.current.forEach((el, i) => {
-      if (el) {
-        const slotIndex = order.current.indexOf(i);
-        placeNow(
-          el,
-          makeSlot(slotIndex, CARD_DISTANCE, VERTICAL_DISTANCE, refs.current.length),
-          skewAmount
-        );
-      }
-    });
+    // Ensure all refs are ready before placing
+    const timeoutId = setTimeout(() => {
+      refs.current.forEach((el, i) => {
+        if (el && typeof i === 'number' && !isNaN(i)) {
+          const slotIndex = order.current.indexOf(i);
+          if (slotIndex !== -1) {
+            placeNow(
+              el,
+              makeSlot(slotIndex, CARD_DISTANCE, VERTICAL_DISTANCE, refs.current.length),
+              skewAmount
+            );
+          }
+        }
+      });
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
   }, [childArr.length, skewAmount]);
 
   const swap = (direction: 'next' | 'prev' = 'next') => {

@@ -448,6 +448,10 @@ export default function Skills() {
                                 src={skill.icon}
                                 alt={skill.title}
                                 className={`w-6 h-6 ${skill.invert ? "filter invert" : ""} transition-transform duration-300 group-hover:scale-110`}
+                                crossOrigin="anonymous"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
                               />
                             </div>
                             <div>

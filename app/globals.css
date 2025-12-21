@@ -28,3 +28,17 @@ body {
   font-style: normal;
   font-display: swap; /* Good practice for performance */
 }
+
+
+/* Chatbot mobile responsiveness */
+@media (max-width: 640px) {
+  /* Make chat panel full screen on mobile */
+  [class*="bottom-6"][class*="right-6"][class*="w-[380px]"] {
+    width: calc(100vw - 2rem) !important;
+    height: calc(100vh - 2rem) !important;
+    max-height: calc(100vh - 2rem) !important;
+    bottom: 1rem !important;
+    right: 1rem !important;
+    left: 1rem !important;
+  }
+}
