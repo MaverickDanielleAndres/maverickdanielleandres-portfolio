@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// Initialize Resend (modern email service)
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend lazily to avoid build-time errors when key is missing
+let resend: Resend | null = null;
+function getResend() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 interface ContactFormData {
   name: string;
@@ -237,7 +243,14 @@ export async function POST(request: NextRequest) {
     });
 
     // Send email using Resend
-    const emailResult = await resend.emails.send({
+    const client = getResend();
+    if (!client) {
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 500 }
+      );
+    }
+    const emailResult = await client.emails.send({
       from: fromAddress,
       to: [process.env.CONTACT_EMAIL!],
       replyTo: sanitizedData.email,

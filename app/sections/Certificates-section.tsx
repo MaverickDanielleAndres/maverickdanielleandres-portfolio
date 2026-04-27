@@ -394,7 +394,7 @@ const FullScreenImageModal = memo<FullScreenImageModalProps>(({ certificate, isO
       {/* Close Button - Top Right */}
       <button
         onClick={handleClose}
-        className={`absolute top-6 right-6 lg:top-12 lg:right-12 z-[61000] p-2 bg-black/70 hover:bg-red-900/90 rounded-full transition-all duration-300 hover:scale-110 hover:rotate-90 group border border-white/30 hover:border-red-500 shadow-lg ${
+        className={`absolute top-6 right-6 lg:top-12 lg:right-12 z-61000 p-2 bg-black/70 hover:bg-red-900/90 rounded-full transition-all duration-300 hover:scale-110 hover:rotate-90 group border border-white/30 hover:border-red-500 shadow-lg ${
           isClosing ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
         }`}
         aria-label="Close full screen view"
@@ -469,7 +469,7 @@ const CertificateCard = memo<CertificateCardProps>(({ certificate, onCardClick, 
       }}
     >
       {/* Animated gradient overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-br from-neutral-700/20 to-neutral-600/20 transition-opacity duration-300 ${
+      <div className={`absolute inset-0 bg-linear-to-br from-neutral-700/20 to-neutral-600/20 transition-opacity duration-300 ${
         isHovered ? 'opacity-100' : 'opacity-0'
       }`} />
 
@@ -492,7 +492,7 @@ const CertificateCard = memo<CertificateCardProps>(({ certificate, onCardClick, 
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-neutral-300 leading-relaxed mb-4 flex-grow">
+        <p className="text-sm text-neutral-300 leading-relaxed mb-4 grow">
           {certificate.shortDescription}
         </p>
 
@@ -533,7 +533,7 @@ const CertificateCard = memo<CertificateCardProps>(({ certificate, onCardClick, 
               isHovered ? 'scale-110' : 'scale-100'
             }`}
           />
-          <div className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 ${
+          <div className={`absolute inset-0 bg-linear-to-t from-black/60 to-transparent transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-40'
           }`} />
           
@@ -805,7 +805,7 @@ const CertificateModal = memo<CertificateModalProps>(({ certificate, isOpen, onC
                 className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={handleEnlargeImage}
               />
-              <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/70 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t md:bg-linear-to-r from-black/70 to-transparent" />
               
               {/* Overlay Enlarge Button */}
               <button
@@ -846,7 +846,7 @@ const CertificateModal = memo<CertificateModalProps>(({ certificate, isOpen, onC
                   {certificate.skills.map((skill, index) => (
                     <span 
                       key={index}
-                      className="px-3 py-1 bg-gradient-to-r from-neutral-800 to-neutral-700 text-neutral-200 rounded-full text-sm font-medium border border-neutral-600"
+                      className="px-3 py-1 bg-linear-to-r from-neutral-800 to-neutral-700 text-neutral-200 rounded-full text-sm font-medium border border-neutral-600"
                     >
                       {skill}
                     </span>
@@ -856,7 +856,7 @@ const CertificateModal = memo<CertificateModalProps>(({ certificate, isOpen, onC
             </div>
 
             {/* Certificate Badge */}
-            <div className="bg-gradient-to-r from-neutral-800 to-neutral-700 rounded-xl p-4 border border-neutral-600">
+            <div className="bg-linear-to-r from-neutral-800 to-neutral-700 rounded-xl p-4 border border-neutral-600">
               {/* Description */}
               {(() => {
                 const parts = certificate.fullDescription.trim().split('\n\n');

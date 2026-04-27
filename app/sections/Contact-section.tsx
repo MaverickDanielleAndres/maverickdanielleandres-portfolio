@@ -37,7 +37,7 @@ const Notification: React.FC<NotificationProps> = ({ type, message, isVisible, o
   if (!isVisible) return null;
 
   return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[10000] animate-pop-in">
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10000 animate-pop-in">
       <div className={`
         px-8 py-5 rounded-xl border backdrop-blur-md shadow-2xl min-w-[320px] max-w-md
         transform transition-all duration-300 ease-out
@@ -49,7 +49,7 @@ const Notification: React.FC<NotificationProps> = ({ type, message, isVisible, o
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className={`
-              w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
+              w-8 h-8 rounded-full flex items-center justify-center shrink-0
               ${type === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'}
             `}>
               {type === 'success' ? (
@@ -242,7 +242,7 @@ const ContactSection: React.FC = () => {
                 
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4 p-5 rounded-xl bg-black/60 backdrop-blur-sm border border-neutral-700 hover:border-neutral-600 transition-all duration-300 hover:bg-black/70">
-                    <div className="w-12 h-12 bg-neutral-800/80 backdrop-blur-sm rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-12 h-12 bg-neutral-800/80 backdrop-blur-sm rounded-lg flex items-center justify-center shrink-0 mt-1">
                       <svg className="w-6 h-6 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -254,7 +254,7 @@ const ContactSection: React.FC = () => {
                   </div>
 
                   <div className="flex items-start space-x-4 p-5 rounded-xl bg-black/60 backdrop-blur-sm border border-neutral-700 hover:border-neutral-600 transition-all duration-300 hover:bg-black/70">
-                    <div className="w-12 h-12 bg-neutral-800/80 backdrop-blur-sm rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-12 h-12 bg-neutral-800/80 backdrop-blur-sm rounded-lg flex items-center justify-center shrink-0 mt-1">
                       <svg className="w-6 h-6 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -413,7 +413,7 @@ const ContactSection: React.FC = () => {
                     )}
                   </span>
                   
-                  <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-linear-to-r from-neutral-300 to-neutral-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </button>
               </form>
             </div>

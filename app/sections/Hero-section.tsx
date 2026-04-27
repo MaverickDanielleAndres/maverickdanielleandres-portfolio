@@ -5,6 +5,8 @@ import ShinyText from "@/components/ShinyText";
 import TrueFocus from "@/components/TrueFocus";
 import Header from "@/components/Header";
 import LightRays from "@/components/LightRays";
+import Magnet from "@/components/ui/Magnet";
+import TextPressure from "@/components/ui/TextPressure";
 
 interface AnimatedButtonProps {
   href?: string;
@@ -58,10 +60,10 @@ export default function HeroSection() {
             onClick={onClick}
           >
             {/* Animated background effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
             {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-white/10 to-white/5 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
 
             {/* Button content */}
             <span className="relative z-10 group-hover:scale-105 transition-transform duration-200">
@@ -79,10 +81,10 @@ export default function HeroSection() {
             {...commonProps}
           >
             {/* Animated background effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
             {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-white/10 to-white/5 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
 
             {/* Button content */}
             <span className="relative z-10 group-hover:scale-105 transition-transform duration-200">
@@ -198,6 +200,24 @@ export default function HeroSection() {
           />
         </div>
 
+        {/* TextPressure decorative subtitle */}
+        <div
+          className={`${animate ? "animate-slideUp" : "opacity-0"} hero-content-spacing mt-4`}
+          style={{ animationDelay: "300ms", position: "relative", height: "60px" } as React.CSSProperties}
+        >
+          <TextPressure
+            text="Full Stack Developer"
+            flex={true}
+            alpha={false}
+            stroke={false}
+            width={true}
+            weight={true}
+            italic={true}
+            textColor="rgba(255,255,255,0.55)"
+            minFontSize={20}
+          />
+        </div>
+
         {/* Buttons grid */}
         <div
           className={`flex flex-wrap justify-center gap-2 sm:gap-3 max-w-xs sm:max-w-lg mx-auto hero-buttons-spacing ${
@@ -205,17 +225,23 @@ export default function HeroSection() {
           }`}
           style={{ animationDelay: "400ms" } as React.CSSProperties}
         >
-          <AnimatedButton onClick={handleDownloadResume} variant="secondary" delay={400}>
-            Resume
-          </AnimatedButton>
+          <Magnet padding={50} magnetStrength={50}>
+            <AnimatedButton onClick={handleDownloadResume} variant="secondary" delay={400}>
+              Resume
+            </AnimatedButton>
+          </Magnet>
 
-          <AnimatedButton href="https://github.com" variant="secondary" delay={600}>
-            GitHub
-          </AnimatedButton>
+          <Magnet padding={50} magnetStrength={50}>
+            <AnimatedButton href="https://github.com/maverickandres" variant="secondary" delay={600}>
+              GitHub
+            </AnimatedButton>
+          </Magnet>
 
-          <AnimatedButton href="https://linkedin.com" variant="secondary" delay={800}>
-            LinkedIn
-          </AnimatedButton>
+          <Magnet padding={50} magnetStrength={50}>
+            <AnimatedButton href="https://linkedin.com/in/maverickandres" variant="secondary" delay={800}>
+              LinkedIn
+            </AnimatedButton>
+          </Magnet>
         </div>
 
         {/* Scroll indicator - now with link functionality */}
@@ -230,7 +256,7 @@ export default function HeroSection() {
             <span className="mt-7 text-[0.6rem] sm:text-xs font-light mb-2 sm:mb-3 tracking-wider uppercase">
               Learn More About Me
             </span>
-            <div className="w-px h-6 sm:h-8 bg-gradient-to-b from-white/20 to-transparent group-hover:from-white/40 transition-colors duration-300"></div>
+            <div className="w-px h-6 sm:h-8 bg-linear-to-b from-white/20 to-transparent group-hover:from-white/40 transition-colors duration-300"></div>
             <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white/40 rounded-full mt-1 sm:mt-2 group-hover:bg-white/60 transition-colors duration-300 hero-scroll-bottom-spacing"></div>
           </button>
         </div>

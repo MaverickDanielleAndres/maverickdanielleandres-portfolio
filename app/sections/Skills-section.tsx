@@ -5,6 +5,7 @@ import RotatingText from '@/components/RotatingText'
 import ScrollFloat from '@/components/ScrollFloat'
 import SpotlightCard from '@/components/SpotlightCard'
 import TextType from '@/components/TextType'
+import Crosshair from '@/components/ui/Crosshair'
 import { useState, useEffect, useRef } from 'react'
 import { Palette, Code, Server, Network, Monitor, Bug, Database, Cloud, GitBranch, Layers } from 'lucide-react';
 
@@ -211,6 +212,8 @@ export default function Skills() {
 
   return (
     <section id='skills' ref={sectionRef} className="relative z-10 px-6 py-20 -mt-50">
+      {/* Crosshair cursor — scoped to Skills section only */}
+      <Crosshair containerRef={sectionRef} color="rgba(255,255,255,0.25)" />
       <div className="max-w-7xl mx-auto">
         {/* Main Content Grid */}
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 lg:gap-12 items-center mt-30">
@@ -235,7 +238,7 @@ export default function Skills() {
               
             </div>
             
-            <h2 className={`text-1xl font-bold bg-gradient-to-r from-gray-400 to-blue-500 bg-clip-text text-transparent transition-all duration-800 ease-out delay-200 ${
+            <h2 className={`text-1xl font-bold bg-linear-to-r from-gray-400 to-blue-500 bg-clip-text text-transparent transition-all duration-800 ease-out delay-200 ${
               isVisible 
                 ? 'opacity-100 translate-y-0' 
                 : 'opacity-0 translate-y-8'
@@ -298,7 +301,7 @@ export default function Skills() {
               />
             </div>
 
-            <h2 className={`text-1xl mt-8 font-bold bg-gradient-to-r from-gray-400 to-blue-500 bg-clip-text text-transparent transition-all duration-800 ease-out delay-400 ${
+            <h2 className={`text-1xl mt-8 font-bold bg-linear-to-r from-gray-400 to-blue-500 bg-clip-text text-transparent transition-all duration-800 ease-out delay-400 ${
               isVisible 
                 ? 'opacity-100 translate-y-0' 
                 : 'opacity-0 translate-y-8'
@@ -314,7 +317,7 @@ export default function Skills() {
               <div className="relative">
                 <RotatingText
                   texts={['Detail-oriented.','Team-oriented.','Problem-solver.', 'Quick learner.','Adaptable.', 'Reliable.', 'Innovative.', 'Hardworking', 'Task-Oriented', 'Results-driven.']}
-                  mainClassName="px-2 sm:px-3 md:px-4 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl text-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-1 border border-gray-600 overflow-hidden py-1 sm:py-2 md:py-2 shadow-md"
+                  mainClassName="px-2 sm:px-3 md:px-4 bg-linear-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl text-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-1 border border-gray-600 overflow-hidden py-1 sm:py-2 md:py-2 shadow-md"
                   splitLevelClassName="overflow-hidden"
                   staggerFrom="last"
                   initial={{ y: "100%" }}
@@ -439,7 +442,7 @@ export default function Skills() {
                   {skills.map((skill, i) => (
                     <Card key={i}>
                       <div className="bg-neutral-900 border border-neutral-700 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer group relative overflow-hidden h-full opacity-100 translate-y-0 scale-100">
-                        <div className="absolute inset-0 bg-gradient-to-br from-neutral-700/20 to-neutral-600/20 transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
+                        <div className="absolute inset-0 bg-linear-to-br from-neutral-700/20 to-neutral-600/20 transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
                         
                         <div className="p-6 flex flex-col h-full">
                           <div className="flex items-center gap-3 mb-4">
@@ -457,7 +460,7 @@ export default function Skills() {
                             </div>
                           </div>
 
-                          <div className="flex-grow">
+                          <div className="grow">
                             <p className="text-neutral-300 mb-6">{skill.desc}</p>
                           </div>
 
@@ -468,7 +471,7 @@ export default function Skills() {
                             </div>
                             <div className="w-full bg-gray-700 rounded-full h-2">
                               <div 
-                                className="h-full bg-gradient-to-r from-purple-300 to-purple-500 rounded-full"
+                                className="h-full bg-linear-to-r from-purple-300 to-purple-500 rounded-full"
                                 style={{ width: `${skill.percentage}%` }}
                               ></div>
                             </div>

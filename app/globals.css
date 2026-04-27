@@ -1,30 +1,198 @@
 @import "tailwindcss";
 
+/* ===== Design Tokens — Dennis Snellenberg Style ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core palette */
+  --bg: #FAFAFA;
+  --bg-hero: #A8A89E;
+  --bg-about: #f5f5f2;
+  --bg-skills: #f1f1ed;
+  --bg-projects: #ecece7;
+  --bg-certificates: #f7f7f4;
+  --bg-contact: #f0f0eb;
+  --fg: #1A1A1A;
+  --fg-muted: #888888;
+  --border-subtle: rgba(0,0,0,0.1);
+  --accent: #6055F0;
+  --accent-hover: #4e43e0;
+  --swipe-me-color: rgba(26, 26, 26, 0.62);
+  --swipe-me-opacity: 0.48;
+  --bg-dark-section: #111111;
+  --fg-dark-section: #FFFFFF;
+  --container-px: clamp(1.5rem, 6vw, 6rem);
+
+  /* Tailwind-compat HSL tokens */
+  --background: 0 0% 98%;
+  --foreground: 0 0% 10%;
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 10%;
+  --primary: 0 0% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 94%;
+  --secondary-foreground: 0 0% 10%;
+  --muted: 0 0% 94%;
+  --muted-foreground: 0 0% 53%;
+  --border: 0 0% 88%;
+  --input: 0 0% 88%;
+  --ring: 245 80% 63%;
+  --radius: 0.5rem;
 }
 
+.dark {
+  --bg: #111111;
+  --bg-hero: #252523;
+  --bg-about: #131313;
+  --bg-skills: #111111;
+  --bg-projects: #0f0f0f;
+  --bg-certificates: #121212;
+  --bg-contact: #101010;
+  --fg: #F0F0F0;
+  --fg-muted: #888888;
+  --border-subtle: rgba(255,255,255,0.08);
+  --bg-dark-section: #0A0A0A;
+  --fg-dark-section: #FFFFFF;
+  --swipe-me-color: rgba(255, 255, 255, 0.86);
+  --swipe-me-opacity: 0.56;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: 0 0% 7%;
+  --foreground: 0 0% 94%;
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 94%;
+  --primary: 0 0% 94%;
+  --primary-foreground: 0 0% 7%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 94%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+  --ring: 245 80% 63%;
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background-color: var(--bg);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-neue-montreal), 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-@font-face {
-  font-family: 'Big John';
-  src: url('/fonts/BigJohn.woff2') format('woff2'),
-       url('/fonts/BigJohn.woff') format('woff');
-  /* Add other formats (ttf, eot) if needed */
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap; /* Good practice for performance */
+/* ===== Lenis ===== */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-scrolling iframe { pointer-events: none; }
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--fg-muted); border-radius: 2px; }
+
+/* ===== Selection ===== */
+::selection { background-color: var(--accent); color: #fff; }
+
+/* ===== Marquee Animation ===== */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 80s linear infinite;
+  will-change: transform;
+}
+
+/* Speed up marquee on scroll — driven via JS setting --marquee-speed */
+.marquee-track-fast {
+  animation-duration: 8s;
+}
+
+/* ===== Thumbnail List Hover Group ===== */
+.thumbnail-list-group:hover .thumbnail-row:not(:hover) {
+  opacity: 0.35;
+}
+.thumbnail-row {
+  transition: opacity 0.25s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* ===== Pill Buttons ===== */
+.pill-btn {
+  border: 1.5px solid rgba(255,255,255,0.28);
+  border-radius: 9999px;
+  padding: 14px 28px;
+  font-size: 0.8125rem;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.pill-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.5);
+}
+
+/* ===== Hero pill buttons ===== */
+.hero-pill-btn {
+  border: 1px solid rgba(255,255,255,0.45);
+  border-radius: 9999px;
+  color: #fff;
+  background: transparent;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.hero-pill-btn:hover {
+  background: #fff;
+  color: #222;
+}
+
+/* ===== Circle Reveal Mask ===== */
+#theme-reveal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .marquee-track { animation-play-state: paused; }
 }

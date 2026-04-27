@@ -1,0 +1,358 @@
+"use client";
+
+import Image from "next/image";
+import { useRef, useState, useLayoutEffect, useEffect } from "react";
+import { motion, useInView } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ImageSwiper } from "@/components/ui/image-swiper";
+import { ArrowUpRight, Download, Github, Linkedin, Facebook, Instagram } from "lucide-react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const BIO =
+  "I'm Maverick, a full-stack web developer and IT specialist with experience in PHP, JavaScript, React, Node.js, and database-driven applications. I focus on creating clean, efficient, user-centered digital solutions that make an impact.";
+
+function WordReveal({ text }: { text: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
+  const words = text.split(" ");
+  return (
+    <div ref={ref} style={{ display: "flex", flexWrap: "wrap", columnGap: "0.25em" }}>
+      {words.map((word, i) => (
+        <span key={i} style={{ overflow: "hidden", display: "inline-block" }}>
+          <motion.span
+            style={{ display: "inline-block" }}
+            initial={{ y: "110%" }}
+            animate={inView ? { y: 0 } : { y: "110%" }}
+            transition={{ duration: 0.7, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {word}&nbsp;
+          </motion.span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const AWARDS = [
+  { sem: "1st Sem AY 2022-2023", award: "Dean's Lister",      image: "/Academic Awards/dean's lister.png" },
+  { sem: "2nd Sem AY 2022-2023", award: "President's Lister", image: "/Academic Awards/president lister.png" },
+  { sem: "1st Sem AY 2023-2024", award: "President's Lister", image: "/Academic Awards/awards.png" },
+  { sem: "2nd Sem AY 2023-2024", award: "President's Lister", image: "/Academic Awards/1awards.png" },
+  { sem: "1st Sem AY 2024-2025", award: "President's Lister", image: "/Academic Awards/2awards.png" },
+];
+
+const SOCIAL_LINKS = [
+  { icon: "github",    label: "GitHub",    href: "https://github.com/MaverickDanielleAndres" },
+  { icon: "linkedin",  label: "LinkedIn",  href: "https://linkedin.com/in/maverick-danielle-andres-641564373" },
+  { icon: "facebook",  label: "Facebook",  href: "https://facebook.com" },
+  { icon: "instagram", label: "Instagram", href: "https://instagram.com" },
+];
+
+const ABOUT_SWIPER_IMAGES = [
+  "/profilepic.png",
+  "/Academic Awards/dean's lister.png",
+  "/Academic Awards/president lister.png",
+  "/Academic Awards/awards.png",
+  "/Academic Awards/1awards.png",
+  "/Academic Awards/2awards.png",
+].join(",");
+
+export default function About() {
+  const [awardsOpen, setAwardsOpen] = useState(false);
+  const [swiperSize, setSwiperSize] = useState({ width: 320, height: 420 });
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const updateSwiperSize = () => {
+      if (window.innerWidth < 420) {
+        const width = Math.max(220, Math.min(280, window.innerWidth - 96));
+        setSwiperSize({ width, height: Math.round(width * 1.3) });
+        return;
+      }
+
+      if (window.innerWidth < 768) {
+        setSwiperSize({ width: 290, height: 390 });
+        return;
+      }
+
+      setSwiperSize({ width: 320, height: 420 });
+    };
+
+    updateSwiperSize();
+    window.addEventListener("resize", updateSwiperSize);
+    return () => window.removeEventListener("resize", updateSwiperSize);
+  }, []);
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const st = { trigger: sectionRef.current!, start: "top 78%", once: true };
+
+      // Label fades up
+      gsap.fromTo(
+        "[data-about-label]",
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", scrollTrigger: st }
+      );
+
+      // Left col slides in from left
+      gsap.fromTo(
+        "[data-about-left]",
+        { opacity: 0, x: -60 },
+        { opacity: 1, x: 0, duration: 0.9, ease: "power3.out", scrollTrigger: st }
+      );
+
+      // Right col slides in from right
+      gsap.fromTo(
+        "[data-about-right]",
+        { opacity: 0, x: 60 },
+        { opacity: 1, x: 0, duration: 0.9, delay: 0.08, ease: "power3.out", scrollTrigger: st }
+      );
+
+      // Right col child items stagger up
+      gsap.fromTo(
+        "[data-about-item]",
+        { opacity: 0, y: 22 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          stagger: 0.1,
+          ease: "power2.out",
+          delay: 0.25,
+          scrollTrigger: st,
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      id="about"
+      ref={sectionRef}
+      className="section-about"
+      style={{
+        background: "var(--bg-about)",
+        color: "var(--fg)",
+        padding: "clamp(5rem,12vh,9rem) var(--container-px)",
+      }}
+    >
+      <div style={{ maxWidth: 1240, marginInline: "auto" }}>
+      <p
+        data-about-label
+        className="text-xs uppercase tracking-[0.18em] mb-10"
+        style={{ color: "var(--fg-muted)", opacity: 0 }}
+      >
+        About me
+      </p>
+
+      {/* Two-column */}
+      <div
+        className="grid grid-cols-1 items-center xl:[grid-template-columns:minmax(0,1.25fr)_minmax(320px,0.75fr)]"
+        style={{
+          gap: "clamp(1.5rem,4vw,3rem)",
+        }}
+      >
+        {/* Left — Image Swiper */}
+        <div
+          data-about-left
+          style={{
+            minHeight: 480,
+            borderRadius: "1rem",
+            overflow: "hidden",
+            opacity: 0,
+          }}
+          className="order-2 relative flex items-center justify-center p-2 sm:p-4 xl:order-2 xl:justify-self-end"
+        >
+          <ImageSwiper images={ABOUT_SWIPER_IMAGES} cardWidth={swiperSize.width} cardHeight={swiperSize.height} />
+          <p
+            className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.22em]"
+            style={{ 
+              color: "var(--swipe-me-color)",
+              opacity: "var(--swipe-me-opacity, 0.18)"
+            }}
+            aria-hidden="true"
+          >
+            swipe me
+          </p>
+        </div>
+
+        {/* Right — bio + education + buttons */}
+        <div
+          data-about-right
+          style={{ opacity: 0 }}
+          className="order-1 flex flex-col gap-6 justify-center xl:order-1 xl:max-w-[760px]"
+        >
+          {/* Bio word reveal — keeps its own framer-motion inView */}
+          <div
+            data-about-item
+            style={{
+              fontSize: "clamp(1.05rem,1.8vw,1.5rem)",
+              fontWeight: 400,
+              lineHeight: 1.5,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            <WordReveal text={BIO} />
+          </div>
+
+          {/* Extra note */}
+          <p
+            data-about-item
+            className="text-sm leading-relaxed"
+            style={{ color: "var(--fg-muted)", maxWidth: "52ch" }}
+          >
+            When not coding, I explore new technologies, side projects, and sharpen my networking and sysadmin skills.
+          </p>
+
+          <div data-about-item className="flex flex-col gap-6">
+            {/* Education */}
+            <div style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1.5rem" }}>
+              <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--fg-muted)" }}>
+                Education
+              </p>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium">Pamantasan ng Lungsod ng Pasig</p>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>
+                    BS Information Technology &middot; 2022&ndash;2026
+                  </p>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>GWA: 1.50</p>
+                </div>
+                <div className="shrink-0">
+                  <Image
+                    src="/profilepic.png"
+                    alt="Maverick profile"
+                    width={72}
+                    height={72}
+                    className="h-[72px] w-[72px] rounded-full object-cover"
+                  />
+                </div>
+              </div>
+              <button
+                onClick={() => setAwardsOpen(true)}
+                className="mt-3 text-xs underline underline-offset-2 hover:opacity-70 transition-opacity"
+                style={{ color: "var(--accent)" }}
+              >
+                View Academic Awards
+              </button>
+            </div>
+
+            {/* Download CV + Hire Me */}
+            <div className="flex gap-3">
+              <a
+                href="/Files/Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1"
+                style={{
+                  background: "var(--fg)",
+                  color: "var(--bg)",
+                  borderRadius: "0.5rem",
+                  padding: "0.6rem 1rem",
+                  textDecoration: "none",
+                }}
+              >
+                <Download size={13} />
+                Download CV
+              </a>
+
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1"
+                style={{
+                  background: "var(--accent)",
+                  color: "#fff",
+                  borderRadius: "0.5rem",
+                  padding: "0.6rem 1rem",
+                  textDecoration: "none",
+                }}
+              >
+                Hire Me <ArrowUpRight size={13} />
+              </a>
+            </div>
+
+            {/* Social links */}
+            <div className="grid grid-cols-4 gap-3">
+              {SOCIAL_LINKS.map(({ icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex items-center justify-center transition-opacity hover:opacity-60"
+                  style={{
+                    height: 44,
+                    borderRadius: "0.5rem",
+                    border: "1px solid var(--border-subtle)",
+                    color: "var(--fg)",
+                  }}
+                >
+                  {icon === "github" && <Github size={16} />}
+                  {icon === "linkedin" && <Linkedin size={16} />}
+                  {icon === "facebook" && <Facebook size={16} />}
+                  {icon === "instagram" && <Instagram size={16} />}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      {/* Awards Modal */}
+      {awardsOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+          onClick={() => setAwardsOpen(false)}
+        >
+          <motion.div
+            className="relative w-full max-w-2xl rounded-2xl p-8 overflow-y-auto"
+            style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "85vh" }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-medium mb-6">Academic Awards</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {AWARDS.map((a, i) => (
+                <div key={i} className="flex flex-col gap-2">
+                  <div
+                    className="relative rounded-xl overflow-hidden"
+                    style={{ aspectRatio: "4/3", background: "var(--border-subtle)" }}
+                  >
+                    <Image
+                      src={a.image}
+                      alt={a.award}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs font-medium">{a.award}</p>
+                  <p className="text-xs" style={{ color: "var(--fg-muted)" }}>{a.sem}</p>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setAwardsOpen(false)}
+              className="absolute top-5 right-5 text-xs opacity-40 hover:opacity-80"
+            >
+              Close
+            </button>
+          </motion.div>
+        </div>
+      )}
+    </section>
+  );
+}

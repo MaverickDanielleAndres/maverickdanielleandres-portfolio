@@ -325,7 +325,7 @@ const ProjectCard = memo<ProjectCardProps>(({ project, onViewDetails, index }) =
       onClick={handleCardClick}
     >
       {/* Animated gradient overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-br from-neutral-700/20 to-neutral-600/20 transition-opacity duration-300 ${
+      <div className={`absolute inset-0 bg-linear-to-br from-neutral-700/20 to-neutral-600/20 transition-opacity duration-300 ${
         isHovered ? 'opacity-100' : 'opacity-0'
       }`} />
 
@@ -353,7 +353,7 @@ const ProjectCard = memo<ProjectCardProps>(({ project, onViewDetails, index }) =
               }`}
             />
           )}
-          <div className={`absolute inset-0 bg-gradient-to-r from-black/30 to-transparent transition-opacity duration-300 ${
+          <div className={`absolute inset-0 bg-linear-to-r from-black/30 to-transparent transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`} />
           

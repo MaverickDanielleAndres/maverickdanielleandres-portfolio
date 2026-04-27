@@ -252,7 +252,7 @@ const DownloadModal = memo<DownloadModalProps>(({ isOpen, onClose }) => {
             >
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                             statusContent.type === 'success' 
                                 ? 'bg-green-500/20' 
                                 : statusContent.type === 'error'
@@ -409,7 +409,7 @@ const AcademicAwardsModal = memo<AwardsModalProps>(({ awards, isOpen, onClose })
                                         alt={`${award.title} certificate`}
                                         className="w-full h-full object-cover"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/50 to-transparent"></div>
+                                    <div className="absolute inset-0 bg-linear-to-t from-neutral-900/50 to-transparent"></div>
                                     <div className="absolute top-3 right-3">
                                         <div className="bg-yellow-500/20 backdrop-blur-sm rounded-full p-2 border border-yellow-500/30">
                                             <Award className="w-5 h-5 text-yellow-400" />
@@ -426,7 +426,7 @@ const AcademicAwardsModal = memo<AwardsModalProps>(({ awards, isOpen, onClose })
                     </div>
 
                     <div className="mt-8 text-center space-y-4">
-                        <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 rounded-lg border border-yellow-500/30">
+                        <div className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-yellow-500/20 to-yellow-600/20 rounded-lg border border-yellow-500/30">
                             <Award className="w-5 h-5 text-yellow-500" />
                             <span className="text-yellow-400 text-lg font-semibold">
                                 Consistent Dean's Lister (1st Year to 4th Year)
@@ -646,23 +646,23 @@ When I&apos;m not coding, you&apos;ll find me learning new technologies, working
                                        {/* Hire Me Button */}
                                         <button
                                             onClick={handleHireMeClick}
-                                            className="cursor-pointer group relative px-4 py-3 md:px-6 md:py-4 bg-gradient-to-r from-neutral-700 to-neutral-800 hover:from-neutral-600 hover:to-neutral-700 rounded-xl text-white font-medium transition-all duration-300 hover:shadow-xl hover:shadow-black/25 hover:-translate-y-1 border border-neutral-600 text-sm md:text-base"
+                                            className="cursor-pointer group relative px-4 py-3 md:px-6 md:py-4 bg-linear-to-r from-neutral-700 to-neutral-800 hover:from-neutral-600 hover:to-neutral-700 rounded-xl text-white font-medium transition-all duration-300 hover:shadow-xl hover:shadow-black/25 hover:-translate-y-1 border border-neutral-600 text-sm md:text-base"
                                         >
                                             <span className="relative z-10 flex items-center justify-center gap-2 md:gap-3">
                                                 Hire Me
                                             </span>
-                                            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                            <div className="absolute inset-0 bg-linear-to-r from-white/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                         </button>
                                        {/* Download Resume Button */}
                                         <button
                                             onClick={handleDownloadResumeClick}
-                                            className="cursor-pointer group relative px-4 py-3 md:px-6 md:py-4 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl text-white font-medium transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-1 border border-gray-600 text-sm md:text-base"
+                                            className="cursor-pointer group relative px-4 py-3 md:px-6 md:py-4 bg-linear-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl text-white font-medium transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-1 border border-gray-600 text-sm md:text-base"
                                         >
                                             <span className="cursor-pointerrelative z-10 flex items-center justify-center gap-2 md:gap-3">
                                                 <Download className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-X-1 transition-transform duration-300" />
                                                 Download CV
                                             </span>
-                                            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                            <div className="absolute inset-0 bg-linear-to-r from-white/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                         </button>
                                     </div>
 
@@ -744,23 +744,6 @@ When I&apos;m not coding, you&apos;ll find me learning new technologies, working
                 onClose={handleCloseDownloadModal}
             />
 
-            <style jsx>{`
-                @keyframes fade-in {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-                
-                .animate-fade-in {
-                    animation: fade-in 0.6s ease-out forwards;
-                    opacity: 0;
-                }
-            `}</style>
         </>
     );
 }
