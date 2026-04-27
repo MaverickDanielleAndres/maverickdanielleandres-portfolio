@@ -67,29 +67,28 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
       </div>
 
       {/* Expanding circle that grows from cursor and covers the screen */}
-      {phase !== "loading" && (
-        <div
-          onTransitionEnd={handleTransitionEnd}
-          style={{
-            position: "absolute",
-            left: expandAt.x,
-            top: expandAt.y,
-            // Small circle matching the cursor ball visual size
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "var(--bg-hero)",
-            // Start at scale(0), fly to scale that covers widest diagonal
-            transform:
-              phase === "expanding"
-                ? "translate(-50%, -50%) scale(120)"
-                : "translate(-50%, -50%) scale(0)",
-            transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1)",
-            pointerEvents: "none",
-            zIndex: 10,
-          }}
-        />
-      )}
+      <div
+        onTransitionEnd={handleTransitionEnd}
+        style={{
+          position: "absolute",
+          left: expandAt.x,
+          top: expandAt.y,
+          // Small circle matching the cursor ball visual size
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          background: "var(--bg-hero)",
+          // Start at scale(0), fly to scale that covers widest diagonal
+          transform:
+            phase === "expanding"
+              ? "translate(-50%, -50%) scale(120)"
+              : "translate(-50%, -50%) scale(0)",
+          transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1)",
+          pointerEvents: "none",
+          zIndex: 10,
+          visibility: phase === "loading" ? "hidden" : "visible",
+        }}
+      />
     </div>
   );
 }
