@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowUpRight, Mail, MapPin, Send, Clock } from "lucide-react";
 import Magnet from "@/components/ui/Magnet";
+import { toast } from "sonner";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -26,9 +27,15 @@ export default function Contact() {
         body: JSON.stringify(form),
       });
       setStatus(res.ok ? "sent" : "error");
-      if (res.ok) setForm({ name: "", email: "", subject: "", message: "" });
+      if (res.ok) {
+        setForm({ name: "", email: "", subject: "", message: "" });
+        toast.success("Message sent successfully!");
+      } else {
+        toast.error("Failed to send message.");
+      }
     } catch {
       setStatus("error");
+      toast.error("An error occurred. Please try again.");
     }
     setTimeout(() => setStatus("idle"), 5000);
   };

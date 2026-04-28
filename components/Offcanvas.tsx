@@ -107,7 +107,7 @@ export function Offcanvas() {
             {/* Panel */}
             <motion.div
               key="panel"
-              className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm flex flex-col justify-between"
+              className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm flex flex-col justify-start gap-12 overflow-y-auto"
               style={{ background: 'var(--bg)', color: 'var(--fg)', padding: '6rem 3rem 3rem', borderLeft: '1px solid var(--border-subtle)' }}
               variants={panelVariants}
               initial="initial"

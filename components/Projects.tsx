@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import Portal from "@/components/Portal";
 
 type Project = {
   id: number;
@@ -161,74 +162,76 @@ function LightboxModal({
   }, [onClose, images.length]);
 
   return (
-    <motion.div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4 md:p-8"
-      style={{ background: "rgba(0,0,0,0.95)", backdropFilter: "blur(12px)" }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-    >
-      <button
+    <Portal>
+      <motion.div
+        className="fixed inset-0 z-[999999] flex items-center justify-center p-2 sm:p-4 md:p-8"
+        style={{ background: "rgba(0,0,0,0.95)", backdropFilter: "blur(12px)" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 active:scale-95 sm:top-6 sm:right-6 sm:h-12 sm:w-12"
       >
-        <X size={20} />
-      </button>
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 active:scale-95 sm:top-6 sm:right-6 sm:h-12 sm:w-12"
+        >
+          <X size={20} />
+        </button>
 
-      {/* Main Container */}
-      <div 
-        className="relative w-full h-full flex flex-col items-center justify-center"
-        onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
-        onTouchEnd={(e) => {
-          if (touchStartX === null) return;
-          const delta = e.changedTouches[0].clientX - touchStartX;
-          const threshold = 40;
-          if (delta < -threshold) {
-            setActiveImg((i) => Math.min(i + 1, images.length - 1));
-          } else if (delta > threshold) {
-            setActiveImg((i) => Math.max(i - 1, 0));
-          }
-          setTouchStartX(null);
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="relative w-full max-w-6xl h-[68vh] sm:h-[78vh] md:h-[85vh] select-none">
-          <Image
-            src={images[activeImg]}
-            alt="Screenshot preview"
-            fill
-            className="object-contain"
-            quality={100}
-          />
+        {/* Main Container */}
+        <div 
+          className="relative w-full h-full flex flex-col items-center justify-center"
+          onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            if (touchStartX === null) return;
+            const delta = e.changedTouches[0].clientX - touchStartX;
+            const threshold = 40;
+            if (delta < -threshold) {
+              setActiveImg((i) => Math.min(i + 1, images.length - 1));
+            } else if (delta > threshold) {
+              setActiveImg((i) => Math.max(i - 1, 0));
+            }
+            setTouchStartX(null);
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="relative w-full max-w-6xl h-[68vh] sm:h-[78vh] md:h-[85vh] select-none">
+            <Image
+              src={images[activeImg]}
+              alt="Screenshot preview"
+              fill
+              className="object-contain"
+              quality={100}
+            />
+          </div>
+
+          {/* Counter */}
+          <div className="absolute bottom-2 text-white/50 tracking-widest text-xs sm:bottom-6 sm:text-sm">
+            {activeImg + 1} / {images.length}
+          </div>
+
+          {/* Controls */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={() => setActiveImg((i) => Math.max(i - 1, 0))}
+                disabled={activeImg === 0}
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-11 w-11 sm:h-14 sm:w-14 rounded-full flex items-center justify-center disabled:opacity-20 hover:bg-white/10 active:scale-95 transition-colors text-white"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                onClick={() => setActiveImg((i) => Math.min(i + 1, images.length - 1))}
+                disabled={activeImg === images.length - 1}
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-11 w-11 sm:h-14 sm:w-14 rounded-full flex items-center justify-center disabled:opacity-20 hover:bg-white/10 active:scale-95 transition-colors text-white"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </>
+          )}
         </div>
-
-        {/* Counter */}
-        <div className="absolute bottom-2 text-white/50 tracking-widest text-xs sm:bottom-6 sm:text-sm">
-          {activeImg + 1} / {images.length}
-        </div>
-
-        {/* Controls */}
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={() => setActiveImg((i) => Math.max(i - 1, 0))}
-              disabled={activeImg === 0}
-              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-11 w-11 sm:h-14 sm:w-14 rounded-full flex items-center justify-center disabled:opacity-20 hover:bg-white/10 active:scale-95 transition-colors text-white"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              onClick={() => setActiveImg((i) => Math.min(i + 1, images.length - 1))}
-              disabled={activeImg === images.length - 1}
-              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-11 w-11 sm:h-14 sm:w-14 rounded-full flex items-center justify-center disabled:opacity-20 hover:bg-white/10 active:scale-95 transition-colors text-white"
-            >
-              <ChevronRight size={24} />
-            </button>
-          </>
-        )}
-      </div>
-    </motion.div>
+      </motion.div>
+    </Portal>
   );
 }
 
@@ -252,9 +255,9 @@ function ProjectModal({
   }, [onClose, lightboxOpen]);
 
   return (
-    <>
+    <Portal>
       <motion.div
-        className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4 md:p-6"
+        className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-6"
         style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -262,7 +265,7 @@ function ProjectModal({
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-3xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col shadow-2xl"
+          className="relative w-full max-w-3xl rounded-2xl overflow-hidden flex flex-col shadow-2xl"
           style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(94vh, 920px)" }}
           initial={{ y: 60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -387,7 +390,7 @@ function ProjectModal({
           />
         )}
       </AnimatePresence>
-    </>
+    </Portal>
   );
 }
 

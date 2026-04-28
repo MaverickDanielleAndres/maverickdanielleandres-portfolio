@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ImageSwiper } from "@/components/ui/image-swiper";
 import { ArrowUpRight, Download, Github, Linkedin, Facebook, Instagram } from "lucide-react";
+import Portal from "@/components/Portal";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -53,7 +54,7 @@ const SOCIAL_LINKS = [
 ];
 
 const ABOUT_SWIPER_IMAGES = [
-  "/profilepic.png",
+  "/updatedprofile_pic.png",
   "/Academic Awards/dean's lister.png",
   "/Academic Awards/president lister.png",
   "/Academic Awards/awards.png",
@@ -226,7 +227,7 @@ export default function About() {
                 </div>
                 <div className="shrink-0">
                   <Image
-                    src="/profilepic.png"
+                    src="/updatedprofile_pic.png"
                     alt="Maverick profile"
                     width={72}
                     height={72}
@@ -308,50 +309,52 @@ export default function About() {
 
       {/* Awards Modal */}
       {awardsOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
-          onClick={() => setAwardsOpen(false)}
-        >
-          <motion.div
-            className="relative w-full max-w-2xl rounded-2xl p-8 overflow-y-auto"
-            style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "85vh" }}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            onClick={(e) => e.stopPropagation()}
+        <Portal>
+          <div
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
+            style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+            onClick={() => setAwardsOpen(false)}
           >
-            <h3 className="text-lg font-medium mb-6">Academic Awards</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {AWARDS.map((a, i) => (
-                <div key={i} className="flex flex-col gap-2">
-                  <div
-                    className="relative rounded-xl overflow-hidden"
-                    style={{ aspectRatio: "4/3", background: "var(--border-subtle)" }}
-                  >
-                    <Image
-                      src={a.image}
-                      alt={a.award}
-                      fill
-                      className="object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                  </div>
-                  <p className="text-xs font-medium">{a.award}</p>
-                  <p className="text-xs" style={{ color: "var(--fg-muted)" }}>{a.sem}</p>
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={() => setAwardsOpen(false)}
-              className="absolute top-5 right-5 text-xs opacity-40 hover:opacity-80"
+            <motion.div
+              className="relative w-full max-w-2xl rounded-2xl p-8 overflow-y-auto"
+              style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "85vh" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
             >
-              Close
-            </button>
-          </motion.div>
-        </div>
+              <h3 className="text-lg font-medium mb-6">Academic Awards</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {AWARDS.map((a, i) => (
+                  <div key={i} className="flex flex-col gap-2">
+                    <div
+                      className="relative rounded-xl overflow-hidden"
+                      style={{ aspectRatio: "4/3", background: "var(--border-subtle)" }}
+                    >
+                      <Image
+                        src={a.image}
+                        alt={a.award}
+                        fill
+                        className="object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs font-medium">{a.award}</p>
+                    <p className="text-xs" style={{ color: "var(--fg-muted)" }}>{a.sem}</p>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => setAwardsOpen(false)}
+                className="absolute top-5 right-5 text-xs opacity-40 hover:opacity-80"
+              >
+                Close
+              </button>
+            </motion.div>
+          </div>
+        </Portal>
       )}
     </section>
   );

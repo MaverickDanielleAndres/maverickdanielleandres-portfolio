@@ -3,6 +3,7 @@ import "./globals.css";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Offcanvas } from "@/components/Offcanvas";
+import { Toaster } from "@/components/ui/sonner";
 
 const neueMontrealFont = localFont({
   src: "../public/fonts/neue-montreal/index.woff2",
@@ -36,6 +37,7 @@ export default function RootLayout({
         >
           <Offcanvas />
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
