@@ -211,9 +211,9 @@ export default function About() {
             When not coding, I explore new technologies, side projects, and sharpen my networking and sysadmin skills.
           </p>
 
-          <div data-about-item className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             {/* Education */}
-            <div style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1.5rem" }}>
+            <div data-about-item style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1.5rem" }}>
               <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--fg-muted)" }}>
                 Education
               </p>
@@ -231,7 +231,7 @@ export default function About() {
                     alt="Maverick profile"
                     width={72}
                     height={72}
-                    className="h-[72px] w-[72px] rounded-full object-cover"
+                    className="h-[72px] w-[72px] rounded-full object-cover shadow-lg"
                   />
                 </div>
               </div>
@@ -245,18 +245,19 @@ export default function About() {
             </div>
 
             {/* Download CV + Hire Me */}
-            <div className="flex gap-3">
+            <div data-about-item className="flex gap-3">
               <a
                 href="/Files/Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1"
+                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1 hover:scale-[1.02] active:scale-95"
                 style={{
                   background: "var(--fg)",
                   color: "var(--bg)",
                   borderRadius: "0.5rem",
                   padding: "0.6rem 1rem",
                   textDecoration: "none",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}
               >
                 <Download size={13} />
@@ -265,13 +266,14 @@ export default function About() {
 
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1"
+                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1 hover:scale-[1.02] active:scale-95"
                 style={{
                   background: "var(--accent)",
                   color: "#fff",
                   borderRadius: "0.5rem",
                   padding: "0.6rem 1rem",
                   textDecoration: "none",
+                  boxShadow: "0 4px 12px rgba(96,85,240,0.2)"
                 }}
               >
                 Hire Me <ArrowUpRight size={13} />
@@ -279,7 +281,7 @@ export default function About() {
             </div>
 
             {/* Social links */}
-            <div className="grid grid-cols-4 gap-3">
+            <div data-about-item className="grid grid-cols-4 gap-3">
               {SOCIAL_LINKS.map(({ icon, label, href }) => (
                 <a
                   key={label}
@@ -287,7 +289,7 @@ export default function About() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex items-center justify-center transition-opacity hover:opacity-60"
+                  className="flex items-center justify-center transition-all hover:opacity-100 hover:scale-[1.05] hover:bg-white/5 opacity-70"
                   style={{
                     height: 44,
                     borderRadius: "0.5rem",
