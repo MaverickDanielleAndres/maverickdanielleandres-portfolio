@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
-import Crosshair from "@/components/ui/Crosshair";
+import CursorDitherTrail from "@/components/ui/cursor-dither-trail";
 import RotatingText from "@/components/RotatingText";
 import { Component as MorphingCardStack } from "@/components/ui/morphing-card-stack";
 import { Layers, TestTube, Bot, Globe, ShoppingCart, Cloud, Server, Link, Zap, ShieldCheck } from "lucide-react";
@@ -10,6 +10,7 @@ import { Layers, TestTube, Bot, Globe, ShoppingCart, Cloud, Server, Link, Zap, S
 type Skill = { name: string; level: number; category: string; icon: string };
 
 const SKILLS: Skill[] = [
+// ... unchanged array
   { name: "HTML/CSS",    level: 95, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
   { name: "JavaScript",  level: 88, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
   { name: "TypeScript",  level: 80, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
@@ -35,8 +36,6 @@ const SKILLS: Skill[] = [
   { name: "Playwright",  level: 75, category: "QA",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
   { name: "LLMs / AI",   level: 75, category: "AI",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
 ];
-
-
 
 const CATEGORIES = ["All", "Frontend", "Backend", "Database", "Design", "IT", "DevOps", "Cloud", "WordPress", "QA", "AI"];
 
@@ -96,7 +95,13 @@ export default function Skills() {
         position: "relative",
       }}
     >
-      <Crosshair containerRef={ref} color="rgba(139,92,246,0.35)" />
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <CursorDitherTrail
+          trailColor="#8b5cf6"
+          dotSize={6}
+          fadeDuration={800}
+        />
+      </div>
 
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-6 mb-12">

@@ -10,6 +10,7 @@ import { Navbar } from "@/components/Navbar";
 import Hero from "@/components/Hero";
 
 import OverlapWrapper from "@/components/OverlapWrapper";
+import Portal from "@/components/Portal";
 
 // --- Below-the-fold: dynamically imported to reduce initial bundle size ---
 // Each section is lazy-loaded when the client is ready, per performance-rules.md
@@ -53,9 +54,11 @@ export default function Home() {
               <Navbar onMenuOpen={() => {}} />
 
               {/* Theme toggle — fixed bottom-right */}
-              <div className="fixed bottom-6 right-6 z-[9998]">
-                <ThemeToggle />
-              </div>
+              <Portal>
+                <div className="fixed bottom-6 right-6 z-[9998]">
+                  <ThemeToggle />
+                </div>
+              </Portal>
 
               {/* Page sections */}
               <main>
