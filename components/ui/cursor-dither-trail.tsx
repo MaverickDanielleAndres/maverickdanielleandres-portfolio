@@ -1,21 +1,29 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 export interface CursorDitherTrailProps {
   trailColor?: string; // monochrome colour of dots
   dotSize?: number; // side length of a pixel square (1‑4px)
   fadeDuration?: number; // milliseconds for a dot to vanish
   className?: string;
+  isActive?: boolean;
 }
 
 export function Component({
   trailColor = "#8b5cf6", // violet by default
   dotSize = 4,
   fadeDuration = 600,
-  className = "w-full h-full",
+  className = "",
+  isActive = true,
 }: CursorDitherTrailProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -23,21 +31,19 @@ export function Component({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width = canvas.clientWidth;
-    let height = canvas.clientHeight;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
     canvas.width = width;
     canvas.height = height;
 
-    const onResize = () => {
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
+    const resizeObserver = new ResizeObserver(() => {
+      width = window.innerWidth;
+      height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
-    };
-    window.addEventListener("resize", onResize);
+    });
+    resizeObserver.observe(document.body);
 
-    // If trailColor is a HEX, we can parse it, but actually we can just use it directly.
-    // The original code tried to parse it to rgba, but ctx.fillStyle = string works perfectly.
     const paintDot = (x: number, y: number) => {
       ctx.fillStyle = trailColor;
       ctx.fillRect(x, y, dotSize, dotSize);
@@ -61,22 +67,29 @@ export function Component({
     animationFrameId = requestAnimationFrame(fadeStep);
 
     const onMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      // Ensure we track relative to the container and avoid scrolling offsets if fixed
-      const x = Math.floor((e.clientX - rect.left) / dotSize) * dotSize;
-      const y = Math.floor((e.clientY - rect.top) / dotSize) * dotSize;
+      if (!isActive) return;
+      const x = e.clientX - dotSize / 2;
+      const y = e.clientY - dotSize / 2;
       paintDot(x, y);
     };
     window.addEventListener("mousemove", onMove);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("resize", onResize);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
-  }, [trailColor, dotSize, fadeDuration]);
+  }, [trailColor, dotSize, fadeDuration, isActive]);
 
-  return <canvas ref={canvasRef} className={className} />;
+  if (!mounted) return null;
+
+  return createPortal(
+    <canvas 
+      ref={canvasRef} 
+      className={`fixed inset-0 pointer-events-none w-screen h-screen z-0 ${className}`} 
+    />,
+    document.body
+  );
 }
 
 export default Component;

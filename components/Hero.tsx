@@ -35,8 +35,7 @@ export default function Hero() {
     >
       {/* Background Marquee Name (Lowest z-index) */}
       <div
-        className="absolute bottom-0 left-0 w-full overflow-hidden select-none z-0"
-        style={{ paddingBottom: "1.5rem" }}
+        className="absolute bottom-[-2rem] md:bottom-[-2rem] left-0 w-full overflow-hidden select-none z-0"
       >
         <motion.div variants={enterVariants} initial="initial" animate="enter" custom={0.15} className="w-full">
           <ScrollVelocity
@@ -50,17 +49,17 @@ export default function Hero() {
 
       {/* Main Content Container */}
       <div className="relative z-[2] flex flex-col md:flex-row w-full h-full px-[var(--container-px)]">
-        
+
         {/* Left Column: Text & CTA */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center items-start h-full pt-20 md:pt-0 pb-16 md:pb-24">
+        <div className="w-full md:w-auto flex-none flex flex-col justify-center items-start h-full pt-20 md:pt-0 pb-16 md:pb-24">
           <motion.div
             variants={enterVariants}
             initial="initial"
             animate="enter"
             custom={0.2}
-            className="w-full max-w-[500px]"
+            className="w-full max-w-[320px] md:max-w-[380px]"
           >
-            <div style={{ height: "clamp(3rem, 8vw, 8.5rem)" }}>
+            <div style={{ height: "clamp(2rem, 5vw, 4.5rem)" }}>
               <TextPressure
                 text="Maverick"
                 flex={true}
@@ -70,11 +69,11 @@ export default function Hero() {
                 weight={true}
                 italic={true}
                 textColor="#ffffff"
-                minFontSize={40}
+                minFontSize={24}
                 className="w-full h-full"
               />
             </div>
-            <div style={{ height: "clamp(3rem, 8vw, 8.5rem)", marginTop: "0.02em" }}>
+            <div style={{ height: "clamp(2rem, 5vw, 4.5rem)", marginTop: "0.25rem" }}>
               <TextPressure
                 text="Danielle"
                 flex={true}
@@ -84,18 +83,18 @@ export default function Hero() {
                 weight={true}
                 italic={true}
                 textColor="#ffffff"
-                minFontSize={40}
+                minFontSize={24}
                 className="w-full h-full"
               />
             </div>
           </motion.div>
-          
+
           <motion.p
             variants={enterVariants}
             initial="initial"
             animate="enter"
             custom={0.35}
-            className="mt-6 text-[1rem] md:text-[1.1rem] font-medium leading-[1.4] tracking-wide opacity-90"
+            className="mt-8 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide opacity-90"
           >
             Full-Stack Developer &amp; IT Specialist
             <br />
@@ -108,7 +107,7 @@ export default function Hero() {
             initial="initial"
             animate="enter"
             custom={0.4}
-            className="mt-5 flex flex-col gap-1.5 text-left"
+            className="mt-6 flex flex-col gap-1.5 text-left"
           >
             <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase opacity-50">Available for work</p>
             <span className="inline-flex items-center gap-2 text-[11px] md:text-xs opacity-75">
@@ -150,7 +149,7 @@ export default function Hero() {
         </div>
 
         {/* Right Column: Profile Image */}
-        <div className="w-full md:w-1/2 flex justify-center items-end h-[50vh] md:h-full relative z-[1]">
+        <div className="w-full md:flex-1 flex justify-center items-end h-[50vh] md:h-full relative z-[1]">
           <div className="relative w-full max-w-[500px] h-full flex justify-center items-end pt-12 md:pt-24">
             <Image
               src="/updatedprofile_pic.png"

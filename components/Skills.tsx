@@ -10,40 +10,40 @@ import { Layers, TestTube, Bot, Globe, ShoppingCart, Cloud, Server, Link, Zap, S
 type Skill = { name: string; level: number; category: string; icon: string };
 
 const SKILLS: Skill[] = [
-// ... unchanged array
-  { name: "HTML/CSS",    level: 95, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
-  { name: "JavaScript",  level: 88, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
-  { name: "TypeScript",  level: 80, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
-  { name: "React",       level: 85, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-  { name: "Next.js",     level: 82, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
-  { name: "Tailwind CSS",level: 90, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
-  { name: "PHP",         level: 88, category: "Backend",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" },
-  { name: "Node.js",     level: 80, category: "Backend",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-  { name: "MySQL",       level: 85, category: "Database", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
-  { name: "MongoDB",     level: 72, category: "Database", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
-  { name: "Git & GitHub",level: 88, category: "DevOps",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
-  { name: "Figma",       level: 82, category: "Design",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
-  { name: "Networking",  level: 80, category: "IT",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" },
-  { name: "Linux/CLI",   level: 75, category: "IT",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-original.svg" },
-  { name: "REST APIs",   level: 85, category: "Backend",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-  { name: "UI/UX Design",level: 80, category: "Design",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
-  { name: "Docker",      level: 70, category: "DevOps",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
-  { name: "CI/CD",       level: 75, category: "DevOps",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
-  { name: "AWS",         level: 70, category: "Cloud",    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" },
-  { name: "WordPress",   level: 85, category: "WordPress",icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" },
-  { name: "Elementor",   level: 85, category: "WordPress",icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" },
-  { name: "Shopify",     level: 80, category: "WordPress",icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" },
-  { name: "Playwright",  level: 75, category: "QA",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-  { name: "LLMs / AI",   level: 75, category: "AI",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  // ... unchanged array
+  { name: "HTML/CSS", level: 95, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
+  { name: "JavaScript", level: 88, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
+  { name: "TypeScript", level: 80, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
+  { name: "React", level: 85, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { name: "Next.js", level: 82, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
+  { name: "Tailwind CSS", level: 90, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
+  { name: "PHP", level: 88, category: "Backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" },
+  { name: "Node.js", level: 80, category: "Backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+  { name: "MySQL", level: 85, category: "Database", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+  { name: "MongoDB", level: 72, category: "Database", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
+  { name: "Git & GitHub", level: 88, category: "DevOps", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+  { name: "Figma", level: 82, category: "Design", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
+  { name: "Networking", level: 80, category: "IT", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" },
+  { name: "Linux/CLI", level: 75, category: "IT", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-original.svg" },
+  { name: "REST APIs", level: 85, category: "Backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+  { name: "UI/UX Design", level: 80, category: "Design", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
+  { name: "Docker", level: 70, category: "DevOps", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
+  { name: "CI/CD", level: 75, category: "DevOps", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
+  { name: "AWS", level: 70, category: "Cloud", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" },
+  { name: "WordPress", level: 85, category: "WordPress", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" },
+  { name: "Elementor", level: 85, category: "WordPress", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" },
+  { name: "Shopify", level: 80, category: "WordPress", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" },
+  { name: "Playwright", level: 75, category: "QA", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+  { name: "LLMs / AI", level: 75, category: "AI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
 ];
 
 const CATEGORIES = ["All", "Frontend", "Backend", "Database", "Design", "IT", "DevOps", "Cloud", "WordPress", "QA", "AI"];
 
 const SOFT_SKILLS = [
-  { name: "Communication",   desc: "Clear articulation of ideas across teams" },
-  { name: "Teamwork",        desc: "Collaborative mindset in agile environments" },
+  { name: "Communication", desc: "Clear articulation of ideas across teams" },
+  { name: "Teamwork", desc: "Collaborative mindset in agile environments" },
   { name: "Problem-Solving", desc: "Analytical approach to complex challenges" },
-  { name: "Adaptability",    desc: "Quick to learn and pivot when needed" },
+  { name: "Adaptability", desc: "Quick to learn and pivot when needed" },
   { name: "Time Management", desc: "Reliable delivery on deadlines" },
 ];
 
@@ -87,6 +87,8 @@ export default function Skills() {
     <section
       id="skills"
       ref={ref}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         background: "var(--bg-skills)",
         color: "var(--fg)",
@@ -95,13 +97,12 @@ export default function Skills() {
         position: "relative",
       }}
     >
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <CursorDitherTrail
-          trailColor="#8b5cf6"
-          dotSize={6}
-          fadeDuration={800}
-        />
-      </div>
+      <CursorDitherTrail
+        trailColor="#8b5cf6"
+        dotSize={6}
+        fadeDuration={200}
+        isActive={isHovered}
+      />
 
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
@@ -279,7 +280,7 @@ export default function Skills() {
           What I Bring
         </motion.h3>
 
-        <div className="w-full max-w-4xl text-left">
+        <div className="w-full max-w-4xl text-left -mb-10">
           <MorphingCardStack cards={COMPETENCIES_CARDS} defaultLayout="grid" />
         </div>
       </div>

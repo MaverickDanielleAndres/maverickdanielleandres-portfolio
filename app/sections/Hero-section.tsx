@@ -44,9 +44,8 @@ export default function HeroSection() {
     };
 
     const commonProps = {
-      className: `${baseClasses} ${variants[variant]} ${
-        animate ? "animate-slideUp" : "opacity-0"
-      }`,
+      className: `${baseClasses} ${variants[variant]} ${animate ? "animate-slideUp" : "opacity-0"
+        }`,
       style: { animationDelay: `${delay}ms` } as React.CSSProperties,
       onMouseEnter: () => setIsHovered(true),
       onMouseLeave: () => setIsHovered(false),
@@ -220,9 +219,8 @@ export default function HeroSection() {
 
         {/* Buttons grid */}
         <div
-          className={`flex flex-wrap justify-center gap-2 sm:gap-3 max-w-xs sm:max-w-lg mx-auto hero-buttons-spacing ${
-            animate ? "animate-slideUp" : "opacity-0"
-          }`}
+          className={`flex flex-wrap justify-center gap-2 sm:gap-3 max-w-xs sm:max-w-lg mx-auto hero-buttons-spacing ${animate ? "animate-slideUp" : "opacity-0"
+            }`}
           style={{ animationDelay: "400ms" } as React.CSSProperties}
         >
           <Magnet padding={50} magnetStrength={50}>
@@ -249,7 +247,7 @@ export default function HeroSection() {
           className={`hero-scroll-spacing ${animate ? "animate-slideUp" : "opacity-0"}`}
           style={{ animationDelay: "1200ms" } as React.CSSProperties}
         >
-          <button 
+          <button
             onClick={handleScrollToAbout}
             className="flex flex-col items-center justify-center text-white/50 hover:text-white/80 transition-colors duration-500 cursor-pointer group bg-transparent border-none w-full"
           >
