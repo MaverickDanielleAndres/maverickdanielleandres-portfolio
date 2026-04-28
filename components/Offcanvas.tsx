@@ -107,16 +107,17 @@ export function Offcanvas() {
             {/* Panel */}
             <motion.div
               key="panel"
-              className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm flex flex-col justify-start gap-12 overflow-y-auto"
-              style={{ background: 'var(--bg)', color: 'var(--fg)', padding: '6rem 3rem 3rem', borderLeft: '1px solid var(--border-subtle)' }}
+              className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm flex flex-col justify-start gap-8 overflow-y-auto"
+              style={{ background: 'var(--bg)', color: 'var(--fg)', padding: 'clamp(4rem, 10vh, 6rem) 3rem 3rem', borderLeft: '1px solid var(--border-subtle)' }}
               variants={panelVariants}
               initial="initial"
               animate="enter"
               exit="exit"
+              data-lenis-prevent="true"
             >
               {/* Nav links */}
               <div>
-                <p className="mb-8 text-xs uppercase tracking-[0.12em] opacity-40">Navigation</p>
+                <p className="mb-4 sm:mb-8 text-xs uppercase tracking-[0.12em] opacity-40">Navigation</p>
                 <ul className="flex flex-col gap-1" onMouseLeave={() => setActiveHref(pathname)}>
                   {NAV_LINKS.map(({ href, label }, i) => (
                     <motion.li
@@ -137,8 +138,8 @@ export function Offcanvas() {
                       <Link
                         href={href}
                         onClick={() => setOpen(false)}
-                        className="text-5xl font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200"
-                        style={{ lineHeight: 1.15 }}
+                        className="font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200"
+                        style={{ fontSize: 'clamp(2.25rem, 6.5vh, 3.5rem)', lineHeight: 1.15 }}
                       >
                         {label}
                       </Link>

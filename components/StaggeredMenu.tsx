@@ -239,7 +239,10 @@ export default function StaggeredMenu({
             if (el) layersRef.current[colors.length] = el;
           }}
         >
-          <nav className="flex flex-col items-center gap-4 px-8 md:gap-6">
+          <nav 
+            className="flex flex-col items-center px-8"
+            style={{ gap: "clamp(0.5rem, 2.5vh, 1.5rem)" }}
+          >
             {items.map((item, i) => (
               <Link
                 key={item.label}
@@ -253,13 +256,16 @@ export default function StaggeredMenu({
               >
                 {displayItemNumbering && (
                   <span
-                    className="text-sm font-light opacity-60"
-                    style={{ color: accentColor }}
+                    className="font-light opacity-60"
+                    style={{ color: accentColor, fontSize: "clamp(0.8rem, 1.5vh, 1.2rem)" }}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 )}
-                <span className="text-4xl md:text-6xl font-light tracking-tight transition-all duration-300 group-hover:tracking-wide group-hover:opacity-80">
+                <span 
+                  className="font-light tracking-tight transition-all duration-300 group-hover:tracking-wide group-hover:opacity-80"
+                  style={{ fontSize: "clamp(1.5rem, 6vh, 3.5rem)" }}
+                >
                   {item.label}
                 </span>
               </Link>
@@ -268,7 +274,10 @@ export default function StaggeredMenu({
 
           {/* Socials */}
           {displaySocials && socialItems.length > 0 && (
-            <div className="mt-12 flex items-center justify-center gap-6">
+            <div 
+              className="flex items-center justify-center gap-4 md:gap-6"
+              style={{ marginTop: "clamp(1.5rem, 5vh, 3rem)" }}
+            >
               {socialItems.map((social, i) => (
                 <a
                   key={social.label}
@@ -278,7 +287,7 @@ export default function StaggeredMenu({
                   ref={(el) => {
                     if (el) socialsRef.current[i] = el;
                   }}
-                  className="text-sm text-white/70 opacity-0 transition-colors duration-200 hover:text-white"
+                  className="text-sm md:text-base text-white/70 opacity-0 transition-colors duration-200 hover:text-white"
                   style={{ "--accent": accentColor } as React.CSSProperties}
                 >
                   {social.label}

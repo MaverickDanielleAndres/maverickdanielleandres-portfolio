@@ -35,14 +35,14 @@ export default function Hero() {
     >
       {/* Background Marquee Name (Lowest z-index) */}
       <div
-        className="absolute bottom-[-2rem] md:bottom-[-2rem] left-0 w-full overflow-hidden select-none z-0"
+        className="absolute bottom-2 md:bottom-[-1rem] left-0 w-full overflow-hidden select-none z-0"
       >
         <motion.div variants={enterVariants} initial="initial" animate="enter" custom={0.15} className="w-full">
           <ScrollVelocity
             texts={["Maverick Danielle Andres"]}
             velocity={40}
-            className="font-normal leading-tight tracking-[-0.02em] text-white opacity-[0.08]"
-            parallaxStyle={{ fontSize: "clamp(4rem, 12vw, 15rem)" }}
+            className="font-normal leading-tight tracking-[-0.02em] text-white opacity-[0.12] md:opacity-[0.08]"
+            parallaxStyle={{ fontSize: "clamp(3.5rem, 10vw, 15rem)" }}
           />
         </motion.div>
       </div>
@@ -57,9 +57,9 @@ export default function Hero() {
             initial="initial"
             animate="enter"
             custom={0.2}
-            className="w-full max-w-[320px] md:max-w-[380px]"
+            className="w-full max-w-[75vw] sm:max-w-[300px] md:max-w-[380px] lg:max-w-[460px] flex flex-col gap-0 md:gap-1"
           >
-            <div style={{ height: "clamp(2rem, 5vw, 4.5rem)" }}>
+            <div className="w-full">
               <TextPressure
                 text="Maverick"
                 flex={true}
@@ -69,11 +69,11 @@ export default function Hero() {
                 weight={true}
                 italic={true}
                 textColor="#ffffff"
-                minFontSize={24}
-                className="w-full h-full"
+                minFontSize={20}
+                className="w-full leading-[0.8]"
               />
             </div>
-            <div style={{ height: "clamp(2rem, 5vw, 4.5rem)", marginTop: "0.25rem" }}>
+            <div className="w-full">
               <TextPressure
                 text="Danielle"
                 flex={true}
@@ -83,8 +83,8 @@ export default function Hero() {
                 weight={true}
                 italic={true}
                 textColor="#ffffff"
-                minFontSize={24}
-                className="w-full h-full"
+                minFontSize={20}
+                className="w-full leading-[0.8]"
               />
             </div>
           </motion.div>
@@ -122,7 +122,7 @@ export default function Hero() {
             initial="initial"
             animate="enter"
             custom={0.5}
-            className="mt-8 flex flex-wrap gap-3"
+            className="mt-8 flex flex-wrap gap-2.5 sm:gap-3"
           >
             {[
               { label: "Resume", href: null, onClick: true },
@@ -135,12 +135,12 @@ export default function Hero() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-pill-btn !px-5 !py-2.5 !text-[0.95rem]"
+                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem]"
                 >
                   {label} <ArrowUpRight size={14} />
                 </a>
               ) : (
-                <button key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-5 !py-2.5 !text-[0.95rem]">
+                <button key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem]">
                   {label}
                 </button>
               )
@@ -148,14 +148,14 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right Column: Profile Image */}
-        <div className="w-full md:flex-1 flex justify-center items-end h-[50vh] md:h-full relative z-[1]">
-          <div className="relative w-full max-w-[500px] h-full flex justify-center items-end pt-12 md:pt-24">
+        {/* Right Column / Background: Profile Image */}
+        <div className="absolute inset-0 md:relative md:flex-1 flex justify-center md:justify-end lg:justify-center items-end h-full z-0 md:z-[1] opacity-20 md:opacity-100 pointer-events-none overflow-hidden md:overflow-visible">
+          <div className="relative w-full min-w-[500px] md:w-[130%] lg:w-[120%] max-w-[800px] h-[85%] md:h-[95%] lg:h-[105%] flex justify-center items-end ml-[10%] md:ml-0 md:mr-[-15%] lg:mr-0 mb-[-2%]">
             <Image
               src="/updatedprofile_pic.png"
               alt="Maverick Danielle Andres"
               fill
-              className="object-contain object-bottom pointer-events-none"
+              className="object-contain object-bottom"
               style={{ filter: "brightness(0.97) contrast(1.02)", top: "auto", bottom: 0, height: "100%" }}
               priority
             />
