@@ -416,6 +416,11 @@ export default function Projects() {
         position: "relative",
       }}
       onMouseMove={handleMouseMove}
+      onTouchMove={(e) => {
+        if (e.touches.length > 0) {
+          setMousePos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+        }
+      }}
     >
       {/* Label */}
       <motion.p
@@ -436,7 +441,7 @@ export default function Projects() {
         {PROJECTS.map((project, i) => (
           <motion.li
             key={project.id}
-            className="thumbnail-row cursor-pointer"
+            className="thumbnail-row cursor-pointer group"
             style={{
               borderTop: "1px solid var(--border-subtle)",
               paddingBlock: "clamp(1.25rem,3vw,2.25rem)",
@@ -447,6 +452,7 @@ export default function Projects() {
             transition={{ duration: 0.5, delay: i * 0.08 }}
             onMouseEnter={() => setHovered(project.id)}
             onMouseLeave={() => setHovered(null)}
+            onTouchStart={() => setHovered(project.id)}
             onClick={() => setActiveProject(project)}
           >
             <div className="flex items-center justify-between flex-wrap gap-4">
@@ -475,7 +481,7 @@ export default function Projects() {
                 </p>
                 <ArrowUpRight
                   size={18}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                   style={{ color: "var(--accent)" }}
                 />
               </div>
@@ -489,12 +495,12 @@ export default function Projects() {
         <AnimatePresence>
           {hovered !== null && (
             <motion.div
-              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-xl hidden lg:block"
+              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-xl"
               style={{
-                width: 320,
+                width: "clamp(240px, 25vw, 320px)",
                 aspectRatio: "16/9",
-                left: mousePos.x + 24,
-                top: mousePos.y - 100,
+                left: mousePos.x + 20,
+                top: mousePos.y - 120,
                 background: "#1a1a1a",
                 boxShadow: "0 20px 40px rgba(0,0,0,0.4)"
               }}

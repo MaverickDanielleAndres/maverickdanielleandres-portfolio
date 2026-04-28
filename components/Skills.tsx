@@ -45,6 +45,9 @@ const SOFT_SKILLS = [
   { name: "Problem-Solving", desc: "Analytical approach to complex challenges" },
   { name: "Adaptability", desc: "Quick to learn and pivot when needed" },
   { name: "Time Management", desc: "Reliable delivery on deadlines" },
+  { name: "Leadership", desc: "Inspiring others and taking ownership" },
+  { name: "Reliable", desc: "Consistent performance and dependability" },
+  { name: "With Initiative", desc: "Proactive approach to solving problems" },
 ];
 
 const COMPETENCIES_CARDS = [
@@ -322,12 +325,16 @@ export default function Skills() {
                 minWidth: "160px",
                 flex: "1 1 160px",
                 cursor: "default",
-                transition: "border-color 0.2s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                transition: "border-color 0.1s, background 0.1s, transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
               }}
-              whileHover={{ borderColor: "var(--accent)", scale: 1.02 }}
+              whileHover={{ 
+                borderColor: "var(--accent)", 
+                scale: 1.04,
+                background: "color-mix(in srgb, var(--accent) 5%, transparent)"
+              }}
             >
-              <p className="text-sm font-medium mb-1">{s.name}</p>
-              <p className="text-xs" style={{ color: "var(--fg-muted)", lineHeight: 1.4 }}>{s.desc}</p>
+              <p className="text-sm font-semibold mb-1" style={{ color: "var(--fg)" }}>{s.name}</p>
+              <p className="text-xs font-medium" style={{ color: "var(--fg-muted)", lineHeight: 1.4 }}>{s.desc}</p>
             </motion.div>
           ))}
         </div>

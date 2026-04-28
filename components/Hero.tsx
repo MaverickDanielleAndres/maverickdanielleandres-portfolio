@@ -51,15 +51,15 @@ export default function Hero() {
       <div className="relative z-[2] flex flex-col md:flex-row w-full h-full px-[var(--container-px)]">
 
         {/* Left Column: Text & CTA */}
-        <div className="w-full md:w-auto flex-none flex flex-col justify-center items-start h-full pt-20 md:pt-0 pb-16 md:pb-24">
+        <div className="w-full md:w-auto flex-none flex flex-col justify-start md:justify-center items-start h-full pt-[10vh] md:pt-0 pb-16 md:pb-24">
           <motion.div
             variants={enterVariants}
             initial="initial"
             animate="enter"
             custom={0.2}
-            className="w-full max-w-[75vw] sm:max-w-[300px] md:max-w-[380px] lg:max-w-[460px] flex flex-col gap-0 md:gap-1"
+            className="w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-4 md:gap-6 lg:mt-12"
           >
-            <div className="w-full">
+            <div className="w-full" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
               <TextPressure
                 text="Maverick"
                 flex={true}
@@ -68,12 +68,13 @@ export default function Hero() {
                 width={true}
                 weight={true}
                 italic={true}
+                scale={true}
                 textColor="#ffffff"
                 minFontSize={20}
-                className="w-full leading-[0.8]"
+                className="w-full h-full"
               />
             </div>
-            <div className="w-full">
+            <div className="w-full" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
               <TextPressure
                 text="Danielle"
                 flex={true}
@@ -82,9 +83,10 @@ export default function Hero() {
                 width={true}
                 weight={true}
                 italic={true}
+                scale={true}
                 textColor="#ffffff"
                 minFontSize={20}
-                className="w-full leading-[0.8]"
+                className="w-full h-full"
               />
             </div>
           </motion.div>
@@ -94,7 +96,7 @@ export default function Hero() {
             initial="initial"
             animate="enter"
             custom={0.35}
-            className="mt-8 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide opacity-90"
+            className="mt-8 md:mt-12 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide text-white drop-shadow-md"
           >
             Full-Stack Developer &amp; IT Specialist
             <br />
@@ -109,8 +111,8 @@ export default function Hero() {
             custom={0.4}
             className="mt-6 flex flex-col gap-1.5 text-left"
           >
-            <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase opacity-50">Available for work</p>
-            <span className="inline-flex items-center gap-2 text-[11px] md:text-xs opacity-75">
+            <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-white drop-shadow-md">Available for work</p>
+            <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-white drop-shadow-md">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               Open to opportunities
             </span>
@@ -135,12 +137,12 @@ export default function Hero() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem]"
+                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-white !text-white bg-black/10 backdrop-blur-sm hover:!bg-white hover:!text-black"
                 >
                   {label} <ArrowUpRight size={14} />
                 </a>
               ) : (
-                <button key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem]">
+                <button key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-white !text-white bg-black/10 backdrop-blur-sm hover:!bg-white hover:!text-black">
                   {label}
                 </button>
               )
@@ -149,14 +151,14 @@ export default function Hero() {
         </div>
 
         {/* Right Column / Background: Profile Image */}
-        <div className="absolute inset-0 md:relative md:flex-1 flex justify-center md:justify-end lg:justify-center items-end h-full z-0 md:z-[1] opacity-20 md:opacity-100 pointer-events-none overflow-hidden md:overflow-visible">
-          <div className="relative w-full min-w-[500px] md:w-[130%] lg:w-[120%] max-w-[800px] h-[85%] md:h-[95%] lg:h-[105%] flex justify-center items-end ml-[10%] md:ml-0 md:mr-[-15%] lg:mr-0 mb-[-2%]">
+        <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-end lg:justify-center items-end h-full z-0 md:z-[1] opacity-65 md:opacity-100 pointer-events-none overflow-hidden md:overflow-visible">
+          <div className="relative w-full min-w-[500px] md:w-[130%] lg:w-[120%] max-w-[800px] h-[85%] md:h-[95%] lg:h-[105%] flex justify-center items-end mr-[-55%] md:mr-[-15%] lg:mr-0 mb-[-35%] md:mb-[-5%]">
             <Image
               src="/updatedprofile_pic.png"
               alt="Maverick Danielle Andres"
               fill
               className="object-contain object-bottom"
-              style={{ filter: "brightness(0.97) contrast(1.02)", top: "auto", bottom: 0, height: "100%" }}
+              style={{ top: "auto", bottom: 0, height: "100%" }}
               priority
             />
           </div>
