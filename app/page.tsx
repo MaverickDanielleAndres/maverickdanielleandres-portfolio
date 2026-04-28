@@ -52,8 +52,8 @@ export default function Home() {
               {/* Transparent navbar (overlays hero) */}
               <Navbar onMenuOpen={() => {}} />
 
-              {/* Theme toggle — fixed top-right */}
-              <div className="fixed top-6 right-6 z-[9998]">
+              {/* Theme toggle — fixed bottom-right */}
+              <div className="fixed bottom-6 right-6 z-[9998]">
                 <ThemeToggle />
               </div>
 

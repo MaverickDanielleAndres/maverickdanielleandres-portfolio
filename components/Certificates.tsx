@@ -311,6 +311,7 @@ export default function Certificates() {
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 onClick={(e) => e.stopPropagation()}
+                data-lenis-prevent="true"
               >
                 <div className="relative" style={{ aspectRatio: "4/3" }}>
                   <Image

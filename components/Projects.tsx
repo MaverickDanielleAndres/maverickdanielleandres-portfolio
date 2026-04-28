@@ -284,7 +284,7 @@ function ProjectModal({
             </button>
           </div>
 
-          <div className="overflow-y-auto w-full h-full max-h-[94vh] sm:max-h-[90vh]">
+          <div className="overflow-y-auto w-full h-full max-h-[94vh] sm:max-h-[90vh]" data-lenis-prevent="true">
             {/* Clickable Header Image */}
             <div
               className="relative w-full group cursor-pointer"
@@ -485,53 +485,55 @@ export default function Projects() {
       </ul>
 
       {/* Floating preview thumbnail */}
-      <AnimatePresence>
-        {hovered !== null && (
-          <motion.div
-            className="pointer-events-none fixed z-30 overflow-hidden rounded-xl hidden lg:block"
-            style={{
-              width: 320,
-              aspectRatio: "16/9",
-              left: mousePos.x + 24,
-              top: mousePos.y - 100,
-              background: "#1a1a1a",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.4)"
-            }}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <Image
-              src={PROJECTS.find((p) => p.id === hovered)?.image || ""}
-              alt="preview"
-              fill
-              className="object-cover"
-            />
-            {/* Centered "View" button */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "9999px",
-                  background: "var(--accent)",
-                  color: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "0.75rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.02em",
-                  boxShadow: "0 4px 24px rgba(96,85,240,0.5)",
-                }}
-              >
-                View →
+      <Portal>
+        <AnimatePresence>
+          {hovered !== null && (
+            <motion.div
+              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-xl hidden lg:block"
+              style={{
+                width: 320,
+                aspectRatio: "16/9",
+                left: mousePos.x + 24,
+                top: mousePos.y - 100,
+                background: "#1a1a1a",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.4)"
+              }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Image
+                src={PROJECTS.find((p) => p.id === hovered)?.image || ""}
+                alt="preview"
+                fill
+                className="object-cover"
+              />
+              {/* Centered "View" button */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: "9999px",
+                    background: "var(--accent)",
+                    color: "#fff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.75rem",
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                    boxShadow: "0 4px 24px rgba(96,85,240,0.5)",
+                  }}
+                >
+                  View →
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Portal>
 
       {/* Detail Modal */}
       <AnimatePresence>

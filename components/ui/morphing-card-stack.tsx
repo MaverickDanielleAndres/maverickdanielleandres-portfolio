@@ -158,6 +158,7 @@ export function Component({
                   onDragStart={() => setIsDragging(true)}
                   onDragEnd={handleDragEnd}
                   whileDrag={{ scale: 1.02, cursor: "grabbing" }}
+                  whileHover={{ scale: 1.02, y: -4 }}
                   onClick={() => {
                     if (isDragging) return
                     setExpandedCard(isExpanded ? null : card.id)
