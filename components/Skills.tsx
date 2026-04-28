@@ -64,6 +64,7 @@ export default function Skills() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
   const [filledSkill, setFilledSkill] = useState<string | null>(null);
+  const [sectionHovered, setSectionHovered] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-5% 0px" });
@@ -87,8 +88,8 @@ export default function Skills() {
     <section
       id="skills"
       ref={ref}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setSectionHovered(true)}
+      onMouseLeave={() => setSectionHovered(false)}
       style={{
         background: "var(--bg-skills)",
         color: "var(--fg)",
@@ -101,7 +102,7 @@ export default function Skills() {
         trailColor="#8b5cf6"
         dotSize={6}
         fadeDuration={200}
-        isActive={isHovered}
+        isActive={sectionHovered}
       />
 
       {/* Header */}
@@ -193,7 +194,7 @@ export default function Skills() {
                 borderRadius: "0.75rem",
                 border: "1px solid var(--border-subtle)",
                 overflow: "hidden",
-                minHeight: 100,
+                minHeight: 80,
                 position: "relative",
                 cursor: "default",
                 transition: "border-color 0.2s",
@@ -226,7 +227,7 @@ export default function Skills() {
 
               {/* Normal state */}
               <motion.div
-                className="flex flex-col gap-2.5 p-3 sm:gap-3 sm:p-5"
+                className="flex flex-col gap-2 p-3 sm:gap-2.5 sm:p-4"
                 animate={isFilled ? { opacity: 0 } : { opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >

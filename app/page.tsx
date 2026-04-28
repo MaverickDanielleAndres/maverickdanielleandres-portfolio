@@ -62,25 +62,25 @@ export default function Home() {
 
               {/* Page sections */}
               <main>
-                <OverlapWrapper zIndex={1}>
+                <OverlapWrapper zIndex={1} bg="var(--bg-hero)">
                   <Hero />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={2}>
+                <OverlapWrapper zIndex={2} bg="var(--bg-about)">
                   <About />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={3}>
+                <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
                   <TechStrip />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={4}>
+                <OverlapWrapper zIndex={4} bg="var(--bg-skills)">
                   <Skills />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={5}>
+                <OverlapWrapper zIndex={5} bg="var(--bg-projects)">
                   <Projects />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={6}>
+                <OverlapWrapper zIndex={6} bg="var(--bg-certificates)">
                   <Certificates />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={7}>
+                <OverlapWrapper zIndex={7} bg="var(--bg-contact)">
                   <Contact />
                 </OverlapWrapper>
               </main>

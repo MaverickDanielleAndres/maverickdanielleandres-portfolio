@@ -2,13 +2,18 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function OverlapWrapper({
   children,
   zIndex,
+  bg = "var(--bg)",
+  shadowClassName = "shadow-2xl",
 }: {
   children: React.ReactNode;
   zIndex: number;
+  bg?: string;
+  shadowClassName?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -29,9 +34,9 @@ export default function OverlapWrapper({
         opacity,
         zIndex,
         position: "relative",
-        background: "var(--bg)", // ensures solid background so it covers previous sections
+        background: bg, // ensures solid background so it covers previous sections
       }}
-      className="shadow-2xl"
+      className={cn("relative w-full", shadowClassName)}
     >
       {children}
     </motion.div>

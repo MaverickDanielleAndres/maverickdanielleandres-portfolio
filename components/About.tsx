@@ -318,6 +318,7 @@ export default function About() {
             <motion.div
               className="relative w-full max-w-2xl rounded-2xl p-8 overflow-y-auto"
               style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "85vh" }}
+              data-lenis-prevent="true"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}

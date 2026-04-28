@@ -31,15 +31,15 @@ const techLogos = [
 
 export default function TechStrip() {
   return (
-    <div className="relative overflow-hidden py-6">
+    <div className="relative overflow-hidden py-6" style={{ background: 'var(--bg-about)' }}>
       {/* Edge fade masks */}
       <div
         className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
-        style={{ background: "linear-gradient(to right, var(--bg), transparent)" }}
+        style={{ background: "linear-gradient(to right, var(--bg-about), transparent)" }}
       />
       <div
         className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
-        style={{ background: "linear-gradient(to left, var(--bg), transparent)" }}
+        style={{ background: "linear-gradient(to left, var(--bg-about), transparent)" }}
       />
 
       <LogoLoop

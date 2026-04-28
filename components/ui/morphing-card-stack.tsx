@@ -165,11 +165,11 @@ export function Component({
                     onCardClick?.(card)
                   }}
                   className={cn(
-                    "cursor-pointer rounded-xl border border-border bg-card p-4",
+                    "cursor-pointer rounded-xl border border-border bg-card p-3 sm:p-3.5",
                     "hover:border-primary/50 transition-colors shadow-sm",
                     layout === "stack" && "absolute w-64 h-auto min-h-[160px] bg-[var(--bg)]",
                     layout === "stack" && isTopCard && "cursor-grab active:cursor-grabbing",
-                    layout === "grid" && "w-full h-full min-h-[140px]",
+                    layout === "grid" && "w-full h-full min-h-[100px]",
                     layout === "list" && "w-full",
                     isExpanded && "ring-2 ring-primary z-50",
                   )}
