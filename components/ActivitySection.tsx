@@ -1,8 +1,16 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
-import { GitHubCalendar } from "react-github-calendar";
+import dynamic from "next/dynamic";
+
+const GitHubCalendar = dynamic(() => (import("react-github-calendar") as any).then((mod: any) => {
+  return mod.GitHubCalendar || mod.default || mod;
+}), {
+  ssr: false,
+  loading: () => <div className="w-full h-[200px] animate-pulse bg-white/5 rounded-lg" />
+}) as React.ComponentType<any>;
+
 import { 
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, 
   SiNodedotjs, SiPostgresql, SiSupabase, SiGit 

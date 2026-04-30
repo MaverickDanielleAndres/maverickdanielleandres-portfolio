@@ -344,6 +344,7 @@ export default function Certificates() {
                   alt={cert.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
                       "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23e5e5e5'/%3E%3Ctext x='50%25' y='50%25' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23888'%3ECertificate%3C/text%3E%3C/svg%3E";
@@ -409,6 +410,7 @@ export default function Certificates() {
                     fill
                     className="object-cover"
                     priority
+                    sizes="(max-width: 768px) 100vw, 600px"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <div className="bg-white/20 backdrop-blur-md p-4 rounded-full border border-white/30 transform scale-90 group-hover/img:scale-100 transition-transform duration-300">
@@ -526,6 +528,7 @@ export default function Certificates() {
                     fill
                     className="object-contain"
                     priority
+                    sizes="100vw"
                   />
                 </div>
               </motion.div>

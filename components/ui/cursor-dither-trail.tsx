@@ -31,45 +31,56 @@ export function Component({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const dpr = window.devicePixelRatio || 1;
     let width = window.innerWidth;
     let height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.scale(dpr, dpr);
 
     const resizeObserver = new ResizeObserver(() => {
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.scale(dpr, dpr);
     });
     resizeObserver.observe(document.body);
 
+    const dots = { current: [] as { x: number; y: number; createdAt: number }[] };
+
     const paintDot = (x: number, y: number) => {
-      ctx.fillStyle = trailColor;
-      ctx.fillRect(x, y, dotSize, dotSize);
+      dots.current.push({ x, y, createdAt: performance.now() });
     };
 
-    let lastTime = performance.now();
     let animationFrameId: number;
 
-    const fadeStep = () => {
-      const now = performance.now();
-      const delta = now - lastTime;
-      lastTime = now;
+    const fadeStep = (now: number) => {
+      ctx.clearRect(0, 0, width, height);
       
-      const fadeAlpha = delta / fadeDuration;
-      ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillRect(0, 0, width, height);
-      ctx.globalCompositeOperation = "source-over";
+      dots.current = dots.current.filter(dot => now - dot.createdAt < fadeDuration);
+
+      for (const dot of dots.current) {
+        const age = now - dot.createdAt;
+        const opacity = 1 - age / fadeDuration;
+        ctx.fillStyle = trailColor;
+        ctx.globalAlpha = opacity;
+        ctx.fillRect(dot.x - dotSize / 2, dot.y - dotSize / 2, dotSize, dotSize);
+      }
+      
+      ctx.globalAlpha = 1;
       animationFrameId = requestAnimationFrame(fadeStep);
     };
     animationFrameId = requestAnimationFrame(fadeStep);
 
     const onMove = (e: MouseEvent) => {
       if (!isActive) return;
-      const x = e.clientX - dotSize / 2;
-      const y = e.clientY - dotSize / 2;
+      const x = e.clientX;
+      const y = e.clientY;
       paintDot(x, y);
     };
     window.addEventListener("mousemove", onMove);

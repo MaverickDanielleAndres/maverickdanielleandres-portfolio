@@ -209,3 +209,16 @@ html.lenis, html.lenis body { height: auto; }
   height: auto !important;
   max-width: 100% !important;
 }
+
+/* ===== Performance: Will Change ===== */
+.hero-pill-btn, 
+.pill-btn,
+.thumbnail-row,
+.card-spotlight,
+.pixel-card {
+  will-change: transform, opacity;
+}
+
+.image-card {
+  will-change: transform;
+}

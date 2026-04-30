@@ -159,6 +159,7 @@ export default function Hero() {
               fill
               className="object-contain object-bottom"
               style={{ top: "auto", bottom: 0, height: "100%" }}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
               priority
             />
           </div>

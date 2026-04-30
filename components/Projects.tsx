@@ -389,6 +389,7 @@ function EnhancedLightbox({
                   className="object-contain"
                   quality={100}
                   priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
                 />
               </div>
             </motion.div>
@@ -505,6 +506,7 @@ function ProjectModal({
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
                 <button
@@ -674,7 +676,7 @@ export default function Projects() {
         {PROJECTS.map((project, i) => (
           <motion.li
             key={project.id}
-            className="thumbnail-row cursor-pointer group"
+            className="thumbnail-row cursor-none group"
             style={{
               borderTop: "1px solid var(--border-subtle)",
               paddingBlock: "clamp(1.5rem,4vw,2.5rem)",
@@ -705,30 +707,31 @@ export default function Projects() {
         <AnimatePresence>
           {hovered !== null && (
             <motion.div
-              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-2xl"
+              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-2xl flex items-center justify-center"
               style={{
                 width: "clamp(280px, 30vw, 400px)",
                 aspectRatio: "16/10",
-                left: mousePos.x + 30,
-                top: mousePos.y - 150,
+                left: mousePos.x,
+                top: mousePos.y,
+                x: "-50%",
+                y: "-50%",
                 background: "#1a1a1a",
                 boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
               }}
-              initial={{ scale: 0.8, opacity: 0, rotate: -5 }}
-              animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              exit={{ scale: 0.8, opacity: 0, rotate: 5 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 150, damping: 20 }}
             >
               <Image
                 src={PROJECTS.find((p) => p.id === hovered)?.image || ""}
                 alt="preview"
                 fill
-                className="object-cover"
+                className="object-cover opacity-60"
+                sizes="(max-width: 768px) 40vw, 30vw"
               />
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                <div className="px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium tracking-widest uppercase">
-                  Click to View
-                </div>
+              <div className="relative z-10 px-6 py-3 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white text-xs font-bold tracking-[0.2em] uppercase shadow-2xl">
+                Click to View
               </div>
             </motion.div>
           )}

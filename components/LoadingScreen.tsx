@@ -32,6 +32,10 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           speed={0.3}
         />
       </div>
+      {/* Ensure preloaded font is marked as used immediately to silence browser warnings */}
+      <span className="sr-only" style={{ fontFamily: 'var(--font-neue-montreal)' }}>
+        Loading Maverick Danielle Portfolio
+      </span>
     </motion.div>
   );
 }

@@ -46,9 +46,20 @@ const LogoLoop: React.FC<LogoLoopProps> = ({
     return () => observer.disconnect();
   }, [items]);
 
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!trackRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInView(entry.isIntersecting);
+    }, { threshold: 0.01 });
+    observer.observe(trackRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const track = trackRef.current;
-    if (!track) return;
+    if (!track || !isInView) return;
     let lastTime = performance.now();
 
     const animate = (now: number) => {
@@ -73,7 +84,7 @@ const LogoLoop: React.FC<LogoLoopProps> = ({
     };
     animRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animRef.current);
-  }, [speed, direction]);
+  }, [speed, direction, isInView]);
 
   const allItems = Array.from({ length: copies }, () => items).flat();
 

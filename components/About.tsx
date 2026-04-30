@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useLayoutEffect, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -88,7 +88,7 @@ export default function About() {
     return () => window.removeEventListener("resize", updateSwiperSize);
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const ctx = gsap.context(() => {
       const st = { trigger: sectionRef.current!, start: "top 78%", once: true };
 
@@ -225,13 +225,13 @@ export default function About() {
                     </p>
                     <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>GWA: 1.50</p>
                   </div>
-                  <div className="shrink-0">
+                  <div className="shrink-0 relative w-[72px] h-[72px]">
                     <Image
                       src="/updatedprofile_pic.png"
                       alt="Maverick profile"
-                      width={72}
-                      height={72}
-                      className="h-[72px] w-[72px] rounded-full object-cover shadow-lg"
+                      fill
+                      className="rounded-full object-cover shadow-lg"
+                      sizes="72px"
                     />
                   </div>
                 </div>

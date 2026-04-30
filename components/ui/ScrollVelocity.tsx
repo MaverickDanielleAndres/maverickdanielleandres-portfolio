@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useLayoutEffect, useState } from 'react';
+import React, { useRef, useLayoutEffect, useState, useEffect } from 'react';
 import {
   motion,
   useScroll,
@@ -101,8 +101,21 @@ function VelocityText({
     return `${wrap(-copyWidth, 0, v)}px`;
   });
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInView(entry.isIntersecting);
+    }, { threshold: 0.1 });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const directionFactor = useRef<number>(1);
   useAnimationFrame((_t, delta) => {
+    if (!isInView) return;
     let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
     if (velocityFactor.get() < 0) {
       directionFactor.current = -1;
@@ -123,7 +136,7 @@ function VelocityText({
   }
 
   return (
-    <div className={`${parallaxClassName ?? ''} relative overflow-hidden`} style={parallaxStyle}>
+    <div ref={containerRef} className={`${parallaxClassName ?? ''} relative overflow-hidden`} style={parallaxStyle}>
       <motion.div
         className={`${scrollerClassName ?? ''} flex whitespace-nowrap`}
         style={{ x, ...scrollerStyle }}

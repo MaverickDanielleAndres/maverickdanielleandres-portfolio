@@ -49,6 +49,7 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="relative"
           >
             <SmoothScroll>
               {/* Transparent navbar (overlays hero) */}
@@ -62,7 +63,7 @@ export default function Home() {
               </Portal>
 
               {/* Page sections */}
-              <main>
+              <main className="relative">
                 <OverlapWrapper zIndex={1} bg="var(--bg-hero)">
                   <Hero />
                 </OverlapWrapper>

@@ -83,6 +83,28 @@ const TextPressure: React.FC<TextPressureProps> = ({
     };
   }, []);
 
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInView(entry.isIntersecting);
+    }, { threshold: 0.1 });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const spanCoords = useRef<{ x: number; y: number; width: number; height: number }[]>([]);
+
+  const updateCoords = useCallback(() => {
+    if (!titleRef.current) return;
+    spanCoords.current = spansRef.current.map(span => {
+      if (!span) return { x: 0, y: 0, width: 0, height: 0 };
+      const rect = span.getBoundingClientRect();
+      return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+    });
+  }, []);
+
   const setSize = useCallback(() => {
     if (!containerRef.current || !titleRef.current) return;
     const { width: containerW, height: containerH } = containerRef.current.getBoundingClientRect();
@@ -96,8 +118,9 @@ const TextPressure: React.FC<TextPressureProps> = ({
         const yRatio = containerH / textRect.height;
         setScaleY(yRatio); setLineHeight(yRatio);
       }
+      updateCoords();
     });
-  }, [chars.length, minFontSize, scale]);
+  }, [chars.length, minFontSize, scale, updateCoords]);
 
   useEffect(() => {
     const debouncedSetSize = debounce(setSize, 100);
@@ -107,22 +130,27 @@ const TextPressure: React.FC<TextPressureProps> = ({
   }, [setSize]);
 
   useEffect(() => {
+    if (!isInView) return;
     let rafId: number;
     const animate = () => {
       mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
       mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
-      if (titleRef.current) {
-        const titleRect = titleRef.current.getBoundingClientRect();
-        const maxDist = titleRect.width / 2;
-        spansRef.current.forEach(span => {
-          if (!span) return;
-          const rect = span.getBoundingClientRect();
-          const charCenter = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+      
+      if (titleRef.current && spanCoords.current.length > 0) {
+        const maxDist = titleRef.current.offsetWidth / 2;
+        spansRef.current.forEach((span, i) => {
+          if (!span || !spanCoords.current[i]) return;
+          const coords = spanCoords.current[i];
+          const charCenter = { 
+            x: coords.x + coords.width / 2, 
+            y: coords.y + coords.height / 2 
+          };
           const d = dist(mouseRef.current, charCenter);
           const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 100;
           const wght = weight ? Math.floor(getAttr(d, maxDist, 100, 900)) : 400;
           const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : '0';
           const alphaVal = alpha ? getAttr(d, maxDist, 0, 1).toFixed(2) : '1';
+          
           span.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
           if (alpha) span.style.opacity = alphaVal;
         });
@@ -131,7 +159,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
     };
     animate();
     return () => cancelAnimationFrame(rafId);
-  }, [width, weight, italic, alpha]);
+  }, [isInView, width, weight, italic, alpha]);
 
   const styleElement = useMemo(() => (
     <style>{`

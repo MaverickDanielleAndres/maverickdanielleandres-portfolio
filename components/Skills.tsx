@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
+import Image from "next/image";
 import CursorDitherTrail from "@/components/ui/cursor-dither-trail";
 import RotatingText from "@/components/RotatingText";
 import { Component as MorphingCardStack } from "@/components/ui/morphing-card-stack";
@@ -220,11 +221,12 @@ export default function Skills() {
                 animate={isFilled ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.92 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
-                <img
+                <Image
                   src={skill.icon}
                   alt={skill.name}
                   width={48}
                   height={48}
+                  className="object-contain"
                 />
               </motion.div>
 
