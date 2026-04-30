@@ -5,47 +5,54 @@ import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import { X, Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { useTheme } from 'next-themes';
 
 const NAV_LINKS = [
-  { href: '/',             label: 'Home' },
-  { href: '#about',        label: 'About' },
-  { href: '#skills',       label: 'Skills' },
-  { href: '#projects',     label: 'Work' },
+  { href: '/', label: 'Home' },
+  { href: '#about', label: 'About' },
+  { href: '#skills', label: 'Skills' },
+  { href: '#projects', label: 'Work' },
   { href: '#certificates', label: 'Certs' },
-  { href: '#contact',      label: 'Contact' },
+  { href: '#contact', label: 'Contact' },
 ];
 
 const SOCIAL_LINKS = [
-  { href: 'https://github.com/MaverickDanielleAndres',        label: 'GitHub' },
+  { href: 'https://github.com/MaverickDanielleAndres', label: 'GitHub' },
   { href: 'https://linkedin.com/in/maverick-danielle-andres-641564373', label: 'LinkedIn' },
-  { href: 'https://facebook.com',                             label: 'Facebook' },
-  { href: 'https://instagram.com',                            label: 'Instagram' },
+  { href: 'https://www.facebook.com/maverickdanielle.andres', label: 'Facebook' },
+  { href: 'https://www.instagram.com/mavs_verick/', label: 'Instagram' },
 ];
 
 const easeOut: [number, number, number, number] = [0.76, 0, 0.24, 1];
 
 const panelVariants: Variants = {
   initial: { x: '100%' },
-  enter:   { x: 0,      transition: { duration: 0.7, ease: easeOut } },
-  exit:    { x: '100%', transition: { duration: 0.6, ease: easeOut } },
+  enter: { x: 0, transition: { duration: 0.7, ease: easeOut } },
+  exit: { x: '100%', transition: { duration: 0.6, ease: easeOut } },
 };
 
 const backdropVariants: Variants = {
   initial: { opacity: 0 },
-  enter:   { opacity: 1, transition: { duration: 0.4 } },
-  exit:    { opacity: 0, transition: { duration: 0.4, delay: 0.2 } },
+  enter: { opacity: 1, transition: { duration: 0.4 } },
+  exit: { opacity: 0, transition: { duration: 0.4, delay: 0.2 } },
 };
 
 const linkVariants: Variants = {
   initial: { y: 60, opacity: 0 },
   enter: { y: 0, opacity: 1 },
-  exit:  { y: 40, opacity: 0 },
+  exit: { y: 40, opacity: 0 },
 };
 
 export function Offcanvas() {
   const [isOpen, setOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState('/');
   const pathname = usePathname();
+  const [activeHref, setActiveHref] = useState(pathname);
+
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const isDark = mounted && resolvedTheme === 'dark';
 
   // Close on route change
   useEffect(() => { setOpen(false); }, [pathname]);
@@ -67,6 +74,7 @@ export function Offcanvas() {
           background: isOpen ? 'var(--accent)' : 'var(--bg)',
           color: isOpen ? '#fff' : 'var(--fg)',
           border: isOpen ? 'none' : '1px solid var(--border-subtle)',
+          boxShadow: "var(--shadow-subtle)",
         }}
       >
         <AnimatePresence mode="wait" initial={false}>

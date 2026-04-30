@@ -11,9 +11,9 @@ const GitHubCalendar = dynamic(() => (import("react-github-calendar") as any).th
   loading: () => <div className="w-full h-[200px] animate-pulse bg-white/5 rounded-lg" />
 }) as React.ComponentType<any>;
 
-import { 
-  SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, 
-  SiNodedotjs, SiPostgresql, SiSupabase, SiGit 
+import {
+  SiReact, SiNextdotjs, SiTypescript, SiTailwindcss,
+  SiNodedotjs, SiPostgresql, SiSupabase, SiGit
 } from "react-icons/si";
 import SpotlightCard from "@/components/ui/SpotlightCard";
 import PixelCard from "@/components/ui/PixelCard";
@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 
 const TECH_STACK = [
   { name: "React", icon: SiReact, color: "#61DAFB" },
-  { name: "Next.js", icon: SiNextdotjs, color: "#ffffff" },
+  { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", color: "#ffffff", isCustom: true },
   { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
   { name: "Tailwind", icon: SiTailwindcss, color: "#06B6D4" },
   { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
@@ -43,6 +43,12 @@ const EXPERIENCE = [
     role: "Full Stack Developer",
     year: "2024–2026",
     description: "Completed multiple freelance projects including full-system builds and frontend tasks, delivering end-to-end web applications for student and private clients with a focus on usability and performance.",
+  },
+  {
+    company: "Dept. of Education – Central",
+    role: "Office Clerk",
+    year: "2024",
+    description: "Managed high-accuracy data encoding for 1,000+ documents and optimized filing workflows, reducing retrieval time by 30% for administrative staff.",
   },
 ];
 
@@ -69,16 +75,16 @@ export default function ActivitySection() {
 
   const itemVariants: any = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
       transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
     },
   };
 
   return (
-    <section 
-      id="activity" 
+    <section
+      id="activity"
       ref={containerRef}
       className="relative py-20 px-[var(--container-px)] overflow-hidden"
       style={{ background: "var(--bg-about)" }}
@@ -87,91 +93,78 @@ export default function ActivitySection() {
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        className="max-w-7xl mx-auto space-y-8"
+        className="max-w-7xl mx-auto space-y-12"
       >
-        {/* Top Row: Experience & Tech Stack */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* Work Experience */}
-          <motion.div variants={itemVariants} className="h-full">
-            <SpotlightCard className="h-full flex flex-col justify-between" spotlightColor="rgba(96, 85, 240, 0.15)">
-              <div>
-                <h3 className="text-xl font-medium mb-8 text-[var(--fg)]">Work Experience</h3>
-                <div className="space-y-8">
-                  {EXPERIENCE.map((exp, i) => (
-                    <div key={i} className="relative pl-6 border-l border-[var(--border-subtle)] group">
-                      <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-semibold text-lg text-[var(--fg)]">{exp.company}</h4>
-                        <span className="text-sm font-medium text-[var(--fg-muted)]">{exp.year}</span>
+        {/* Work Experience - Responsive Grid Layout */}
+        <motion.div variants={itemVariants} className="w-full">
+          <SpotlightCard className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" spotlightColor="rgba(96, 85, 240, 0.15)">
+            <div className="mb-6 px-2">
+              <h3 className="text-xl font-medium text-[var(--fg)]">Work Experience</h3>
+              <p className="text-sm text-[var(--fg-muted)] mt-1">A timeline of my professional growth and technical leadership</p>
+            </div>
+            
+            <div className="flex flex-col md:flex-row items-stretch justify-between gap-1 md:gap-0 relative">
+              {EXPERIENCE.map((exp, i) => (
+                <React.Fragment key={i}>
+                  <div className="flex-1 relative group p-2 md:p-4 rounded-2xl transition-colors hover:bg-white/[0.02]">
+                    <div className="flex flex-col h-full">
+                      <div className="flex justify-between items-start mb-2 md:mb-3">
+                        <div className="flex-1 pr-2">
+                          <h4 className="font-bold text-lg text-[var(--fg)] tracking-tight leading-tight">{exp.company}</h4>
+                          <p className="text-[var(--accent)] font-bold text-[10px] mt-0.5 uppercase tracking-wider">{exp.role}</p>
+                        </div>
+                        <span className="shrink-0 text-[10px] font-black text-[var(--fg-muted)] bg-secondary/50 px-2 py-1 rounded-md border border-border/30">{exp.year}</span>
                       </div>
-                      <p className="text-[var(--accent)] font-medium text-sm mb-3">{exp.role}</p>
-                      <p className="text-sm leading-relaxed text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors duration-300">
+                      <p className="text-[11px] leading-relaxed text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors duration-300">
                         {exp.description}
                       </p>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </SpotlightCard>
-          </motion.div>
-
-          {/* Tech Stack */}
-          <motion.div variants={itemVariants} className="h-full">
-            <SpotlightCard className="h-full" spotlightColor="rgba(96, 85, 240, 0.15)">
-              <h3 className="text-xl font-medium mb-8 text-[var(--fg)]">Current Tech Stack</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {TECH_STACK.map((tech, i) => (
-                  <motion.div key={i} whileHover={{ y: -5 }}>
-                    <PixelCard 
-                      variant="blue" 
-                      colors={`${tech.color},${tech.color}88,${tech.color}44`}
-                      gap={5}
-                      className="w-full h-full aspect-square border-[var(--border-subtle)]"
-                    >
-                      <div className="flex flex-col items-center justify-center h-full w-full p-3">
-                        <tech.icon 
-                          size={48} 
-                          style={{ color: tech.color }}
-                          className="drop-shadow-[0_0_5px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:scale-110"
-                        />
-                        <span className="text-[8px] uppercase tracking-tighter font-bold text-[var(--fg-muted)] mt-1">
-                          {tech.name}
-                        </span>
+                  </div>
+                  
+                  {/* Decorative Separator between items (only on desktop) */}
+                  {i < EXPERIENCE.length - 1 && (
+                    <div className="hidden md:flex items-center justify-center w-16 shrink-0">
+                      <div className="w-px h-12 bg-gradient-to-b from-transparent via-border/60 to-transparent relative">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[var(--accent)] shadow-[0_0_6px_var(--accent)]" />
                       </div>
-                    </PixelCard>
-                  </motion.div>
-                ))}
-              </div>
-            </SpotlightCard>
-          </motion.div>
-        </div>
+                    </div>
+                  )}
+
+                  {/* Horizontal Separator for Mobile */}
+                  {i < EXPERIENCE.length - 1 && (
+                    <div className="md:hidden w-full h-px bg-gradient-to-r from-transparent via-border/60 to-transparent my-1" />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </SpotlightCard>
+        </motion.div>
 
         {/* Bottom Row: GitHub Activity */}
         <motion.div variants={itemVariants} className="w-full">
-          <SpotlightCard className="w-full overflow-hidden" spotlightColor="rgba(96, 85, 240, 0.1)">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <SpotlightCard className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" spotlightColor="rgba(96, 85, 240, 0.1)">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 px-2">
               <div>
                 <h3 className="text-xl font-medium text-[var(--fg)]">GitHub Activity</h3>
                 <p className="text-sm text-[var(--fg-muted)] mt-1">My open source contributions and coding streak</p>
               </div>
-              <a 
-                href="https://github.com/MaverickDanielleAndres" 
-                target="_blank" 
+              <a
+                href="https://github.com/MaverickDanielleAndres"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs font-medium px-4 py-2 rounded-full border border-[var(--border-subtle)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-all duration-300"
               >
                 View Profile
               </a>
             </div>
-            
-            <div className="w-full -mx-8 sm:-mx-20 md:-mx-8 lg:mx-0">
-              <div className="w-full py-6 bg-white/5 backdrop-blur-md border-y border-[var(--border-subtle)] overflow-hidden">
-                <div className="w-full px-4 overflow-x-auto scrollbar-hide">
-                  <GitHubCalendar 
-                    username="MaverickDanielleAndres" 
+
+            <div className="w-full bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden">
+              <div className="w-full overflow-x-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--accent)] scrollbar-track-transparent">
+                <div className="min-w-[800px]">
+                  <GitHubCalendar
+                    username="MaverickDanielleAndres"
                     fontSize={12}
-                    blockSize={18}
+                    blockSize={16}
                     blockMargin={5}
                     blockRadius={3}
                     theme={calendarTheme}

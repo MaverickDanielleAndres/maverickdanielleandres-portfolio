@@ -30,8 +30,8 @@ const PROJECTS: Project[] = [
     description: "Designed wireframes, high-fidelity mockups, and component libraries for web applications. Covers user flows, responsive layouts, and design-to-developer handoff assets.",
     tech: ["Figma"],
     features: ["Wireframes", "Hi-Fi Mockups", "Component Library", "User Flows", "Responsive Design"],
-    image: "/Projects/Figma%20Designs/screenshots/Figma%20%281%29.png",
-    screenshots: Array.from({ length: 10 }, (_, i) => `/Projects/Figma%20Designs/screenshots/Figma%20%28${i + 1}%29.png`),
+    image: "/Projects/Figma Designs/screenshots/Figma (1).png",
+    screenshots: Array.from({ length: 10 }, (_, i) => `/Projects/Figma Designs/screenshots/Figma (${i + 1}).png`),
     contributions: [
       "Led the end-to-end design process from concept to hi-fi mockup",
       "Created low-fidelity wireframes to map out user flows and layouts",
@@ -48,11 +48,11 @@ const PROJECTS: Project[] = [
     description: "A full-featured LMS for schools with course management, student tracking, assignments, and grading functionality.",
     tech: ["PHP", "MySQL", "Bootstrap", "JavaScript"],
     features: ["Course Management", "Student Tracking", "Assignments", "Grading System"],
-    image: "/Projects/Learning%20Management%20System/screenshots/Priority.png",
+    image: "/Projects/Learning Management System/screenshots/Priority.png",
     screenshots: [
-      "/Projects/Learning%20Management%20System/screenshots/Priority.png",
-      ...Array.from({ length: 8 }, (_, i) => `/Projects/Learning%20Management%20System/screenshots/Priority%20%28${i + 1}%29.png`),
-      ...Array.from({ length: 23 }, (_, i) => `/Projects/Learning%20Management%20System/screenshots/lms%20%28${i + 1}%29.png`),
+      "/Projects/Learning Management System/screenshots/Priority.png",
+      ...Array.from({ length: 8 }, (_, i) => `/Projects/Learning Management System/screenshots/Priority (${i + 1}).png`),
+      ...Array.from({ length: 23 }, (_, i) => `/Projects/Learning Management System/screenshots/lms (${i + 1}).png`),
     ],
     live: "https://sagadhs-lms.com/login/",
     github: "https://github.com/MaverickDanielleAndres/LMS",
@@ -107,8 +107,8 @@ const PROJECTS: Project[] = [
     description: "Enterprise-grade HRMS for Philippine companies — manages employee lifecycles, NFC-based attendance, leave workflows, and automated payroll with government compliance (SSS, PhilHealth, Pag-IBIG, BIR).",
     tech: ["Next.js 14", "TypeScript", "Supabase", "Tailwind CSS", "shadcn/ui"],
     features: ["NFC Attendance", "Payroll Automation", "Leave Management", "Digital Payslips", "Kiosk Mode", "Intern Tracking"],
-    image: "/Projects/Monitoring%20and%20Payroll%20System/Monitoring%20system%20with%20payroll%20%281%29.png",
-    screenshots: Array.from({ length: 28 }, (_, i) => `/Projects/Monitoring%20and%20Payroll%20System/Monitoring%20system%20with%20payroll%20%28${i + 1}%29.png`),
+    image: "/Projects/Monitoring and Payroll System/Monitoring system with payroll (1).png",
+    screenshots: Array.from({ length: 28 }, (_, i) => `/Projects/Monitoring and Payroll System/Monitoring system with payroll (${i + 1}).png`),
     live: "https://monitoring-system-web.vercel.app/login",
     github: "https://github.com/MaverickDanielleAndres/Monitoring-System",
     contributions: [
@@ -127,8 +127,8 @@ const PROJECTS: Project[] = [
     description: "A wedding invitation website for client with animation, envelope effects, music, and dramatic animations. Very responsive made for mobile view.",
     tech: ["Next.js", "Framer Motion", "CSS Animations"],
     features: ["Envelope Effect", "Background Music", "RSVP Form", "Animated Timeline"],
-    image: "/Projects/Wedding%20Invitaition%20Website/WeddingInvitationWebsite%20%281%29.png",
-    screenshots: Array.from({ length: 28 }, (_, i) => `/Projects/Wedding%20Invitaition%20Website/WeddingInvitationWebsite%20%28${i + 1}%29.png`),
+    image: "/Projects/Wedding Invitaition Website/WeddingInvitationWebsite (1).png",
+    screenshots: Array.from({ length: 28 }, (_, i) => `/Projects/Wedding Invitaition Website/WeddingInvitationWebsite (${i + 1}).png`),
     live: "https://allen-vea-wedding.vercel.app/",
     github: "https://github.com/MaverickDanielleAndres/Allen-Vea-Wedding-Invitation-Website",
     contributions: [
@@ -222,8 +222,8 @@ const PROJECTS: Project[] = [
     description: "A fitness web app with three portals — user, coach, and admin. Covers workouts, nutrition, hydration, goal tracking, coach-client management, and community features.",
     tech: ["Next.js 16", "React 19", "Zustand", "Supabase", "Recharts"],
     features: ["Workout Tracking", "AI Nutrition Scan", "Coach Portal", "Meal Planner", "Community Feed", "Messaging"],
-    image: "/Projects/SuperFit%20Web/Superfit%20%281%29.png",
-    screenshots: Array.from({ length: 48 }, (_, i) => `/Projects/SuperFit%20Web/Superfit%20%28${i + 1}%29.png`),
+    image: "/Projects/SuperFit Web/Superfit (1).png",
+    screenshots: Array.from({ length: 48 }, (_, i) => `/Projects/SuperFit Web/Superfit (${i + 1}).png`),
     live: "https://superfit-web-app.vercel.app/",
     github: "https://github.com/MaverickDanielleAndres/superfit",
     contributions: [
@@ -242,8 +242,8 @@ const PROJECTS: Project[] = [
     description: "A professionally designed gym business website built with WordPress, featuring custom CSS styling and Elementor page builder for a polished, responsive front-end experience.",
     tech: ["WordPress", "Elementor", "Custom CSS"],
     features: ["Custom CSS", "Responsive Layout", "Services Section", "Membership Plans", "Contact Forms"],
-    image: "/Projects/WordPress%20&%20Shopify/wordpress%20%281%29.png",
-    screenshots: Array.from({ length: 16 }, (_, i) => `/Projects/WordPress%20&%20Shopify/wordpress%20%28${i + 1}%29.png`),
+    image: "/Projects/WordPress & Shopify/wordpress (1).png",
+    screenshots: Array.from({ length: 16 }, (_, i) => `/Projects/WordPress & Shopify/wordpress (${i + 1}).png`),
     live: "https://grindgym-website.infinityfreeapp.com/",
     contributions: [
       "Built the entire website solo from setup to launch",
@@ -261,8 +261,8 @@ const PROJECTS: Project[] = [
     description: "A comprehensive digital health management system for barangay health centers, enabling efficient patient records, appointment scheduling, and health monitoring.",
     tech: ["PHP", "MySQL", "Bootstrap", "JavaScript"],
     features: ["Patient Records", "Appointment Scheduling", "Health Monitoring", "Admin Dashboard"],
-    image: "/Projects/Barangay%20Health%20System/screenshots/Barangayhealthsystem%20%281%29.png",
-    screenshots: Array.from({ length: 10 }, (_, i) => `/Projects/Barangay%20Health%20System/screenshots/Barangayhealthsystem%20%28${i + 1}%29.png`),
+    image: "/Projects/Barangay Health System/screenshots/Barangayhealthsystem (1).png",
+    screenshots: Array.from({ length: 10 }, (_, i) => `/Projects/Barangay Health System/screenshots/Barangayhealthsystem (${i + 1}).png`),
     contributions: [
       "Designed and implemented the full-stack architecture",
       "Built patient records management system",
@@ -277,8 +277,8 @@ const PROJECTS: Project[] = [
     description: "A gym membership and registration management system with member tracking, payment processing, and class scheduling.",
     tech: ["PHP", "MySQL", "Bootstrap", "jQuery"],
     features: ["Member Registration", "Payment Tracking", "Class Scheduling", "Attendance"],
-    image: "/Projects/Gym%20Registration/screenshots/Gymregistration%20%281%29.png",
-    screenshots: Array.from({ length: 15 }, (_, i) => `/Projects/Gym%20Registration/screenshots/Gymregistration%20%28${i + 1}%29.png`),
+    image: "/Projects/Gym Registration/screenshots/Gymregistration (1).png",
+    screenshots: Array.from({ length: 15 }, (_, i) => `/Projects/Gym Registration/screenshots/Gymregistration (${i + 1}).png`),
     github: "https://github.com/MaverickDanielleAndres/Gym-Registration",
     contributions: [
       "Developed member registration and tracking",
@@ -389,7 +389,11 @@ function EnhancedLightbox({
                   className="object-contain"
                   quality={100}
                   priority
+                  unoptimized
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
+                  onError={(e: any) => {
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
+                  }}
                 />
               </div>
             </motion.div>
@@ -506,7 +510,11 @@ function ProjectModal({
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 priority
+                unoptimized
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
+                onError={(e: any) => {
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
                 <button
@@ -707,6 +715,7 @@ export default function Projects() {
         <AnimatePresence>
           {hovered !== null && (
             <motion.div
+              key={hovered}
               className="pointer-events-none fixed z-[9999] overflow-hidden rounded-2xl flex items-center justify-center"
               style={{
                 width: "clamp(280px, 30vw, 400px)",
@@ -715,22 +724,32 @@ export default function Projects() {
                 top: mousePos.y,
                 x: "-50%",
                 y: "-50%",
-                background: "#1a1a1a",
-                boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
+                background: "var(--bg)",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
               }}
-              initial={{ scale: 0, opacity: 0 }}
+              initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 150, damping: 20 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 400, 
+                damping: 30,
+                opacity: { duration: 0.15 }
+              }}
             >
               <Image
                 src={PROJECTS.find((p) => p.id === hovered)?.image || ""}
                 alt="preview"
                 fill
-                className="object-cover opacity-60"
+                className="object-cover transition-opacity duration-300 opacity-100"
                 sizes="(max-width: 768px) 40vw, 30vw"
+                unoptimized
+                onError={(e: any) => {
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600";
+                }}
               />
-              <div className="relative z-10 px-6 py-3 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white text-xs font-bold tracking-[0.2em] uppercase shadow-2xl">
+              <div className="absolute inset-0 bg-black/10 transition-opacity group-hover:opacity-30" />
+              <div className="relative z-10 px-6 py-3 rounded-full bg-white text-black text-xs font-black tracking-[0.2em] uppercase shadow-[0_10px_30px_rgba(0,0,0,0.3)] transform transition-transform hover:scale-110">
                 Click to View
               </div>
             </motion.div>

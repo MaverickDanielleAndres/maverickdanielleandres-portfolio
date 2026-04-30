@@ -3,9 +3,10 @@
 import { useState, type ReactNode } from "react"
 import { motion, AnimatePresence, LayoutGroup, type PanInfo } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { Grid3X3, Layers, LayoutList } from "lucide-react"
+import { Grid3X3, Layers } from "lucide-react"
+import PixelCard from "./PixelCard"
 
-export type LayoutMode = "stack" | "grid" | "list"
+export type LayoutMode = "stack" | "grid"
 
 export interface CardData {
   id: string
@@ -23,9 +24,8 @@ export interface MorphingCardStackProps {
 }
 
 const layoutIcons = {
-  stack: Layers,
   grid: Grid3X3,
-  list: LayoutList,
+  stack: Layers,
 }
 
 const SWIPE_THRESHOLD = 50
@@ -33,7 +33,7 @@ const SWIPE_THRESHOLD = 50
 export function Component({
   cards = [],
   className,
-  defaultLayout = "stack",
+  defaultLayout = "grid",
   onCardClick,
 }: MorphingCardStackProps) {
   const [layout, setLayout] = useState<LayoutMode>(defaultLayout)
@@ -45,46 +45,41 @@ export function Component({
     return null
   }
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (_: any, info: PanInfo) => {
     const { offset, velocity } = info
-    const swipe = Math.abs(offset.x) * velocity.x
-
-    if (offset.x < -SWIPE_THRESHOLD || swipe < -1000) {
-      // Swiped left - go to next card
-      setActiveIndex((prev) => (prev + 1) % cards.length)
-    } else if (offset.x > SWIPE_THRESHOLD || swipe > 1000) {
-      // Swiped right - go to previous card
-      setActiveIndex((prev) => (prev - 1 + cards.length) % cards.length)
+    
+    if (Math.abs(offset.x) > SWIPE_THRESHOLD || Math.abs(velocity.x) > 500) {
+      if (offset.x > 0 || velocity.x > 500) {
+        setActiveIndex((prev) => (prev - 1 + cards.length) % cards.length)
+      } else {
+        setActiveIndex((prev) => (prev + 1) % cards.length)
+      }
     }
-    setIsDragging(false)
+    // Set isDragging to false after a short delay to prevent click fire
+    setTimeout(() => setIsDragging(false), 50)
   }
 
   const getStackOrder = () => {
     const reordered = []
-    for (let i = 0; i < cards.length; i++) {
+    const visibleCount = Math.min(cards.length, 5)
+    for (let i = 0; i < visibleCount; i++) {
       const index = (activeIndex + i) % cards.length
       reordered.push({ ...cards[index], stackPosition: i })
     }
-    return reordered.reverse() // Reverse so top card renders last (on top)
+    return reordered.reverse()
   }
 
   const getLayoutStyles = (stackPosition: number) => {
     switch (layout) {
       case "stack":
         return {
-          top: stackPosition * 8,
-          left: stackPosition * 8,
-          zIndex: cards.length - stackPosition,
-          rotate: (stackPosition - 1) * 2,
-        }
-      case "grid":
-        return {
           top: 0,
           left: 0,
-          zIndex: 1,
-          rotate: 0,
+          zIndex: cards.length - stackPosition,
+          rotate: (stackPosition % 2 === 0 ? 1 : -1) * stackPosition * 3,
+          scale: 1 - stackPosition * 0.01,
         }
-      case "list":
+      case "grid":
         return {
           top: 0,
           left: 0,
@@ -95,16 +90,14 @@ export function Component({
   }
 
   const containerStyles = {
-    stack: "relative h-64 w-64 sm:h-72 sm:w-72",
-    grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4",
-    list: "flex flex-col gap-3",
+    stack: "relative h-[240px] sm:h-[280px] w-full max-w-[240px] sm:max-w-[300px] mt-12 mb-16",
+    grid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4",
   }
 
   const displayCards = layout === "stack" ? getStackOrder() : cards.map((c, i) => ({ ...c, stackPosition: i }))
 
   return (
     <div className={cn("space-y-4", className)}>
-      {/* Layout Toggle */}
       <div className="flex items-center justify-center gap-1 rounded-lg bg-secondary/50 p-1 w-fit mx-auto">
         {(Object.keys(layoutIcons) as LayoutMode[]).map((mode) => {
           const Icon = layoutIcons[mode]
@@ -126,7 +119,6 @@ export function Component({
         })}
       </div>
 
-      {/* Cards Container */}
       <LayoutGroup>
         <motion.div layout className={cn(containerStyles[layout], "mx-auto")}>
           <AnimatePresence mode="popLayout">
@@ -134,6 +126,33 @@ export function Component({
               const styles = getLayoutStyles(card.stackPosition)
               const isExpanded = expandedCard === card.id
               const isTopCard = layout === "stack" && card.stackPosition === 0
+
+              const content = (
+                <div className={cn(
+                  "flex relative z-10 w-full h-full",
+                  layout === "stack" ? "flex-col gap-3 p-5 sm:p-6" : "flex-row items-start gap-3 px-3.5 py-2 sm:py-2.5"
+                )}>
+                  <div className={cn(
+                    "flex shrink-0 items-center justify-center rounded-xl bg-secondary/50 text-foreground border border-border/50 shadow-sm",
+                    layout === "stack" ? "h-10 w-10" : "h-8 w-8 mt-0.5"
+                  )}>
+                    <div className={layout === "stack" ? "scale-90" : "scale-75"}>{card.icon}</div>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className={cn(
+                      "font-bold text-foreground tracking-tight leading-tight mb-1",
+                      layout === "stack" ? "text-lg" : "text-sm"
+                    )}>{card.title}</h3>
+                    <p className={cn(
+                      "text-muted-foreground leading-snug font-medium",
+                      layout === "stack" ? "text-sm line-clamp-5" : "text-[11px] line-clamp-2"
+                    )}>
+                      {card.description}
+                    </p>
+                  </div>
+                </div>
+              )
 
               return (
                 <motion.div
@@ -154,55 +173,42 @@ export function Component({
                   }}
                   drag={isTopCard ? "x" : false}
                   dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.7}
+                  dragElastic={1}
                   onDragStart={() => setIsDragging(true)}
                   onDragEnd={handleDragEnd}
-                  whileDrag={{ scale: 1.02, cursor: "grabbing" }}
-                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileDrag={{ scale: 1.05, cursor: "grabbing" }}
+                  whileHover={isTopCard ? { scale: 1.02, y: -4 } : {}}
                   onClick={() => {
                     if (isDragging) return
                     setExpandedCard(isExpanded ? null : card.id)
                     onCardClick?.(card)
                   }}
                   className={cn(
-                    "cursor-pointer rounded-xl border border-border bg-card p-3 sm:p-3.5",
-                    "hover:border-primary/50 transition-colors shadow-sm",
-                    layout === "stack" && "absolute w-64 h-auto min-h-[160px] bg-[var(--bg)]",
-                    layout === "stack" && isTopCard && "cursor-grab active:cursor-grabbing",
-                    layout === "grid" && "w-full h-full min-h-[100px]",
-                    layout === "list" && "w-full",
+                    "relative touch-none",
+                    layout === "stack" 
+                      ? "cursor-grab active:cursor-grabbing rounded-[2rem] border border-border/50 absolute w-full max-w-[240px] sm:max-w-[300px] aspect-square bg-card/90 dark:bg-card/40 backdrop-blur-2xl shadow-xl" 
+                      : "cursor-pointer rounded-2xl border border-border/40 w-full min-h-[85px] bg-card/70 dark:bg-card/30 backdrop-blur-md shadow-sm hover:border-primary/50 transition-colors",
                     isExpanded && "ring-2 ring-primary z-50",
                   )}
-                  style={{
-                    backgroundColor: card.color || undefined,
-                  }}
                 >
-                  <div className="flex items-start gap-3">
-                    {card.icon && (
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-foreground">
-                        {card.icon}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-card-foreground truncate">{card.title}</h3>
-                      <p
-                        className={cn(
-                          "text-sm text-muted-foreground mt-1",
-                          layout === "stack" && "line-clamp-3",
-                          layout === "grid" && "line-clamp-2",
-                          layout === "list" && "line-clamp-1",
+                  <div className="relative z-10 w-full h-full flex flex-col">
+                    {layout === "grid" ? (
+                      <PixelCard variant="blue" className="!w-full !h-full !border-none !bg-transparent">
+                        <div className="p-4 relative z-10">{content}</div>
+                      </PixelCard>
+                    ) : (
+                      <>
+                        {content}
+                        {isTopCard && (
+                          <div className="absolute bottom-8 left-0 right-0 text-center">
+                            <span className="text-sm font-medium text-muted-foreground/40">
+                              Swipe to navigate
+                            </span>
+                          </div>
                         )}
-                      >
-                        {card.description}
-                      </p>
-                    </div>
+                      </>
+                    )}
                   </div>
-
-                  {isTopCard && (
-                    <div className="absolute bottom-2 left-0 right-0 text-center">
-                      <span className="text-xs text-muted-foreground/50">Swipe to navigate</span>
-                    </div>
-                  )}
                 </motion.div>
               )
             })}
@@ -217,8 +223,8 @@ export function Component({
               key={index}
               onClick={() => setActiveIndex(index)}
               className={cn(
-                "h-1.5 rounded-full transition-all",
-                index === activeIndex ? "w-4 bg-primary" : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50",
+                "h-2 rounded-full transition-all duration-300",
+                index === activeIndex ? "w-6 bg-foreground" : "w-2 bg-muted-foreground/20 hover:bg-muted-foreground/40",
               )}
               aria-label={`Go to card ${index + 1}`}
             />

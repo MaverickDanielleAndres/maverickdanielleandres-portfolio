@@ -27,7 +27,7 @@ export default function ThemeToggle() {
         background: "var(--bg)",
         padding: "3px",
         gap: 2,
-        boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
+        boxShadow: "var(--shadow-subtle)",
       }}
     >
       {/* Light button */}

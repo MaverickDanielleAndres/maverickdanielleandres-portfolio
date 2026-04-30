@@ -501,7 +501,8 @@ export default function Certificates() {
         {isEnlarged && selected && (
           <Portal>
             <motion.div
-              className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/95 p-4 md:p-12"
+              className="fixed inset-0 z-[100000] flex items-center justify-center p-4 md:p-12"
+              style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

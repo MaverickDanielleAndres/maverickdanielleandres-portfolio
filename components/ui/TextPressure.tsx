@@ -135,22 +135,22 @@ const TextPressure: React.FC<TextPressureProps> = ({
     const animate = () => {
       mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
       mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
-      
+
       if (titleRef.current && spanCoords.current.length > 0) {
         const maxDist = titleRef.current.offsetWidth / 2;
         spansRef.current.forEach((span, i) => {
           if (!span || !spanCoords.current[i]) return;
           const coords = spanCoords.current[i];
-          const charCenter = { 
-            x: coords.x + coords.width / 2, 
-            y: coords.y + coords.height / 2 
+          const charCenter = {
+            x: coords.x + coords.width / 2,
+            y: coords.y + coords.height / 2
           };
           const d = dist(mouseRef.current, charCenter);
           const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 100;
           const wght = weight ? Math.floor(getAttr(d, maxDist, 100, 900)) : 400;
           const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : '0';
           const alphaVal = alpha ? getAttr(d, maxDist, 0, 1).toFixed(2) : '1';
-          
+
           span.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
           if (alpha) span.style.opacity = alphaVal;
         });

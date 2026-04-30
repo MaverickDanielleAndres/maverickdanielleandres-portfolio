@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useRef, ReactNode } from 'react';
+import { useRef } from 'react';
 import './SpotlightCard.css';
 
 interface SpotlightCardProps {
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
   spotlightColor?: string;
 }
@@ -12,7 +12,7 @@ interface SpotlightCardProps {
 const SpotlightCard = ({ children, className = '', spotlightColor = 'rgba(255, 255, 255, 0.25)' }: SpotlightCardProps) => {
   const divRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseMove: React.MouseEventHandler<HTMLDivElement> = e => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!divRef.current) return;
     const rect = divRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;

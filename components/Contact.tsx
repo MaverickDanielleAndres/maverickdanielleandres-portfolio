@@ -17,26 +17,56 @@ export default function Contact() {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
 
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    if (!form.name || !form.email || !form.message) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    if (!validateEmail(form.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
     setStatus("sending");
+    const loadingToast = toast.loading("Sending your message...");
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      setStatus(res.ok ? "sent" : "error");
+
+      const data = await res.json();
+
       if (res.ok) {
+        setStatus("sent");
         setForm({ name: "", email: "", subject: "", message: "" });
-        toast.success("Message sent successfully!");
+        toast.dismiss(loadingToast);
+        toast.success("Message sent! I'll get back to you soon.");
       } else {
-        toast.error("Failed to send message.");
+        setStatus("error");
+        toast.dismiss(loadingToast);
+        toast.error(data.error || "Failed to send message. Please try again.");
       }
     } catch {
       setStatus("error");
-      toast.error("An error occurred. Please try again.");
+      toast.dismiss(loadingToast);
+      toast.error("A network error occurred. Please try again later.");
     }
+    
     setTimeout(() => setStatus("idle"), 5000);
   };
 
@@ -168,7 +198,8 @@ export default function Contact() {
               {[
                 { href: "https://github.com/MaverickDanielleAndres", label: "GitHub" },
                 { href: "https://linkedin.com/in/maverick-danielle-andres-641564373", label: "LinkedIn" },
-                { href: "https://facebook.com", label: "Facebook" },
+                { href: "https://www.facebook.com/maverickdanielle.andres", label: "Facebook" },
+                { href: "https://www.instagram.com/mavs_verick/", label: "Instagram" },
               ].map(({ href, label }) => (
                 <a
                   key={href}
@@ -275,7 +306,8 @@ export default function Contact() {
           {[
             { href: "https://github.com/MaverickDanielleAndres", label: "GitHub" },
             { href: "https://linkedin.com/in/maverick-danielle-andres-641564373", label: "LinkedIn" },
-            { href: "https://facebook.com", label: "Facebook" },
+            { href: "https://www.facebook.com/maverickdanielle.andres", label: "Facebook" },
+            { href: "https://www.instagram.com/mavs_verick/", label: "Instagram" },
           ].map(({ href, label }) => (
             <a
               key={href}

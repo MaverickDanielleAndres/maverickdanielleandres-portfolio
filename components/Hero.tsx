@@ -152,7 +152,7 @@ export default function Hero() {
 
         {/* Right Column / Background: Profile Image */}
         <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-end lg:justify-center items-end h-full z-0 md:z-[1] opacity-65 md:opacity-100 pointer-events-none overflow-hidden md:overflow-visible">
-          <div className="relative w-full min-w-[500px] md:w-[130%] lg:w-[120%] max-w-[800px] h-[85%] md:h-[95%] lg:h-[105%] flex justify-center items-end mr-[-55%] md:mr-[-15%] lg:mr-0 mb-[-35%] md:mb-[-5%]">
+          <div className="relative w-full min-w-[450px] sm:min-w-[550px] md:w-[130%] lg:w-[120%] max-w-[800px] h-[85%] md:h-[95%] lg:h-[105%] flex justify-center items-end mr-[-45%] sm:mr-[-15%] md:mr-[-15%] lg:mr-0 mb-[-30%] md:mb-[-5%]">
             <Image
               src="/updatedprofile_pic.png"
               alt="Maverick Danielle Andres"
@@ -161,6 +161,7 @@ export default function Hero() {
               style={{ top: "auto", bottom: 0, height: "100%" }}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
               priority
+              loading="eager"
             />
           </div>
         </div>

@@ -15,8 +15,8 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
     <motion.div
       exit={{ opacity: 0, filter: "blur(10px)" }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 overflow-hidden flex items-center justify-center"
-      style={{ zIndex: 9999, background: "#111111" }}
+      className="fixed inset-0 overflow-hidden flex items-center justify-center bg-[#111111]"
+      style={{ zIndex: 9999, position: "fixed" }}
     >
       <div style={{ position: "absolute", inset: 0 }}>
         <MetaBalls
