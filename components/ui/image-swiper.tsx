@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 
 interface ImageSwiperProps {
@@ -206,11 +207,14 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
             transform: `perspective(var(--card-perspective)) translateZ(calc(-1 * var(--card-z-offset) * var(--i))) translateY(calc(var(--card-y-offset) * var(--i))) translateX(var(--swipe-x, 0px)) rotateY(var(--swipe-rotate, 0deg))`,
           } as React.CSSProperties}
         >
-          <img
+          <Image
             src={imageList[originalIndex]}
             alt={`Swiper image ${originalIndex + 1}`}
+            fill
             className="w-full h-full object-cover select-none pointer-events-none"
             draggable={false}
+            priority={displayIndex < 2}
+            sizes={`${cardWidth}px`}
           />
         </article>
       ))}
