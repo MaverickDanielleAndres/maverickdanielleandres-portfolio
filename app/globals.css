@@ -203,3 +203,9 @@ html.lenis, html.lenis body { height: auto; }
   }
   .marquee-track { animation-play-state: paused; }
 }
+/* ===== GitHub Calendar Responsive ===== */
+.react-activity-calendar svg {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+}

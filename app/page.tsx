@@ -19,6 +19,7 @@ const TechStrip = dynamic(() => import("@/components/TechStrip"), { ssr: false }
 const Skills = dynamic(() => import("@/components/Skills"), { ssr: false });
 const Projects = dynamic(() => import("@/components/Projects"), { ssr: false });
 const Certificates = dynamic(() => import("@/components/Certificates"), { ssr: false });
+const ActivitySection = dynamic(() => import("@/components/ActivitySection"), { ssr: false });
 const Contact = dynamic(() => import("@/components/Contact"), { ssr: false });
 
 // --- Dynamic-only UI components ---
@@ -71,16 +72,19 @@ export default function Home() {
                 <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
                   <TechStrip />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={4} bg="var(--bg-skills)">
+                <OverlapWrapper zIndex={4} bg="var(--bg-about)">
+                  <ActivitySection />
+                </OverlapWrapper>
+                <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
                   <Skills />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={5} bg="var(--bg-projects)">
+                <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
                   <Projects />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={6} bg="var(--bg-certificates)">
+                <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
                   <Certificates />
                 </OverlapWrapper>
-                <OverlapWrapper zIndex={7} bg="var(--bg-contact)">
+                <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
                   <Contact />
                 </OverlapWrapper>
               </main>
