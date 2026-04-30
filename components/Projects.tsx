@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Github, ExternalLink } from "lucide-react";
 import Portal from "@/components/Portal";
 
 type Project = {
@@ -13,6 +13,7 @@ type Project = {
   year: string;
   description: string;
   tech: string[];
+  features: string[];
   image: string;
   screenshots: string[];
   github?: string;
@@ -23,90 +24,38 @@ type Project = {
 const PROJECTS: Project[] = [
   {
     id: 1,
-    title: "Barangay Health System",
-    category: "Full-Stack Web",
-    year: "2024",
-    description:
-      "A comprehensive digital health management system for barangay health centers, enabling efficient patient records, appointment scheduling, and health monitoring.",
-    tech: ["PHP", "MySQL", "Bootstrap", "JavaScript"],
-    image: "/Projects/Barangay Health System/preview image/Preview.png",
-    screenshots: [
-      "/Projects/Barangay Health System/preview image/Preview.png",
-      "/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133108.png",
-      "/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133117.png",
-      "/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133129.png",
-      "/Projects/Barangay Health System/screenshots/Screenshot 2025-12-11 133141.png",
-    ],
-    github: "https://github.com/MaverickDanielleAndres",
+    title: "UI/UX Design — Figma",
+    category: "Wireframes & Design Systems",
+    year: "2024–2026",
+    description: "Designed wireframes, high-fidelity mockups, and component libraries for web applications. Covers user flows, responsive layouts, and design-to-developer handoff assets.",
+    tech: ["Figma"],
+    features: ["Wireframes", "Hi-Fi Mockups", "Component Library", "User Flows", "Responsive Design"],
+    image: "/Projects/Figma%20Designs/screenshots/Figma%20%281%29.png",
+    screenshots: Array.from({ length: 10 }, (_, i) => `/Projects/Figma%20Designs/screenshots/Figma%20%28${i + 1}%29.png`),
     contributions: [
-      "Designed and implemented the full-stack architecture",
-      "Built patient records management system",
-      "Developed appointment scheduling module",
+      "Led the end-to-end design process from concept to hi-fi mockup",
+      "Created low-fidelity wireframes to map out user flows and layouts",
+      "Produced high-fidelity, pixel-perfect UI designs ready for development",
+      "Built reusable component libraries for design consistency",
+      "Designed responsive layouts for both desktop and mobile breakpoints",
     ],
   },
   {
     id: 2,
-    title: "E-Community Platform",
-    category: "Web Application",
-    year: "2023",
-    description:
-      "A community engagement platform connecting residents with local services, announcements, and community events.",
-    tech: ["React", "Node.js", "MongoDB", "Express"],
-    image: "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110325.png",
-    screenshots: [
-      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110325.png",
-      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110332.png",
-      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110342.png",
-      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110351.png",
-      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110417.png",
-    ],
-    github: "https://github.com/MaverickDanielleAndres",
-    contributions: [
-      "Built the frontend with React",
-      "Implemented real-time notifications",
-      "Designed the community feed system",
-    ],
-  },
-  {
-    id: 3,
-    title: "Gym Registration System",
-    category: "Management System",
-    year: "2023",
-    description:
-      "A gym membership and registration management system with member tracking, payment processing, and class scheduling.",
-    tech: ["PHP", "MySQL", "Bootstrap", "jQuery"],
-    image: "/Projects/Gym Registration/preview image/Preview gym.png",
-    screenshots: [
-      "/Projects/Gym Registration/preview image/Preview gym.png",
-      "/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140203.png",
-      "/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140216.png",
-      "/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140225.png",
-      "/Projects/Gym Registration/screenshots/Screenshot 2025-12-11 140242.png",
-    ],
-    github: "https://github.com/MaverickDanielleAndres",
-    contributions: [
-      "Developed member registration and tracking",
-      "Built payment integration module",
-      "Implemented class scheduling system",
-    ],
-  },
-  {
-    id: 4,
     title: "Learning Management System",
     category: "Education Platform",
-    year: "2024",
-    description:
-      "A full-featured LMS for schools with course management, student tracking, assignments, and grading functionality.",
+    year: "2025",
+    description: "A full-featured LMS for schools with course management, student tracking, assignments, and grading functionality.",
     tech: ["PHP", "MySQL", "Bootstrap", "JavaScript"],
-    image: "/Projects/Learning Management System/screenshots/Priority.png",
+    features: ["Course Management", "Student Tracking", "Assignments", "Grading System"],
+    image: "/Projects/Learning%20Management%20System/screenshots/Priority.png",
     screenshots: [
-      "/Projects/Learning Management System/screenshots/Priority.png",
-      "/Projects/Learning Management System/screenshots/Priority (1).png",
-      "/Projects/Learning Management System/screenshots/Priority (2).png",
-      "/Projects/Learning Management System/screenshots/Priority (3).png",
-      "/Projects/Learning Management System/screenshots/Priority (4).png",
+      "/Projects/Learning%20Management%20System/screenshots/Priority.png",
+      ...Array.from({ length: 8 }, (_, i) => `/Projects/Learning%20Management%20System/screenshots/Priority%20%28${i + 1}%29.png`),
+      ...Array.from({ length: 23 }, (_, i) => `/Projects/Learning%20Management%20System/screenshots/lms%20%28${i + 1}%29.png`),
     ],
-    github: "https://github.com/MaverickDanielleAndres",
+    live: "https://sagadhs-lms.com/login/",
+    github: "https://github.com/MaverickDanielleAndres/LMS",
     contributions: [
       "Architected the full LMS platform",
       "Built course and lesson management",
@@ -114,31 +63,232 @@ const PROJECTS: Project[] = [
     ],
   },
   {
-    id: 5,
-    title: "Figma Design Projects",
-    category: "UI/UX Design",
-    year: "2023–2024",
-    description:
-      "A collection of UI/UX design projects created in Figma, showcasing wireframes, prototypes, and high-fidelity designs.",
-    tech: ["Figma", "UI/UX", "Prototyping"],
-    image: "/Projects/Figma Designs/screenshots/maverick.png",
-    screenshots: [
-      "/Projects/Figma Designs/screenshots/maverick.png",
-      "/Projects/Figma Designs/screenshots/Screenshot 2025-12-11 204902.png",
-      "/Projects/Figma Designs/screenshots/Screenshot 2025-12-11 205433.png",
-      "/Projects/Figma Designs/screenshots/Screenshot 2025-12-12 124548.png",
-      "/Projects/Figma Designs/screenshots/Screenshot 2025-12-12 125848.png",
-    ],
+    id: 3,
+    title: "Beauty Connect",
+    category: "E-commerce Platform",
+    year: "2026",
+    description: "A professional beauty connect platform for services and bookings.",
+    tech: ["Next.js", "Tailwind CSS", "Supabase"],
+    features: ["Service Booking", "Provider Portal", "Real-time Chat", "Payments"],
+    image: "/Projects/BeautyConnect/BeautyConnect (1).png",
+    screenshots: Array.from({ length: 42 }, (_, i) => `/Projects/BeautyConnect/BeautyConnect (${i + 1}).png`),
+    live: "https://www.beautyconnect.us/",
     contributions: [
-      "Created wireframes and prototypes",
-      "Designed high-fidelity UI mockups",
-      "Conducted user research and testing",
+      "Designed and developed the entire frontend architecture",
+      "Integrated real-time booking and notification systems",
+      "Optimized performance for mobile users",
+    ],
+  },
+  {
+    id: 4,
+    title: "HR Management System",
+    category: "PH-Compliant HR Management",
+    year: "2026",
+    description: "A full-featured HRMS with face recognition check-in, GPS geofencing, loan management, and statutory payroll calculations aligned with Philippine TRAIN Law.",
+    tech: ["Next.js 16", "React 19", "Zustand", "face-api.js", "Leaflet"],
+    features: ["Face Recognition", "GPS Geofencing", "Loan Management", "13th Month Pay", "Bank CSV Export", "Analytics"],
+    image: "/Projects/HR Management System/hrms (1).png",
+    screenshots: Array.from({ length: 29 }, (_, i) => `/Projects/HR Management System/hrms (${i + 1}).png`),
+    live: "https://hrms-web-system.vercel.app/login",
+    github: "https://github.com/MaverickDanielleAndres/HRMS",
+    contributions: [
+      "Developed the entire system solo from database to UI",
+      "Integrated face-api.js for webcam-based attendance verification",
+      "Built GPS geofencing logic using Leaflet for location validation",
+      "Engineered TRAIN Law payroll engine (SSS, PhilHealth, Pag-IBIG, BIR)",
+      "Implemented loan deduction automation and payroll locking system",
+    ],
+  },
+  {
+    id: 5,
+    title: "Monitoring and Payroll System",
+    category: "HR & Attendance Platform",
+    year: "2026",
+    description: "Enterprise-grade HRMS for Philippine companies — manages employee lifecycles, NFC-based attendance, leave workflows, and automated payroll with government compliance (SSS, PhilHealth, Pag-IBIG, BIR).",
+    tech: ["Next.js 14", "TypeScript", "Supabase", "Tailwind CSS", "shadcn/ui"],
+    features: ["NFC Attendance", "Payroll Automation", "Leave Management", "Digital Payslips", "Kiosk Mode", "Intern Tracking"],
+    image: "/Projects/Monitoring%20and%20Payroll%20System/Monitoring%20system%20with%20payroll%20%281%29.png",
+    screenshots: Array.from({ length: 28 }, (_, i) => `/Projects/Monitoring%20and%20Payroll%20System/Monitoring%20system%20with%20payroll%20%28${i + 1}%29.png`),
+    live: "https://monitoring-system-web.vercel.app/login",
+    github: "https://github.com/MaverickDanielleAndres/Monitoring-System",
+    contributions: [
+      "Built the full system solo as sole developer (frontend + backend)",
+      "Architected role-based portals for Admin, Employee, and Intern",
+      "Integrated NFC/RFID kiosk mode for real-time attendance logging",
+      "Implemented automated payroll with PH statutory deductions",
+      "Set up Supabase RLS policies and real-time data subscriptions",
+    ],
+  },
+  {
+    id: 12,
+    title: "Wedding Invitation Website",
+    category: "Client Invitation Website",
+    year: "2026",
+    description: "A wedding invitation website for client with animation, envelope effects, music, and dramatic animations. Very responsive made for mobile view.",
+    tech: ["Next.js", "Framer Motion", "CSS Animations"],
+    features: ["Envelope Effect", "Background Music", "RSVP Form", "Animated Timeline"],
+    image: "/Projects/Wedding%20Invitaition%20Website/WeddingInvitationWebsite%20%281%29.png",
+    screenshots: Array.from({ length: 28 }, (_, i) => `/Projects/Wedding%20Invitaition%20Website/WeddingInvitationWebsite%20%28${i + 1}%29.png`),
+    live: "https://allen-vea-wedding.vercel.app/",
+    github: "https://github.com/MaverickDanielleAndres/Allen-Vea-Wedding-Invitation-Website",
+    contributions: [
+      "Developed custom envelope animation with Framer Motion",
+      "Implemented responsive mobile-first invitation layout",
+      "Integrated music player with smooth transitions",
+    ],
+  },
+  {
+    id: 6,
+    title: "E-Community",
+    category: "Engagement Platform",
+    year: "2025",
+    description: "A community engagement platform for residents and local services.",
+    tech: ["Next.js", "Tailwind CSS", "Supabase"],
+    features: ["Community Feed", "Event Management", "Resident Directory", "Notifications"],
+    image: "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110325.png",
+    screenshots: [
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110325.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110332.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110342.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110351.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110417.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110425.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110435.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110452.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110503.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110518.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110541.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110601.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110614.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110638.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110652.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110701.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110725.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110733.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110804.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111628.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111637.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111702.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111710.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111730.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111751.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111759.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111813.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111845.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111929.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111952.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112007.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112016.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112032.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112048.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112111.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112123.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112141.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112229.png",
+      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112303.png",
+    ],
+    github: "https://github.com/MaverickDanielleAndres/E-Community-Engagement-Platform",
+    contributions: [
+      "Built the entire frontend using Next.js and Tailwind CSS",
+      "Implemented complex state management for community features",
+      "Integrated Supabase for real-time community interactions",
+    ],
+  },
+  {
+    id: 11,
+    title: "PhotoSnap",
+    category: "Web-Based Photobooth App",
+    year: "2026",
+    description: "A browser-based photobooth app that lets users capture photos, apply real-time filters, edit their strip with customizations, and instantly share via QR code.",
+    tech: ["Next.js 16", "Fabric.js", "Supabase", "Sharp", "GSAP"],
+    features: ["Live Filters", "Template System", "QR Code Sharing", "Canvas Editor", "GIF Export", "Countdown Timer"],
+    image: "/Projects/PhotoSnap/photosnap (1).png",
+    screenshots: Array.from({ length: 14 }, (_, i) => `/Projects/PhotoSnap/photosnap (${i + 1}).png`),
+    live: "https://photo-snap-webapp.vercel.app/",
+    github: "https://github.com/MaverickDanielleAndres/PhotoSnap",
+    contributions: [
+      "Sole developer — designed and built the full application",
+      "Built the canvas-based composition editor using Fabric.js",
+      "Engineered real-time camera filter pipeline on live video stream",
+      "Implemented multi-format export (PNG, JPG, GIF) and QR code sharing",
+      "Developed the dynamic slot-based template and layout system",
+    ],
+  },
+  {
+    id: 7,
+    title: "SuperFit Webapp",
+    category: "Role-Based Fitness Platform",
+    year: "2026",
+    description: "A fitness web app with three portals — user, coach, and admin. Covers workouts, nutrition, hydration, goal tracking, coach-client management, and community features.",
+    tech: ["Next.js 16", "React 19", "Zustand", "Supabase", "Recharts"],
+    features: ["Workout Tracking", "AI Nutrition Scan", "Coach Portal", "Meal Planner", "Community Feed", "Messaging"],
+    image: "/Projects/SuperFit%20Web/Superfit%20%281%29.png",
+    screenshots: Array.from({ length: 48 }, (_, i) => `/Projects/SuperFit%20Web/Superfit%20%28${i + 1}%29.png`),
+    live: "https://superfit-web-app.vercel.app/",
+    github: "https://github.com/MaverickDanielleAndres/superfit",
+    contributions: [
+      "Built all three portals (User, Coach, Admin) as solo developer",
+      "Designed and implemented 80+ REST API route handlers",
+      "Architected 14 Zustand domain stores with localStorage persistence",
+      "Built AI nutrition scan feature and meal planner with recipe search",
+      "Integrated Supabase real-time for live messaging and notifications",
+    ],
+  },
+  {
+    id: 8,
+    title: "WordPress & Shopify",
+    category: "Business Website for a Gym",
+    year: "2026",
+    description: "A professionally designed gym business website built with WordPress, featuring custom CSS styling and Elementor page builder for a polished, responsive front-end experience.",
+    tech: ["WordPress", "Elementor", "Custom CSS"],
+    features: ["Custom CSS", "Responsive Layout", "Services Section", "Membership Plans", "Contact Forms"],
+    image: "/Projects/WordPress%20&%20Shopify/wordpress%20%281%29.png",
+    screenshots: Array.from({ length: 16 }, (_, i) => `/Projects/WordPress%20&%20Shopify/wordpress%20%28${i + 1}%29.png`),
+    live: "https://grindgym-website.infinityfreeapp.com/",
+    contributions: [
+      "Built the entire website solo from setup to launch",
+      "Designed and structured all pages using Elementor page builder",
+      "Wrote custom CSS to override theme styles and achieve unique branding",
+      "Managed all site content — copy, images, and page structure",
+      "Ensured fully responsive layout across desktop and mobile",
+    ],
+  },
+  {
+    id: 9,
+    title: "Barangay Health System",
+    category: "Management System",
+    year: "2024",
+    description: "A comprehensive digital health management system for barangay health centers, enabling efficient patient records, appointment scheduling, and health monitoring.",
+    tech: ["PHP", "MySQL", "Bootstrap", "JavaScript"],
+    features: ["Patient Records", "Appointment Scheduling", "Health Monitoring", "Admin Dashboard"],
+    image: "/Projects/Barangay%20Health%20System/screenshots/Barangayhealthsystem%20%281%29.png",
+    screenshots: Array.from({ length: 10 }, (_, i) => `/Projects/Barangay%20Health%20System/screenshots/Barangayhealthsystem%20%28${i + 1}%29.png`),
+    contributions: [
+      "Designed and implemented the full-stack architecture",
+      "Built patient records management system",
+      "Developed appointment scheduling module",
+    ],
+  },
+  {
+    id: 10,
+    title: "Gym Registration",
+    category: "Management System",
+    year: "2025",
+    description: "A gym membership and registration management system with member tracking, payment processing, and class scheduling.",
+    tech: ["PHP", "MySQL", "Bootstrap", "jQuery"],
+    features: ["Member Registration", "Payment Tracking", "Class Scheduling", "Attendance"],
+    image: "/Projects/Gym%20Registration/screenshots/Gymregistration%20%281%29.png",
+    screenshots: Array.from({ length: 15 }, (_, i) => `/Projects/Gym%20Registration/screenshots/Gymregistration%20%28${i + 1}%29.png`),
+    github: "https://github.com/MaverickDanielleAndres/Gym-Registration",
+    contributions: [
+      "Developed member registration and tracking",
+      "Built payment integration module",
+      "Implemented class scheduling system",
     ],
   },
 ];
 
-// Sub-component for the fullscreen lightbox gallery
-function LightboxModal({
+function EnhancedLightbox({
   images,
   initialIndex,
   onClose,
@@ -148,87 +298,147 @@ function LightboxModal({
   onClose: () => void;
 }) {
   const [activeImg, setActiveImg] = useState(initialIndex);
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [direction, setDirection] = useState(0);
+
+  const paginate = (newDirection: number) => {
+    const nextIndex = activeImg + newDirection;
+    if (nextIndex >= 0 && nextIndex < images.length) {
+      setDirection(newDirection);
+      setActiveImg(nextIndex);
+    }
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight")
-        setActiveImg((i) => Math.min(i + 1, images.length - 1));
-      if (e.key === "ArrowLeft") setActiveImg((i) => Math.max(i - 1, 0));
+      if (e.key === "ArrowRight") paginate(1);
+      if (e.key === "ArrowLeft") paginate(-1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose, images.length]);
+  }, [onClose, activeImg, images.length]);
+
+  // For the film-strip
+  const visibleThumbnails = 5;
+  const halfVisible = Math.floor(visibleThumbnails / 2);
+  const startIndex = Math.max(0, Math.min(images.length - visibleThumbnails, activeImg - halfVisible));
 
   return (
     <Portal>
       <motion.div
-        className="fixed inset-0 z-[999999] flex items-center justify-center p-2 sm:p-4 md:p-8"
-        style={{ background: "rgba(0,0,0,0.95)", backdropFilter: "blur(12px)" }}
+        className="fixed inset-0 z-[999999] flex flex-col items-center justify-between"
+        style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
       >
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 active:scale-95 sm:top-6 sm:right-6 sm:h-12 sm:w-12"
-        >
-          <X size={20} />
-        </button>
-
-        {/* Main Container */}
-        <div 
-          className="relative w-full h-full flex flex-col items-center justify-center"
-          onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
-          onTouchEnd={(e) => {
-            if (touchStartX === null) return;
-            const delta = e.changedTouches[0].clientX - touchStartX;
-            const threshold = 40;
-            if (delta < -threshold) {
-              setActiveImg((i) => Math.min(i + 1, images.length - 1));
-            } else if (delta > threshold) {
-              setActiveImg((i) => Math.max(i - 1, 0));
-            }
-            setTouchStartX(null);
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="relative w-full max-w-6xl h-[68vh] sm:h-[78vh] md:h-[85vh] select-none">
-            <Image
-              src={images[activeImg]}
-              alt="Screenshot preview"
-              fill
-              className="object-contain"
-              quality={100}
-            />
+        {/* Top Header */}
+        <div className="w-full flex items-center justify-between p-4 sm:p-8 z-10">
+          <div className="text-white/70 text-sm font-medium tracking-widest">
+            {activeImg + 1} <span className="mx-1 text-white/30">/</span> {images.length}
           </div>
+          <button
+            onClick={onClose}
+            className="flex h-12 w-12 items-center justify-center rounded-full text-white/50 transition-all hover:text-white hover:bg-white/10"
+          >
+            <X size={24} />
+          </button>
+        </div>
 
-          {/* Counter */}
-          <div className="absolute bottom-2 text-white/50 tracking-widest text-xs sm:bottom-6 sm:text-sm">
-            {activeImg + 1} / {images.length}
+        {/* Main Image Area */}
+        <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={activeImg}
+              custom={direction}
+              variants={{
+                enter: (direction: number) => ({
+                  x: direction > 0 ? 300 : -300,
+                  opacity: 0,
+                  scale: 0.9,
+                }),
+                center: {
+                  zIndex: 1,
+                  x: 0,
+                  opacity: 1,
+                  scale: 1,
+                },
+                exit: (direction: number) => ({
+                  zIndex: 0,
+                  x: direction < 0 ? 300 : -300,
+                  opacity: 0,
+                  scale: 0.9,
+                }),
+              }}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.3 },
+              }}
+              className="absolute inset-0 flex items-center justify-center p-4 sm:p-12"
+            >
+              <div className="relative w-full h-full max-w-6xl">
+                <Image
+                  src={images[activeImg]}
+                  alt={`Screenshot ${activeImg + 1}`}
+                  fill
+                  className="object-contain"
+                  quality={100}
+                  priority
+                />
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={() => paginate(-1)}
+            disabled={activeImg === 0}
+            className="absolute left-4 z-20 h-16 w-16 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-0 transition-all"
+          >
+            <ChevronLeft size={48} strokeWidth={1} />
+          </button>
+          <button
+            onClick={() => paginate(1)}
+            disabled={activeImg === images.length - 1}
+            className="absolute right-4 z-20 h-16 w-16 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-0 transition-all"
+          >
+            <ChevronRight size={48} strokeWidth={1} />
+          </button>
+        </div>
+
+        {/* Film Strip */}
+        <div className="w-full max-w-2xl px-4 py-8 z-10" onClick={(e) => e.stopPropagation()}>
+          <div className="relative flex items-center justify-center gap-3 overflow-hidden">
+            <AnimatePresence mode="popLayout">
+              {images.slice(startIndex, startIndex + visibleThumbnails).map((img, idx) => {
+                const actualIndex = startIndex + idx;
+                const isActive = actualIndex === activeImg;
+                return (
+                  <motion.div
+                    key={img}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                    className={`relative w-20 aspect-video rounded-md overflow-hidden cursor-pointer border-2 transition-all ${
+                      isActive ? "border-white scale-110 shadow-xl z-20" : "border-transparent opacity-40 hover:opacity-100"
+                    }`}
+                    onClick={() => {
+                      setDirection(actualIndex > activeImg ? 1 : -1);
+                      setActiveImg(actualIndex);
+                    }}
+                  >
+                    <Image src={img} alt="thumbnail" fill className="object-cover" sizes="80px" />
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
-
-          {/* Controls */}
-          {images.length > 1 && (
-            <>
-              <button
-                onClick={() => setActiveImg((i) => Math.max(i - 1, 0))}
-                disabled={activeImg === 0}
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-11 w-11 sm:h-14 sm:w-14 rounded-full flex items-center justify-center disabled:opacity-20 hover:bg-white/10 active:scale-95 transition-colors text-white"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button
-                onClick={() => setActiveImg((i) => Math.min(i + 1, images.length - 1))}
-                disabled={activeImg === images.length - 1}
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-11 w-11 sm:h-14 sm:w-14 rounded-full flex items-center justify-center disabled:opacity-20 hover:bg-white/10 active:scale-95 transition-colors text-white"
-              >
-                <ChevronRight size={24} />
-              </button>
-            </>
-          )}
         </div>
       </motion.div>
     </Portal>
@@ -244,7 +454,6 @@ function ProjectModal({
 }) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  // Still allow Esc to close modal if lightbox is NOT open
   useEffect(() => {
     if (lightboxOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -258,121 +467,137 @@ function ProjectModal({
     <Portal>
       <motion.div
         className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-6"
-        style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)" }}
+        style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-3xl rounded-2xl overflow-hidden flex flex-col shadow-2xl"
-          style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(94vh, 920px)" }}
-          initial={{ y: 60, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 60, opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-4xl rounded-3xl overflow-hidden flex flex-col shadow-[0_32px_64px_rgba(0,0,0,0.5)]"
+          style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(94vh, 960px)" }}
+          initial={{ y: 100, opacity: 0, scale: 0.95 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 100, opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Header */}
-          <div className="absolute top-3 right-3 z-20 sm:top-4 sm:right-4">
+          <div className="absolute top-4 right-4 z-20">
             <button
               onClick={onClose}
-              className="flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-105 active:scale-95 sm:h-9 sm:w-9"
-              style={{ background: "var(--fg)", color: "var(--bg)" }}
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-black/20 backdrop-blur-md text-white transition-all hover:scale-110 active:scale-95"
             >
-              <X size={16} />
+              <X size={20} />
             </button>
           </div>
 
-          <div className="overflow-y-auto w-full h-full max-h-[94vh] sm:max-h-[90vh]" data-lenis-prevent="true">
-            {/* Clickable Header Image */}
+          <div className="overflow-y-auto w-full h-full" data-lenis-prevent="true">
+            {/* Main Preview Image */}
             <div
-              className="relative w-full group cursor-pointer"
-              style={{ background: "var(--muted)", height: "clamp(165px, 34vw, 240px)" }}
+              className="relative w-full group cursor-pointer overflow-hidden"
+              style={{ background: "var(--muted)", height: "clamp(250px, 40vh, 450px)" }}
               onClick={() => setLightboxOpen(true)}
             >
               <Image
                 src={project.image}
                 alt={project.title}
                 fill
-                className="object-cover transition-[filter] duration-300 ease-out group-hover:brightness-[0.96]"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                priority
               />
-              {/* Overlay hint */}
-              <div className="absolute inset-0 bg-black/40 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 text-white">
-                <Maximize2 size={20} />
-                <span className="font-medium tracking-wide text-xs sm:text-sm">Tap/Click to view gallery ({project.screenshots.length})</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+                <button
+                  className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-semibold text-sm shadow-xl transition-all hover:scale-105 active:scale-95"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightboxOpen(true);
+                  }}
+                >
+                  <Maximize2 size={16} />
+                  View Gallery ({project.screenshots.length} Screenshots)
+                </button>
               </div>
             </div>
 
-            {/* Info Body */}
-            <div className="relative p-4 pb-20 sm:p-6 sm:pb-8 md:p-8">
-              <div className="mb-4 flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="pr-0 sm:pr-4">
-                  <p
-                    className="text-xs uppercase tracking-widest mb-1"
-                    style={{ color: "var(--accent)" }}
-                  >
-                    {project.category} &middot; {project.year}
-                  </p>
-                  <h2 className="mb-2 text-[1.9rem] font-medium leading-[1.02] tracking-tight sm:text-3xl">{project.title}</h2>
-                </div>
-                {project.github && (
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-shrink-0 flex items-center gap-1.5 text-xs sm:text-sm hover:opacity-70 transition-opacity whitespace-nowrap px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-[var(--border)]"
-                    style={{ color: "var(--fg)" }}
-                  >
-                    GitHub <ArrowUpRight size={14} />
-                  </a>
-                )}
-              </div>
+            {/* Content Body */}
+            <div className="p-6 sm:p-10 md:p-14">
+              <div className="flex flex-col md:flex-row gap-10 items-start">
+                <div className="flex-1 space-y-8">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] mb-3 font-semibold" style={{ color: "var(--accent)" }}>
+                      {project.category} &middot; {project.year}
+                    </p>
+                    <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-none mb-6">
+                      {project.title}
+                    </h2>
+                    <p className="text-lg leading-relaxed opacity-80 max-w-xl">
+                      {project.description}
+                    </p>
+                  </div>
 
-              <div className="w-full h-px my-5 sm:my-6" style={{ background: "var(--border-subtle)" }} />
-
-              <p className="text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 opacity-90 max-w-2xl">
-                {project.description}
-              </p>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8">
-                <div>
-                  <p
-                    className="text-xs uppercase tracking-widest mb-4 opacity-50"
-                  >
-                    Tech Stack
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium"
-                        style={{
-                          background: "var(--muted)",
-                          color: "var(--fg)",
-                          border: "1px solid var(--border-subtle)"
-                        }}
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    {project.live && (
+                      <a
+                        href={project.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--fg)] text-[var(--bg)] font-medium text-sm transition-transform hover:scale-105"
                       >
-                        {t}
-                      </span>
-                    ))}
+                        Visit Site <ExternalLink size={16} />
+                      </a>
+                    )}
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--border)] font-medium text-sm transition-all hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+                      >
+                        GitHub <Github size={16} />
+                      </a>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Features</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {project.features.map((f) => (
+                        <span 
+                          key={f} 
+                          className="px-4 py-2 rounded-full text-xs font-medium border border-[var(--accent)] text-[var(--accent)]"
+                          style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
+                        >
+                          {f}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <p
-                    className="text-xs uppercase tracking-widest mb-4 opacity-50"
-                  >
-                    Key Contributions
-                  </p>
-                  <ul className="flex flex-col gap-3">
-                    {project.contributions.map((c, i) => (
-                      <li key={i} className="flex gap-3 text-sm opacity-90 leading-snug">
-                        <span style={{ color: "var(--accent)" }}>&rarr;</span>
-                        {c}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="w-full md:w-80 space-y-10">
+                  <div>
+                    <h4 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Tech Stack</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tech.map((t) => (
+                        <span key={t} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--muted)] border border-[var(--border-subtle)]">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Contributions</h4>
+                    <ul className="space-y-4">
+                      {project.contributions.map((c, i) => (
+                        <li key={i} className="flex gap-4 text-sm opacity-80 leading-relaxed">
+                          <span className="text-[var(--accent)] font-bold">→</span>
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -380,10 +605,9 @@ function ProjectModal({
         </motion.div>
       </motion.div>
 
-      {/* Fullscreen Lightbox Portal */}
       <AnimatePresence>
         {lightboxOpen && (
-          <LightboxModal
+          <EnhancedLightbox
             images={project.screenshots}
             initialIndex={0}
             onClose={() => setLightboxOpen(false)}
@@ -422,92 +646,78 @@ export default function Projects() {
         }
       }}
     >
-      {/* Label */}
       <motion.p
-        className="text-xs uppercase tracking-[0.18em] mb-10"
+        className="text-xs uppercase tracking-[0.18em] mb-4"
         style={{ color: "var(--fg-muted)" }}
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 0.6 }}
       >
-        Recent work
+        Portfolio
       </motion.p>
-
-      {/* Project list */}
-      <ul
-        className="thumbnail-list-group"
-        style={{ borderBottom: "1px solid var(--border-subtle)" }}
+      <motion.h2
+        style={{
+          fontSize: "clamp(1.75rem,3vw,2.5rem)",
+          fontWeight: 400,
+          lineHeight: 1.2,
+          letterSpacing: "-0.01em",
+          marginBottom: "clamp(2rem,5vh,3rem)",
+        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, delay: 0.1 }}
       >
+        Selected Projects &amp; Work
+      </motion.h2>
+
+      <ul className="thumbnail-list-group" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
         {PROJECTS.map((project, i) => (
           <motion.li
             key={project.id}
             className="thumbnail-row cursor-pointer group"
             style={{
               borderTop: "1px solid var(--border-subtle)",
-              paddingBlock: "clamp(1.25rem,3vw,2.25rem)",
-              paddingInline: 0,
+              paddingBlock: "clamp(1.5rem,4vw,2.5rem)",
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: i * 0.08 }}
+            transition={{ duration: 0.5, delay: i * 0.05 }}
             onMouseEnter={() => setHovered(project.id)}
             onMouseLeave={() => setHovered(null)}
-            onTouchStart={() => setHovered(project.id)}
             onClick={() => setActiveProject(project)}
           >
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <h3
-                style={{
-                  fontSize: "calc(clamp(2rem,6.5vw,7rem) * 0.75)",
-                  fontWeight: 400,
-                  lineHeight: 1,
-                  letterSpacing: "-0.02em",
-                }}
-              >
+            <div className="flex items-center justify-between gap-4">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight leading-[0.9] transition-transform duration-500 group-hover:translate-x-4">
                 {project.title}
               </h3>
-              <div className="flex items-center gap-6">
-                <p
-                  className="text-sm"
-                  style={{ color: "var(--fg-muted)" }}
-                >
-                  {project.category}
-                </p>
-                <p
-                  className="text-sm"
-                  style={{ color: "var(--fg-muted)" }}
-                >
-                  {project.year}
-                </p>
-                <ArrowUpRight
-                  size={18}
-                  className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
-                  style={{ color: "var(--accent)" }}
-                />
+              <div className="flex items-center gap-4 sm:gap-10">
+                <span className="hidden sm:inline text-xs uppercase tracking-widest opacity-40">{project.year}</span>
+                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full border border-[var(--border)] flex items-center justify-center transition-all duration-500 group-hover:bg-[var(--accent)] group-hover:border-[var(--accent)] group-hover:text-white group-hover:rotate-45">
+                  <ArrowUpRight size={20} />
+                </div>
               </div>
             </div>
           </motion.li>
         ))}
       </ul>
 
-      {/* Floating preview thumbnail */}
       <Portal>
         <AnimatePresence>
           {hovered !== null && (
             <motion.div
-              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-xl"
+              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-2xl"
               style={{
-                width: "clamp(240px, 25vw, 320px)",
-                aspectRatio: "16/9",
-                left: mousePos.x + 20,
-                top: mousePos.y - 120,
+                width: "clamp(280px, 30vw, 400px)",
+                aspectRatio: "16/10",
+                left: mousePos.x + 30,
+                top: mousePos.y - 150,
                 background: "#1a1a1a",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.4)"
+                boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
               }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ scale: 0.8, opacity: 0, rotate: -5 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              exit={{ scale: 0.8, opacity: 0, rotate: 5 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
               <Image
                 src={PROJECTS.find((p) => p.id === hovered)?.image || ""}
@@ -515,25 +725,9 @@ export default function Projects() {
                 fill
                 className="object-cover"
               />
-              {/* Centered "View" button */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div
-                  style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: "9999px",
-                    background: "var(--accent)",
-                    color: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.75rem",
-                    fontWeight: 500,
-                    letterSpacing: "0.02em",
-                    boxShadow: "0 4px 24px rgba(96,85,240,0.5)",
-                  }}
-                >
-                  View →
+              <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                <div className="px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium tracking-widest uppercase">
+                  Click to View
                 </div>
               </div>
             </motion.div>
@@ -541,7 +735,6 @@ export default function Projects() {
         </AnimatePresence>
       </Portal>
 
-      {/* Detail Modal */}
       <AnimatePresence>
         {activeProject && (
           <ProjectModal

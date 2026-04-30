@@ -245,10 +245,10 @@ export default function Contact() {
                   {status === "sending"
                     ? "Sending..."
                     : status === "sent"
-                    ? "Message sent!"
-                    : status === "error"
-                    ? "Failed  try again"
-                    : "Send message"}
+                      ? "Message sent!"
+                      : status === "error"
+                        ? "Failed  try again"
+                        : "Send message"}
                 </button>
               </Magnet>
             </div>
@@ -269,7 +269,7 @@ export default function Contact() {
         }}
       >
         <p className="text-xs" style={{ color: "var(--fg-muted)" }}>
-          &copy; 2025 Maverick Danielle Andres. All rights reserved.
+          &copy; 2026 Maverick Danielle Andres. All rights reserved.
         </p>
         <div className="flex items-center gap-6">
           {[

@@ -319,16 +319,13 @@ export default function Certificates() {
       </motion.h2>
 
       <div
-        className="grid gap-4"
-        style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(min(100%,280px), 1fr))",
-        }}
+        className="flex flex-wrap justify-center gap-4"
       >
         {CERTS.map((cert, i) => (
           <SpotlightCard
             key={cert.id}
             spotlightColor="rgba(96,85,240,0.18)"
-            className="p-0! rounded-xl!"
+            className="p-0! rounded-xl! w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1rem)]"
           >
             <motion.div
               className="group cursor-pointer rounded-xl overflow-hidden h-full flex flex-col"
@@ -381,7 +378,7 @@ export default function Certificates() {
           <Portal>
             <motion.div
               className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
-              style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)" }}
+              style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

@@ -135,7 +135,7 @@ export default function Skills() {
             >
               <span>What I</span>
               <RotatingText
-                texts={["Can Offer", "Have Built", "Know Well", "Master"]}
+                texts={["Can Work With", "Have Built", "Know Well", "Master"]}
                 rotationInterval={2000}
                 staggerFrom="last"
                 staggerDuration={0.025}
@@ -327,8 +327,8 @@ export default function Skills() {
                 cursor: "default",
                 transition: "border-color 0.1s, background 0.1s, transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
               }}
-              whileHover={{ 
-                borderColor: "var(--accent)", 
+              whileHover={{
+                borderColor: "var(--accent)",
                 scale: 1.04,
                 background: "color-mix(in srgb, var(--accent) 5%, transparent)"
               }}

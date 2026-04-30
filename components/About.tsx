@@ -14,7 +14,7 @@ if (typeof window !== "undefined") {
 }
 
 const BIO =
-  "I'm Maverick, a full-stack web developer and IT specialist with experience in PHP, JavaScript, React, Node.js, and database-driven applications. I focus on creating clean, efficient, user-centered digital solutions that make an impact.";
+  "I'm Maverick, a developer who loves building apps that actually work. Whether it's a smooth React frontend or a solid PHP/node backend, I enjoy making code clean and useful. I'm all about creating digital tools that solve real problems.";
 
 function WordReveal({ text }: { text: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ function WordReveal({ text }: { text: string }) {
 }
 
 const AWARDS = [
-  { sem: "1st Sem AY 2022-2023", award: "Dean's Lister",      image: "/Academic Awards/dean's lister.png" },
+  { sem: "1st Sem AY 2022-2023", award: "Dean's Lister", image: "/Academic Awards/dean's lister.png" },
   { sem: "2nd Sem AY 2022-2023", award: "President's Lister", image: "/Academic Awards/president lister.png" },
   { sem: "1st Sem AY 2023-2024", award: "President's Lister", image: "/Academic Awards/awards.png" },
   { sem: "2nd Sem AY 2023-2024", award: "President's Lister", image: "/Academic Awards/1awards.png" },
@@ -47,9 +47,9 @@ const AWARDS = [
 ];
 
 const SOCIAL_LINKS = [
-  { icon: "github",    label: "GitHub",    href: "https://github.com/MaverickDanielleAndres" },
-  { icon: "linkedin",  label: "LinkedIn",  href: "https://linkedin.com/in/maverick-danielle-andres-641564373" },
-  { icon: "facebook",  label: "Facebook",  href: "https://facebook.com" },
+  { icon: "github", label: "GitHub", href: "https://github.com/MaverickDanielleAndres" },
+  { icon: "linkedin", label: "LinkedIn", href: "https://linkedin.com/in/maverick-danielle-andres-641564373" },
+  { icon: "facebook", label: "Facebook", href: "https://facebook.com" },
   { icon: "instagram", label: "Instagram", href: "https://instagram.com" },
 ];
 
@@ -144,169 +144,169 @@ export default function About() {
       }}
     >
       <div style={{ maxWidth: 1240, marginInline: "auto" }}>
-      <p
-        data-about-label
-        className="text-xs uppercase tracking-[0.18em] mb-10"
-        style={{ color: "var(--fg-muted)", opacity: 0 }}
-      >
-        About me
-      </p>
+        <p
+          data-about-label
+          className="text-xs uppercase tracking-[0.18em] mb-10"
+          style={{ color: "var(--fg-muted)", opacity: 0 }}
+        >
+          About me
+        </p>
 
-      {/* Two-column */}
-      <div
-        className="grid grid-cols-1 items-center xl:[grid-template-columns:minmax(0,1.25fr)_minmax(320px,0.75fr)]"
-        style={{
-          gap: "clamp(1.5rem,4vw,3rem)",
-        }}
-      >
-        {/* Left — Image Swiper */}
+        {/* Two-column */}
         <div
-          data-about-left
+          className="grid grid-cols-1 items-center xl:[grid-template-columns:minmax(0,1.25fr)_minmax(320px,0.75fr)]"
           style={{
-            minHeight: 480,
-            borderRadius: "1rem",
-            overflow: "hidden",
-            opacity: 0,
+            gap: "clamp(1.5rem,4vw,3rem)",
           }}
-          className="order-2 relative flex items-center justify-center p-2 sm:p-4 xl:order-2 xl:justify-self-end"
         >
-          <ImageSwiper images={ABOUT_SWIPER_IMAGES} cardWidth={swiperSize.width} cardHeight={swiperSize.height} />
-          <p
-            className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.22em]"
-            style={{ 
-              color: "var(--swipe-me-color)",
-              opacity: "var(--swipe-me-opacity, 0.18)"
-            }}
-            aria-hidden="true"
-          >
-            swipe me
-          </p>
-        </div>
-
-        {/* Right — bio + education + buttons */}
-        <div
-          data-about-right
-          style={{ opacity: 0 }}
-          className="order-1 flex flex-col gap-6 justify-center xl:order-1 xl:max-w-[760px]"
-        >
-          {/* Bio word reveal — keeps its own framer-motion inView */}
+          {/* Left — Image Swiper */}
           <div
-            data-about-item
+            data-about-left
             style={{
-              fontSize: "clamp(1.05rem,1.8vw,1.5rem)",
-              fontWeight: 400,
-              lineHeight: 1.5,
-              letterSpacing: "-0.01em",
+              minHeight: 480,
+              borderRadius: "1rem",
+              overflow: "hidden",
+              opacity: 0,
             }}
+            className="order-2 relative flex items-center justify-center p-2 sm:p-4 xl:order-2 xl:justify-self-end"
           >
-            <WordReveal text={BIO} />
+            <ImageSwiper images={ABOUT_SWIPER_IMAGES} cardWidth={swiperSize.width} cardHeight={swiperSize.height} />
+            <p
+              className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.22em]"
+              style={{
+                color: "var(--swipe-me-color)",
+                opacity: "var(--swipe-me-opacity, 0.18)"
+              }}
+              aria-hidden="true"
+            >
+              swipe me
+            </p>
           </div>
 
-          {/* Extra note */}
-          <p
-            data-about-item
-            className="text-sm leading-relaxed"
-            style={{ color: "var(--fg-muted)", maxWidth: "52ch" }}
+          {/* Right — bio + education + buttons */}
+          <div
+            data-about-right
+            style={{ opacity: 0 }}
+            className="order-1 flex flex-col gap-6 justify-center xl:order-1 xl:max-w-[760px]"
           >
-            When not coding, I explore new technologies, side projects, and sharpen my networking and sysadmin skills.
-          </p>
+            {/* Bio word reveal — keeps its own framer-motion inView */}
+            <div
+              data-about-item
+              style={{
+                fontSize: "clamp(1.05rem,1.8vw,1.5rem)",
+                fontWeight: 400,
+                lineHeight: 1.5,
+                letterSpacing: "-0.01em",
+              }}
+            >
+              <WordReveal text={BIO} />
+            </div>
 
-          <div className="flex flex-col gap-6">
-            {/* Education */}
-            <div data-about-item style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1.5rem" }}>
-              <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--fg-muted)" }}>
-                Education
-              </p>
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium">Pamantasan ng Lungsod ng Pasig</p>
-                  <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>
-                    BS Information Technology &middot; 2022&ndash;2026
-                  </p>
-                  <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>GWA: 1.50</p>
+            {/* Extra note */}
+            <p
+              data-about-item
+              className="text-sm leading-relaxed"
+              style={{ color: "var(--fg-muted)", maxWidth: "52ch" }}
+            >
+              When not coding, I explore new tech, build side projects, and dive into networking or sysadmin stuff just to see how things work.
+            </p>
+
+            <div className="flex flex-col gap-6">
+              {/* Education */}
+              <div data-about-item style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1.5rem" }}>
+                <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--fg-muted)" }}>
+                  Education
+                </p>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium">Pamantasan ng Lungsod ng Pasig</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>
+                      BS Information Technology &middot; 2022&ndash;2026
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>GWA: 1.50</p>
+                  </div>
+                  <div className="shrink-0">
+                    <Image
+                      src="/updatedprofile_pic.png"
+                      alt="Maverick profile"
+                      width={72}
+                      height={72}
+                      className="h-[72px] w-[72px] rounded-full object-cover shadow-lg"
+                    />
+                  </div>
                 </div>
-                <div className="shrink-0">
-                  <Image
-                    src="/updatedprofile_pic.png"
-                    alt="Maverick profile"
-                    width={72}
-                    height={72}
-                    className="h-[72px] w-[72px] rounded-full object-cover shadow-lg"
-                  />
-                </div>
+                <button
+                  onClick={() => setAwardsOpen(true)}
+                  className="mt-3 text-xs underline underline-offset-2 hover:opacity-70 transition-opacity"
+                  style={{ color: "var(--accent)" }}
+                >
+                  View Academic Awards
+                </button>
               </div>
-              <button
-                onClick={() => setAwardsOpen(true)}
-                className="mt-3 text-xs underline underline-offset-2 hover:opacity-70 transition-opacity"
-                style={{ color: "var(--accent)" }}
-              >
-                View Academic Awards
-              </button>
-            </div>
 
-            {/* Download CV + Hire Me */}
-            <div data-about-item className="flex gap-3">
-              <a
-                href="/Files/Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1 hover:scale-[1.02] active:scale-95"
-                style={{
-                  background: "var(--fg)",
-                  color: "var(--bg)",
-                  borderRadius: "0.5rem",
-                  padding: "0.6rem 1rem",
-                  textDecoration: "none",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
-                }}
-              >
-                <Download size={13} />
-                Download CV
-              </a>
-
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1 hover:scale-[1.02] active:scale-95"
-                style={{
-                  background: "var(--accent)",
-                  color: "#fff",
-                  borderRadius: "0.5rem",
-                  padding: "0.6rem 1rem",
-                  textDecoration: "none",
-                  boxShadow: "0 4px 12px rgba(96,85,240,0.2)"
-                }}
-              >
-                Hire Me <ArrowUpRight size={13} />
-              </a>
-            </div>
-
-            {/* Social links */}
-            <div data-about-item className="grid grid-cols-4 gap-3">
-              {SOCIAL_LINKS.map(({ icon, label, href }) => (
+              {/* Download CV + Hire Me */}
+              <div data-about-item className="flex gap-3">
                 <a
-                  key={label}
-                  href={href}
+                  href="/Files/Resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={label}
-                  className="flex items-center justify-center transition-all hover:opacity-100 hover:scale-[1.05] hover:bg-white/5 opacity-70"
+                  className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1 hover:scale-[1.02] active:scale-95"
                   style={{
-                    height: 44,
+                    background: "var(--fg)",
+                    color: "var(--bg)",
                     borderRadius: "0.5rem",
-                    border: "1px solid var(--border-subtle)",
-                    color: "var(--fg)",
+                    padding: "0.6rem 1rem",
+                    textDecoration: "none",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                   }}
                 >
-                  {icon === "github" && <Github size={16} />}
-                  {icon === "linkedin" && <Linkedin size={16} />}
-                  {icon === "facebook" && <Facebook size={16} />}
-                  {icon === "instagram" && <Instagram size={16} />}
+                  <Download size={13} />
+                  Download CV
                 </a>
-              ))}
+
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 justify-center text-xs font-medium transition-all flex-1 hover:scale-[1.02] active:scale-95"
+                  style={{
+                    background: "var(--accent)",
+                    color: "#fff",
+                    borderRadius: "0.5rem",
+                    padding: "0.6rem 1rem",
+                    textDecoration: "none",
+                    boxShadow: "0 4px 12px rgba(96,85,240,0.2)"
+                  }}
+                >
+                  Hire Me <ArrowUpRight size={13} />
+                </a>
+              </div>
+
+              {/* Social links */}
+              <div data-about-item className="grid grid-cols-4 gap-3">
+                {SOCIAL_LINKS.map(({ icon, label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="flex items-center justify-center transition-all hover:opacity-100 hover:scale-[1.05] hover:bg-white/5 opacity-70"
+                    style={{
+                      height: 44,
+                      borderRadius: "0.5rem",
+                      border: "1px solid var(--border-subtle)",
+                      color: "var(--fg)",
+                    }}
+                  >
+                    {icon === "github" && <Github size={16} />}
+                    {icon === "linkedin" && <Linkedin size={16} />}
+                    {icon === "facebook" && <Facebook size={16} />}
+                    {icon === "instagram" && <Instagram size={16} />}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
 
       {/* Awards Modal */}

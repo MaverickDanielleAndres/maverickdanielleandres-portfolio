@@ -235,12 +235,8 @@ export async function POST(request: NextRequest) {
       ? `Portfolio Contact <noreply@${process.env.RESEND_DOMAIN}>`
       : 'Portfolio Contact <onboarding@resend.dev>';
 
-    console.log('🔧 Sending email with config:', {
-      from: fromAddress,
-      to: process.env.CONTACT_EMAIL,
-      hasApiKey: !!process.env.RESEND_API_KEY,
-      apiKeyLength: process.env.RESEND_API_KEY?.length || 0
-    });
+
+
 
     // Send email using Resend
     const client = getResend();
@@ -284,7 +280,7 @@ Sent: ${new Date().toISOString()}
       );
     }
 
-    console.log('✅ Email sent successfully:', emailResult.data?.id);
+
 
     return NextResponse.json({
       success: true,
