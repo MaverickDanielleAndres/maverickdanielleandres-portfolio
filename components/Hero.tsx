@@ -152,7 +152,7 @@ export default function Hero() {
 
         {/* Right Column / Background: Profile Image */}
         <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-center items-end h-full z-10 pointer-events-none overflow-visible">
-          <div className="relative w-full min-w-[350px] sm:min-w-[450px] md:w-[110%] lg:w-[100%] max-w-[800px] h-[80%] md:h-[90%] lg:h-[100%] flex justify-center items-end mr-[-20%] sm:mr-[-5%] md:mr-0 mb-[-10%] md:mb-0 transition-all duration-700">
+          <div className="relative w-full min-w-[400px] sm:min-w-[500px] md:w-[120%] lg:w-[100%] max-w-[800px] h-[75%] md:h-[95%] lg:h-[100%] flex justify-center items-end mr-[-25%] sm:mr-[-10%] md:mr-0 mb-[-18%] md:mb-0 transition-all duration-700">
             <Image
               src="/updatedprofile_pic.png"
               alt="Maverick Danielle Andres"
