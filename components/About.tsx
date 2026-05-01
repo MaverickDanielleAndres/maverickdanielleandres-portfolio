@@ -280,14 +280,14 @@ export default function About() {
                     <SpotlightCard
                       key={label}
                       spotlightColor="rgba(255, 255, 255, 0.2)"
-                      className="w-full"
+                      className="w-full transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:z-20 rounded-[0.5rem]"
                     >
                       <a
                         href={href}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={label}
-                        className="flex items-center justify-center transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl group"
+                        className="flex items-center justify-center transition-all duration-300 group"
                         style={{
                           height: 44,
                           borderRadius: "0.5rem",
