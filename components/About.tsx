@@ -143,7 +143,7 @@ export default function About() {
       style={{
         background: "var(--bg-about)",
         color: "var(--fg)",
-        padding: "clamp(5rem,12vh,9rem) var(--container-px)",
+        padding: "clamp(5rem,12vh,9rem) var(--container-px) clamp(8rem,15vh,12rem)",
       }}
     >
       <div style={{ maxWidth: 1240, marginInline: "auto" }}>
@@ -287,7 +287,7 @@ export default function About() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={label}
-                        className="flex items-center justify-center transition-all duration-300"
+                        className="flex items-center justify-center transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl group"
                         style={{
                           height: 44,
                           borderRadius: "0.5rem",
@@ -297,7 +297,8 @@ export default function About() {
                           position: "relative",
                           zIndex: 2,
                           color: isDark ? "#ffffff" : "#000000",
-                          borderColor: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.15)"
+                          borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)",
+                          background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)"
                         }}
                       >
                         {icon === "github" && <Github size={18} strokeWidth={1.5} />}
@@ -332,11 +333,13 @@ export default function About() {
             >
               <h3 className="text-lg font-medium mb-6">Academic Awards</h3>
               
-              <div className="mb-10 p-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-center mb-3 opacity-60">Achievement</p>
-                <p className="text-[15px] leading-relaxed italic text-center text-black dark:text-white font-medium">
-                  &ldquo;Consistent Dean&apos;s Lister from 1st Year to 4th Year College and currently running for Cum Laude.&rdquo;
-                </p>
+              <div className="mb-10 p-5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/20 transition-all duration-300 hover:scale-[1.01] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/30 group">
+                <p className="text-[9px] uppercase tracking-[0.25em] font-bold text-center mb-2 opacity-50 group-hover:opacity-80 transition-opacity">Achievement</p>
+                <div className="flex justify-center overflow-hidden">
+                  <p className="text-[13px] text-center text-neutral-900 dark:text-neutral-100 font-medium whitespace-nowrap">
+                    &ldquo;Consistent Dean&apos;s Lister from 1st Year to 4th Year College and currently running for Cum Laude.&rdquo;
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
