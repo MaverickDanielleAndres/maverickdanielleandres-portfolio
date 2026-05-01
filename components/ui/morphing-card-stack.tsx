@@ -184,7 +184,7 @@ export function Component({
                     onCardClick?.(card)
                   }}
                   className={cn(
-                    "relative touch-none",
+                    "relative touch-pan-y",
                     layout === "stack" 
                       ? "cursor-grab active:cursor-grabbing rounded-[2rem] border border-border/50 absolute w-full max-w-[240px] sm:max-w-[300px] aspect-square bg-card/90 dark:bg-card/40 backdrop-blur-2xl shadow-xl" 
                       : "cursor-pointer rounded-2xl border border-border/40 w-full min-h-[85px] bg-card/70 dark:bg-card/30 backdrop-blur-md shadow-sm hover:border-primary/50 transition-colors",
