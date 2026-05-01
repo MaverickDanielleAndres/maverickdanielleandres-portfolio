@@ -277,36 +277,36 @@ export default function About() {
 
                 <div className="grid grid-cols-4 gap-2">
                   {SOCIAL_LINKS.map(({ icon, label, href }) => (
-                    <SpotlightCard
+                    <div 
                       key={label}
-                      spotlightColor="rgba(255, 255, 255, 0.2)"
-                      className="w-full transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:z-20 rounded-[0.5rem]"
+                      className="relative transition-all duration-500 ease-out hover:-translate-y-1.5 hover:z-30 group/social"
                     >
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={label}
-                        className="flex items-center justify-center transition-all duration-300 group"
-                        style={{
-                          height: 44,
-                          borderRadius: "0.5rem",
-                          borderWidth: "1px",
-                          borderStyle: "solid",
-                          width: "100%",
-                          position: "relative",
-                          zIndex: 2,
-                          color: isDark ? "#ffffff" : "#000000",
-                          borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)",
-                          background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)"
-                        }}
+                      <SpotlightCard
+                        spotlightColor={isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.05)"}
+                        className="w-full rounded-[0.5rem] overflow-hidden border border-black/5 dark:border-white/10 group-hover/social:border-black/20 dark:group-hover/social:border-white/30 transition-colors duration-300"
                       >
-                        {icon === "github" && <Github size={18} strokeWidth={1.5} />}
-                        {icon === "linkedin" && <Linkedin size={18} strokeWidth={1.5} />}
-                        {icon === "facebook" && <Facebook size={18} strokeWidth={1.5} />}
-                        {icon === "instagram" && <Instagram size={18} strokeWidth={1.5} />}
-                      </a>
-                    </SpotlightCard>
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={label}
+                          className="flex items-center justify-center transition-all duration-300"
+                          style={{
+                            height: 44,
+                            width: "100%",
+                            position: "relative",
+                            zIndex: 2,
+                            color: isDark ? "#ffffff" : "#000000",
+                            background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)"
+                          }}
+                        >
+                          {icon === "github" && <Github size={18} strokeWidth={1.5} />}
+                          {icon === "linkedin" && <Linkedin size={18} strokeWidth={1.5} />}
+                          {icon === "facebook" && <Facebook size={18} strokeWidth={1.5} />}
+                          {icon === "instagram" && <Instagram size={18} strokeWidth={1.5} />}
+                        </a>
+                      </SpotlightCard>
+                    </div>
                   ))}
                 </div>
               </div>
