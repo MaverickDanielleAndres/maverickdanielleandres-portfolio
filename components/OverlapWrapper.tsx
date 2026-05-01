@@ -27,18 +27,19 @@ export default function OverlapWrapper({
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.6]);
 
   return (
-    <motion.div
-      ref={ref}
-      style={{
-        y,
-        opacity,
-        zIndex,
-        position: "relative",
-        background: bg, // ensures solid background so it covers previous sections
-      }}
-      className={cn("relative w-full", shadowClassName)}
-    >
-      {children}
-    </motion.div>
+    <div ref={ref} className="relative w-full">
+      <motion.div
+        style={{
+          y,
+          opacity,
+          zIndex,
+          position: "relative",
+          background: bg, // ensures solid background so it covers previous sections
+        }}
+        className={cn("w-full", shadowClassName)}
+      >
+        {children}
+      </motion.div>
+    </div>
   );
 }

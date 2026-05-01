@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     styledComponents: true,
   },
   images: {
+    qualities: [75, 80, 90, 100],
     remotePatterns: [
       {
         protocol: "https",

@@ -51,7 +51,7 @@ export default function Hero() {
       <div className="relative z-[2] flex flex-col md:flex-row w-full h-full px-[var(--container-px)]">
 
         {/* Left Column: Text & CTA */}
-        <div className="w-full md:w-auto flex-none flex flex-col justify-start md:justify-center items-start h-full pt-[10vh] md:pt-0 pb-16 md:pb-24">
+        <div className="w-full md:w-auto flex-none flex flex-col justify-start md:justify-center items-start h-full pt-[10vh] md:pt-0 pb-16 md:pb-24 z-20">
           <motion.div
             variants={enterVariants}
             initial="initial"
@@ -151,8 +151,8 @@ export default function Hero() {
         </div>
 
         {/* Right Column / Background: Profile Image */}
-        <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-end lg:justify-center items-end h-full z-0 md:z-[1] opacity-65 md:opacity-100 pointer-events-none overflow-hidden md:overflow-visible">
-          <div className="relative w-full min-w-[450px] sm:min-w-[550px] md:w-[130%] lg:w-[120%] max-w-[800px] h-[85%] md:h-[95%] lg:h-[105%] flex justify-center items-end mr-[-45%] sm:mr-[-15%] md:mr-[-15%] lg:mr-0 mb-[-30%] md:mb-[-5%]">
+        <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-center items-end h-full z-10 pointer-events-none overflow-visible">
+          <div className="relative w-full min-w-[350px] sm:min-w-[450px] md:w-[110%] lg:w-[100%] max-w-[800px] h-[80%] md:h-[90%] lg:h-[100%] flex justify-center items-end mr-[-20%] sm:mr-[-5%] md:mr-0 mb-[-10%] md:mb-0 transition-all duration-700">
             <Image
               src="/updatedprofile_pic.png"
               alt="Maverick Danielle Andres"

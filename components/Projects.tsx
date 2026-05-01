@@ -387,7 +387,7 @@ function EnhancedLightbox({
                   alt={`Screenshot ${activeImg + 1}`}
                   fill
                   className="object-contain"
-                  quality={100}
+                  quality={90}
                   priority
                   unoptimized
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"

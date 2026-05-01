@@ -63,7 +63,7 @@ export default function Home() {
               </Portal>
 
               {/* Page sections */}
-              <main className="relative">
+              <main className="relative" style={{ position: 'relative' }}>
                 <OverlapWrapper zIndex={1} bg="var(--bg-hero)">
                   <Hero />
                 </OverlapWrapper>

@@ -162,7 +162,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({
   scrollerStyle,
 }) => {
   return (
-    <div>
+    <div className="relative">
       {texts.map((text, index) => (
         <VelocityText
           key={index}
