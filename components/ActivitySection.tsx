@@ -82,6 +82,19 @@ export default function ActivitySection() {
     },
   };
 
+  const calendarScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (calendarScrollRef.current && window.innerWidth < 1024) {
+      const timer = setTimeout(() => {
+        if (calendarScrollRef.current) {
+          calendarScrollRef.current.scrollLeft = calendarScrollRef.current.scrollWidth;
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <section
       id="activity"
@@ -129,7 +142,7 @@ export default function ActivitySection() {
                       </div>
                     </div>
                   )}
-
+ 
                   {/* Horizontal Separator for Mobile */}
                   {i < EXPERIENCE.length - 1 && (
                     <div className="md:hidden w-full h-px bg-gradient-to-r from-transparent via-border/60 to-transparent my-1" />
@@ -139,7 +152,7 @@ export default function ActivitySection() {
             </div>
           </SpotlightCard>
         </motion.div>
-
+ 
         {/* Bottom Row: GitHub Activity */}
         <motion.div variants={itemVariants} className="w-full">
           <SpotlightCard className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" spotlightColor="rgba(96, 85, 240, 0.1)">
@@ -157,9 +170,9 @@ export default function ActivitySection() {
                 View Profile
               </a>
             </div>
-
+ 
             <div className="w-full bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden">
-              <div className="w-full overflow-x-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--accent)] scrollbar-track-transparent">
+              <div ref={calendarScrollRef} className="w-full overflow-x-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--accent)] scrollbar-track-transparent">
                 <div className="min-w-[800px]">
                   <GitHubCalendar
                     username="MaverickDanielleAndres"

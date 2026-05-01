@@ -64,9 +64,16 @@ const TextPressure: React.FC<TextPressureProps> = ({
   const [lineHeight, setLineHeight] = useState(1);
   const chars = text.split('');
 
+  const hasMovedRef = useRef(false);
+
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => { cursorRef.current.x = e.clientX; cursorRef.current.y = e.clientY; };
+    const handleMouseMove = (e: MouseEvent) => { 
+      hasMovedRef.current = true;
+      cursorRef.current.x = e.clientX; 
+      cursorRef.current.y = e.clientY; 
+    };
     const handleTouchMove = (e: TouchEvent) => {
+      hasMovedRef.current = true;
       const t = e.touches[0];
       cursorRef.current.x = t.clientX; cursorRef.current.y = t.clientY;
     };
@@ -140,6 +147,16 @@ const TextPressure: React.FC<TextPressureProps> = ({
         const maxDist = titleRef.current.offsetWidth / 2;
         spansRef.current.forEach((span, i) => {
           if (!span || !spanCoords.current[i]) return;
+          
+          if (!hasMovedRef.current) {
+            // Apply neutral high-impact state before first interaction
+            const wdth = width ? 5 : 100;
+            const wght = weight ? 100 : 400;
+            const italVal = '0';
+            span.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
+            return;
+          }
+
           const coords = spanCoords.current[i];
           const charCenter = {
             x: coords.x + coords.width / 2,

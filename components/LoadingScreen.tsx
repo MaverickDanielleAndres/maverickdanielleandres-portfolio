@@ -1,41 +1,65 @@
 "use client";
-import { useEffect } from "react";
 import { motion } from "framer-motion";
-import MetaBalls from "@/components/ui/MetaBalls";
+import CountUp from "@/components/ui/CountUp";
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
-  useEffect(() => {
-    const t = setTimeout(() => {
-      onComplete();
-    }, 2400);
-    return () => clearTimeout(t);
-  }, [onComplete]);
+  const handleEnd = () => {
+    // Small delay at 100% for visual confirmation
+    setTimeout(onComplete, 400);
+  };
 
   return (
     <motion.div
-      exit={{ opacity: 0, filter: "blur(10px)" }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 overflow-hidden flex items-center justify-center bg-[#111111]"
-      style={{ zIndex: 9999, position: "fixed" }}
+      initial={{ opacity: 1 }}
+      exit={{
+        y: "-100%",
+        opacity: 0,
+        transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] }
+      }}
+      className="fixed inset-0 flex items-center justify-center bg-[#111111] overflow-hidden"
+      style={{ zIndex: 9999 }}
     >
-      <div style={{ position: "absolute", inset: 0 }}>
-        <MetaBalls
-          color="#ffffff"
-          cursorBallColor="#ffffff"
-          cursorBallSize={2}
-          ballCount={15}
-          animationSize={30}
-          enableMouseInteraction={true}
-          enableTransparency={true}
-          hoverSmoothness={0.15}
-          clumpFactor={1}
-          speed={0.3}
-        />
+      <div className="flex flex-col items-center gap-6">
+        {/* Modern minimal counter */}
+        <div className="flex items-baseline gap-2">
+          <CountUp
+            from={0}
+            to={100}
+            duration={1.6}
+            onEnd={handleEnd}
+            className="text-7xl md:text-9xl font-medium tracking-tighter text-white"
+          />
+          <span className="text-2xl md:text-3xl text-white/30 font-light">%</span>
+        </div>
+
+        {/* Subtle progress indicator */}
+        <div className="flex flex-col items-center gap-2">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold"
+          >
+            Digital Portfolio 2026
+          </motion.p>
+
+          <div className="w-48 h-[1px] bg-white/10 relative overflow-hidden">
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: "0%" }}
+              transition={{ duration: 1.6, ease: "easeInOut" }}
+              className="absolute inset-0 bg-white/40"
+            />
+          </div>
+        </div>
       </div>
-      {/* Ensure preloaded font is marked as used immediately to silence browser warnings */}
-      <span className="sr-only" style={{ fontFamily: 'var(--font-neue-montreal)' }}>
-        Loading Maverick Danielle Portfolio
-      </span>
+
+      {/* Aesthetic corner text */}
+      <div className="absolute bottom-10 left-10 hidden md:block">
+        <p className="text-[10px] uppercase tracking-widest text-white/20 font-medium">
+          Maverick Danielle Andres ©
+        </p>
+      </div>
     </motion.div>
   );
 }

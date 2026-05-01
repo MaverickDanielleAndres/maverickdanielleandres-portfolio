@@ -113,16 +113,29 @@ function VelocityText({
     return () => observer.disconnect();
   }, []);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const directionFactor = useRef<number>(1);
   useAnimationFrame((_t, delta) => {
     if (!isInView) return;
     let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
-    if (velocityFactor.get() < 0) {
-      directionFactor.current = -1;
-    } else if (velocityFactor.get() > 0) {
-      directionFactor.current = 1;
+    
+    // Only apply dynamic scroll velocity on desktop (>= 1024px)
+    if (!isMobile) {
+      if (velocityFactor.get() < 0) {
+        directionFactor.current = -1;
+      } else if (velocityFactor.get() > 0) {
+        directionFactor.current = 1;
+      }
+      moveBy += directionFactor.current * moveBy * velocityFactor.get();
     }
-    moveBy += directionFactor.current * moveBy * velocityFactor.get();
+    
     baseX.set(baseX.get() + moveBy);
   });
 
