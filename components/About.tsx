@@ -66,6 +66,7 @@ const ABOUT_SWIPER_IMAGES = [
 
 export default function About() {
   const [awardsOpen, setAwardsOpen] = useState(false);
+  const [selectedAwardImage, setSelectedAwardImage] = useState<string | null>(null);
   const [swiperSize, setSwiperSize] = useState({ width: 320, height: 420 });
   const sectionRef = useRef<HTMLElement>(null);
   const { resolvedTheme } = useTheme();
@@ -333,10 +334,10 @@ export default function About() {
             >
               <h3 className="text-lg font-medium mb-6">Academic Awards</h3>
               
-              <div className="mb-10 p-5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/20 transition-all duration-300 hover:scale-[1.01] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/30 group">
-                <p className="text-[9px] uppercase tracking-[0.25em] font-bold text-center mb-2 opacity-50 group-hover:opacity-80 transition-opacity">Achievement</p>
+              <div className="mb-10 p-5 rounded-2xl bg-black/5 border border-black/10 transition-all duration-300 hover:scale-[1.01] hover:bg-black/[0.08] hover:border-black/20 group" style={{ background: "var(--border-subtle)", borderColor: "var(--border)" }}>
+                <p className="text-[9px] uppercase tracking-[0.25em] font-bold text-center mb-2 opacity-50 group-hover:opacity-80 transition-opacity" style={{ color: "var(--fg)" }}>Achievement</p>
                 <div className="flex justify-center overflow-hidden">
-                  <p className="text-[13px] text-center text-neutral-900 dark:text-neutral-100 font-medium whitespace-nowrap">
+                  <p className="text-[13px] text-center font-medium whitespace-nowrap" style={{ color: "var(--fg)" }}>
                     &ldquo;Consistent Dean&apos;s Lister from 1st Year to 4th Year College and currently running for Cum Laude.&rdquo;
                   </p>
                 </div>
@@ -346,8 +347,9 @@ export default function About() {
                 {AWARDS.map((a, i) => (
                   <div key={i} className="flex flex-col gap-2">
                     <div
-                      className="relative rounded-xl overflow-hidden"
+                      className="relative rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
                       style={{ aspectRatio: "4/3", background: "var(--border-subtle)" }}
+                      onClick={() => setSelectedAwardImage(a.image)}
                     >
                       <Image
                         src={a.image}
@@ -371,6 +373,44 @@ export default function About() {
               >
                 Close
               </button>
+            </motion.div>
+          </div>
+        </Portal>
+      )}
+
+      {selectedAwardImage && (
+        <Portal>
+          <div
+            className="fixed inset-0 z-[100000] flex items-center justify-center p-4 sm:p-8"
+            style={{ background: "rgba(0,0,0,0.8)", backdropFilter: "blur(12px)" }}
+            onClick={() => setSelectedAwardImage(null)}
+          >
+            <motion.div
+              className="relative w-full max-w-5xl h-full max-h-[85vh] rounded-xl overflow-hidden flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedAwardImage(null)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                aria-label="Close image"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+              <div className="relative w-full h-full">
+                <Image
+                  src={selectedAwardImage}
+                  alt="Enlarged Award"
+                  fill
+                  className="object-contain"
+                  quality={100}
+                />
+              </div>
             </motion.div>
           </div>
         </Portal>
