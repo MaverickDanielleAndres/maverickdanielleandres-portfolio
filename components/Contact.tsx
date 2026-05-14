@@ -95,7 +95,7 @@ export default function Contact() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6 }}
         >
-          Contact
+          Contact Me
         </motion.p>
 
         <motion.h2
