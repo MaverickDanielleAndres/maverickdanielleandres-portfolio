@@ -56,12 +56,12 @@ const SOCIAL_LINKS = [
 ];
 
 const ABOUT_SWIPER_IMAGES = [
-  "/AboutMe-Photo/Aboutme (1).jpg",
-  "/AboutMe-Photo/Aboutme (2).jpg",
-  "/AboutMe-Photo/Aboutme (3).jpg",
-  "/AboutMe-Photo/Aboutme (4).jpg",
-  "/AboutMe-Photo/Aboutme (5).jpg",
-  "/AboutMe-Photo/Aboutme (6).jpg",
+  "/AboutMe-Photo/aboutme-1.jpg",
+  "/AboutMe-Photo/aboutme-2.jpg",
+  "/AboutMe-Photo/aboutme-3.jpg",
+  "/AboutMe-Photo/aboutme-4.jpg",
+  "/AboutMe-Photo/aboutme-5.jpg",
+  "/AboutMe-Photo/aboutme-6.jpg",
 ].join(",");
 
 export default function About() {

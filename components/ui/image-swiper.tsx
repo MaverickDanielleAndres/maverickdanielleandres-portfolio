@@ -213,7 +213,6 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
             fill
             className="w-full h-full object-cover select-none pointer-events-none"
             draggable={false}
-            priority={displayIndex < 2}
             sizes={`${cardWidth}px`}
           />
         </article>
