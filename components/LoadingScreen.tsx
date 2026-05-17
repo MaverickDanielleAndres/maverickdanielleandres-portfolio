@@ -5,7 +5,7 @@ import CountUp from "@/components/ui/CountUp";
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const handleEnd = () => {
     // Small delay at 100% for visual confirmation
-    setTimeout(onComplete, 400);
+    setTimeout(onComplete, 200);
   };
 
   return (
@@ -14,7 +14,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
       exit={{
         y: "-100%",
         opacity: 0,
-        transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] }
+        transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] }
       }}
       className="fixed inset-0 flex items-center justify-center bg-[#111111] overflow-hidden"
       style={{ zIndex: 9999 }}
@@ -25,9 +25,9 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           <CountUp
             from={0}
             to={100}
-            duration={1.6}
+            duration={0.8}
             onEnd={handleEnd}
-            className="text-7xl md:text-9xl font-medium tracking-tighter text-white"
+            className="text-7xl md:text-9xl font-medium tracking-tighter text-white tabular-nums inline-block min-w-[3ch] text-right"
           />
           <span className="text-2xl md:text-3xl text-white/30 font-light">%</span>
         </div>
@@ -47,7 +47,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: "0%" }}
-              transition={{ duration: 1.6, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
               className="absolute inset-0 bg-white/40"
             />
           </div>

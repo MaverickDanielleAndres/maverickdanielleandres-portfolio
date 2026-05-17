@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <>
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {loading ? (
           <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
         ) : (
@@ -48,7 +48,7 @@ export default function Home() {
             key="content"
             initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
             <SmoothScroll>
