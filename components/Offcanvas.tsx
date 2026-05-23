@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, startTransition } from 'react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import { X, Menu } from 'lucide-react';
@@ -57,10 +57,20 @@ export function Offcanvas() {
   // Close on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
-  // Lock body scroll
+  // Lock body scroll and prevent layout shift
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (isOpen) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
   }, [isOpen]);
 
   return (
@@ -68,7 +78,7 @@ export function Offcanvas() {
       {/* ── Hamburger toggle circle (fixed top-right) ── */}
       <button
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
-        onClick={() => setOpen(v => !v)}
+        onClick={() => startTransition(() => setOpen(v => !v))}
         className="fixed top-4 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:top-5 sm:right-6 sm:h-12 sm:w-12"
         style={{
           background: isOpen ? 'var(--accent)' : 'var(--bg)',
@@ -145,7 +155,7 @@ export function Offcanvas() {
                       />
                       <Link
                         href={href}
-                        onClick={() => setOpen(false)}
+                        onClick={() => startTransition(() => setOpen(false))}
                         className="font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200"
                         style={{ fontSize: 'clamp(2.25rem, 6.5vh, 3.5rem)', lineHeight: 1.15 }}
                       >
