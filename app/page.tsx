@@ -41,58 +41,63 @@ export default function Home() {
   return (
     <>
       <AnimatePresence>
-        {loading ? (
+        {loading && (
           <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
-        ) : (
-          <motion.div
-            key="content"
-            initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
-          >
-            <SmoothScroll>
-              {/* Transparent navbar (overlays hero) */}
-              <Navbar onMenuOpen={() => {}} />
-
-              {/* Theme toggle — fixed bottom-right */}
-              <Portal>
-                <div className="fixed bottom-6 right-6 z-[9998]">
-                  <ThemeToggle />
-                </div>
-              </Portal>
-
-              {/* Page sections */}
-              <main className="relative" style={{ position: 'relative' }}>
-                <OverlapWrapper zIndex={1} bg="var(--bg-hero)">
-                  <Hero />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={2} bg="var(--bg-about)">
-                  <About />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
-                  <TechStrip />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={4} bg="var(--bg-about)">
-                  <ActivitySection />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
-                  <Skills />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
-                  <Projects />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
-                  <Certificates />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
-                  <Contact />
-                </OverlapWrapper>
-              </main>
-            </SmoothScroll>
-          </motion.div>
         )}
       </AnimatePresence>
+
+      <motion.div
+        key="content"
+        initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+        animate={{ 
+          opacity: loading ? 0 : 1, 
+          scale: loading ? 0.98 : 1, 
+          filter: loading ? "blur(10px)" : "blur(0px)" 
+        }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative"
+        style={{ pointerEvents: loading ? "none" : "auto", height: loading ? "100vh" : "auto", overflow: loading ? "hidden" : "visible" }}
+      >
+        <SmoothScroll>
+          {/* Transparent navbar (overlays hero) */}
+          <Navbar onMenuOpen={() => {}} />
+
+          {/* Theme toggle — fixed bottom-right */}
+          <Portal>
+            <div className="fixed bottom-6 right-6 z-[9998]">
+              <ThemeToggle />
+            </div>
+          </Portal>
+
+          {/* Page sections */}
+          <main className="relative" style={{ position: 'relative' }}>
+            <OverlapWrapper zIndex={1} bg="var(--bg-hero)">
+              <Hero />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={2} bg="var(--bg-about)">
+              <About />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
+              <TechStrip />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={4} bg="var(--bg-about)">
+              <ActivitySection />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
+              <Skills />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
+              <Projects />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
+              <Certificates />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
+              <Contact />
+            </OverlapWrapper>
+          </main>
+        </SmoothScroll>
+      </motion.div>
     </>
   );
 }
