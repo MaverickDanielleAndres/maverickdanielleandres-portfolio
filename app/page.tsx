@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, startTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SmoothScroll from "@/components/SmoothScroll";
 import { Navbar } from "@/components/Navbar";
@@ -35,8 +35,21 @@ const LoadingScreen = dynamic(
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [mountHeavy, setMountHeavy] = useState(false);
   // useCallback prevents LoadingScreen from re-rendering unnecessarily
   const handleLoadingComplete = useCallback(() => setLoading(false), []);
+
+  useEffect(() => {
+    // Yield to the main thread, then mount below-the-fold components
+    // This allows the browser to paint the Hero and Loading screen first,
+    // then download and parse the rest of the app in the background without a huge CPU spike.
+    const timer = setTimeout(() => {
+      startTransition(() => {
+        setMountHeavy(true);
+      });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -74,27 +87,32 @@ export default function Home() {
             <OverlapWrapper zIndex={1} bg="var(--bg-hero)">
               <Hero />
             </OverlapWrapper>
-            <OverlapWrapper zIndex={2} bg="var(--bg-about)">
-              <About />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
-              <TechStrip />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={4} bg="var(--bg-about)">
-              <ActivitySection />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
-              <Skills />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
-              <Projects />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
-              <Certificates />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
-              <Contact />
-            </OverlapWrapper>
+            
+            {mountHeavy && (
+              <>
+                <OverlapWrapper zIndex={2} bg="var(--bg-about)">
+                  <About />
+                </OverlapWrapper>
+                <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
+                  <TechStrip />
+                </OverlapWrapper>
+                <OverlapWrapper zIndex={4} bg="var(--bg-about)">
+                  <ActivitySection />
+                </OverlapWrapper>
+                <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
+                  <Skills />
+                </OverlapWrapper>
+                <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
+                  <Projects />
+                </OverlapWrapper>
+                <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
+                  <Certificates />
+                </OverlapWrapper>
+                <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
+                  <Contact />
+                </OverlapWrapper>
+              </>
+            )}
           </main>
         </SmoothScroll>
       </motion.div>
