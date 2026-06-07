@@ -23,6 +23,10 @@ const SKILLS: Skill[] = [
   { name: "Tailwind CSS", level: 90, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
   { name: "JQuery", level: 70, category: "Frontend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jquery/jquery-original.svg" },
 
+  // Mobile
+  { name: "React Native", level: 85, category: "Mobile", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { name: "Expo Go", level: 80, category: "Mobile", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/expo.svg", invertOnDark: true },
+
   // Backend
   { name: "PHP", level: 90, category: "Backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" },
   { name: "Node.js", level: 90, category: "Backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
@@ -73,7 +77,7 @@ const SKILLS: Skill[] = [
   { name: "MS Office Suite", level: 100, category: "MS Office", icon: "https://www.vectorlogo.zone/logos/microsoft/microsoft-icon.svg" },
 ];
 
-const CATEGORIES = ["All", "Frontend", "Backend", "Database", "Design", "AI", "Agentic", "DevOps", "Cloud", "WordPress", "Automation", "IT", "QA", "MS Office"];
+const CATEGORIES = ["All", "Frontend", "Backend", "Database", "Design", "AI", "Agentic", "DevOps", "Cloud", "WordPress", "Automation", "IT", "QA", "Mobile", "MS Office"];
 
 
 

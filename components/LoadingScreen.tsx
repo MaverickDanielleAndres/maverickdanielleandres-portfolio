@@ -4,8 +4,8 @@ import CountUp from "@/components/ui/CountUp";
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const handleEnd = () => {
-    // Small delay at 100% for visual confirmation
-    setTimeout(onComplete, 200);
+    // Longer delay at 100% for visual confirmation and to ensure spring settles
+    setTimeout(onComplete, 800);
   };
 
   return (
@@ -21,13 +21,14 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
     >
       <div className="flex flex-col items-center gap-6">
         {/* Modern minimal counter */}
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-baseline justify-center">
+          <span className="text-2xl md:text-3xl text-transparent invisible select-none">%</span>
           <CountUp
             from={0}
             to={100}
-            duration={0.8}
+            duration={1.2}
             onEnd={handleEnd}
-            className="text-7xl md:text-9xl font-medium tracking-tighter text-white tabular-nums inline-block min-w-[3ch] text-right"
+            className="text-7xl md:text-9xl font-medium tracking-tighter text-white tabular-nums w-[3.5ch] text-center"
           />
           <span className="text-2xl md:text-3xl text-white/30 font-light">%</span>
         </div>

@@ -5,11 +5,13 @@ import {
   SiNodedotjs, SiPostgresql, SiFigma,
   SiGit, SiJavascript, SiHtml5, SiCss3,
   SiPhp, SiPython, SiExpress, SiMysql, SiBootstrap,
-  SiSupabase, SiGithub,
+  SiSupabase, SiGithub, SiExpo
 } from "react-icons/si";
 
 const techLogos = [
   { name: "React",       icon: <SiReact       size={28} color="#61DAFB" /> },
+  { name: "React Native",icon: <SiReact       size={28} color="#61DAFB" /> },
+  { name: "Expo Go",     icon: <SiExpo        size={28} style={{ color: 'currentColor' }} /> },
   { name: "Next.js",     icon: <SiNextdotjs   size={28} style={{ color: 'currentColor' }} /> },
   { name: "TypeScript",  icon: <SiTypescript  size={28} color="#3178C6" /> },
   { name: "JavaScript",  icon: <SiJavascript  size={28} color="#F7DF1E" /> },
