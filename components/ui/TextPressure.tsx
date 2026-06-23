@@ -118,7 +118,6 @@ const TextPressure: React.FC<TextPressureProps> = ({
       if (scale && textRect.height > 0) {
         const yRatio = containerH / textRect.height;
         setScaleY(yRatio);
-        setLineHeight(yRatio);
       }
     });
   }, [chars.length, minFontSize, scale]);
@@ -197,7 +196,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
   }, [fontFamily, fontUrl, stroke, textColor, strokeColor, strokeWidth]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-full overflow-hidden bg-transparent">
+    <div ref={containerRef} className="relative w-full h-full overflow-visible bg-transparent">
       {styleElement}
       <h1
         ref={titleRef}
@@ -207,9 +206,9 @@ const TextPressure: React.FC<TextPressureProps> = ({
         style={{
           fontFamily,
           fontSize: fontSize,
-          lineHeight,
+          lineHeight: 1,
           transform: `scale(1, ${scaleY})`,
-          transformOrigin: 'center top',
+          transformOrigin: 'center center',
           margin: 0,
           fontWeight: 100,
           color: stroke ? undefined : textColor
