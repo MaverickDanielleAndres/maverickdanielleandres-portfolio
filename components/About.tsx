@@ -16,7 +16,7 @@ if (typeof window !== "undefined") {
 }
 
 const BIO =
-  "I'm Maverick, a developer who loves building apps that actually work. Whether it's a smooth React frontend or a solid PHP/node backend, I enjoy making code clean and useful. I'm all about creating digital tools that solve real problems.";
+  "I'm Maverick, a Full-Stack Developer and Project Lead who loves building scalable apps that actually work. Whether it's crafting a smooth React and Next.js frontend or architecting a solid Node.js and Supabase backend, I enjoy making code clean and useful. From integrating AI features to developing enterprise-grade systems, I'm all about creating digital tools that solve real problems.";
 
 function WordReveal({ text }: { text: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -204,7 +204,7 @@ export default function About() {
               className="text-sm leading-relaxed"
               style={{ color: "var(--fg-muted)", maxWidth: "52ch" }}
             >
-              When not coding, I explore new tech, build side projects, and dive into networking or sysadmin stuff just to see how things work.
+              Outside of coding, I dedicate my time to learning new technologies and AI, developing side projects, and exploring networking and sysadmin concepts to understand how complete systems operate from the ground up.
             </p>
 
             <div className="flex flex-col gap-6">
@@ -218,7 +218,8 @@ export default function About() {
                     <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>
                       BS Information Technology &middot; 2022&ndash;2026
                     </p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>GWA: 1.50</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>GWA: 1.48  -  CUM LAUDE</p>
+
                   </div>
                   <div className="shrink-0 relative w-[72px] h-[72px]">
                     <Image
@@ -278,7 +279,7 @@ export default function About() {
 
                 <div className="grid grid-cols-4 gap-2">
                   {SOCIAL_LINKS.map(({ icon, label, href }) => (
-                    <div 
+                    <div
                       key={label}
                       className="relative transition-all duration-500 ease-out hover:-translate-y-1.5 hover:z-30 group/social"
                     >
@@ -333,7 +334,7 @@ export default function About() {
               onClick={(e) => e.stopPropagation()}
             >
               <h3 className="text-lg font-medium mb-6">Academic Awards</h3>
-              
+
               <div className="mb-10 p-5 rounded-2xl bg-black/5 border border-black/10 transition-all duration-300 hover:scale-[1.01] hover:bg-black/[0.08] hover:border-black/20 group" style={{ background: "var(--border-subtle)", borderColor: "var(--border)" }}>
                 <p className="text-[9px] uppercase tracking-[0.25em] font-bold text-center mb-2 opacity-50 group-hover:opacity-80 transition-opacity" style={{ color: "var(--fg)" }}>Achievement</p>
                 <div className="flex justify-center overflow-hidden">
@@ -366,7 +367,7 @@ export default function About() {
                   </div>
                 ))}
               </div>
-              
+
               <button
                 onClick={() => setAwardsOpen(false)}
                 className="absolute top-5 right-5 text-xs opacity-40 hover:opacity-80"
