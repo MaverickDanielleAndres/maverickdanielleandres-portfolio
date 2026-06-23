@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useMemo } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView, AnimatePresence, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Github, ExternalLink } from "lucide-react";
 import Portal from "@/components/Portal";
@@ -663,13 +663,19 @@ function ProjectModal({
 export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-5% 0px" });
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePos({ x: e.clientX, y: e.clientY });
-  };
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
 
   return (
     <section
@@ -681,10 +687,10 @@ export default function Projects() {
         padding: "clamp(4rem,10vh,7rem) var(--container-px)",
         position: "relative",
       }}
-      onMouseMove={handleMouseMove}
       onTouchMove={(e) => {
         if (e.touches.length > 0) {
-          setMousePos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+          mouseX.set(e.touches[0].clientX);
+          mouseY.set(e.touches[0].clientY);
         }
       }}
     >
@@ -752,8 +758,8 @@ export default function Projects() {
               style={{
                 width: "clamp(280px, 30vw, 400px)",
                 aspectRatio: "16/10",
-                left: mousePos.x,
-                top: mousePos.y,
+                left: mouseX,
+                top: mouseY,
                 x: "-50%",
                 y: "-50%",
                 background: "var(--bg)",

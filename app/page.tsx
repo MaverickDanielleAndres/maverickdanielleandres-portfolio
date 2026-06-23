@@ -47,7 +47,7 @@ export default function Home() {
       startTransition(() => {
         setMountHeavy(true);
       });
-    }, 150);
+    }, 400);
     return () => clearTimeout(timer);
   }, []);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, startTransition } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import { X, Menu } from 'lucide-react';
@@ -57,10 +57,16 @@ export function Offcanvas() {
   // Close on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+
+  useEffect(() => {
+    // Cache the scrollbar width to prevent forced layout shifts on every open
+    setScrollbarWidth(window.innerWidth - document.documentElement.clientWidth);
+  }, []);
+
   // Lock body scroll and prevent layout shift
   useEffect(() => {
     if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     } else {
@@ -71,14 +77,14 @@ export function Offcanvas() {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
     };
-  }, [isOpen]);
+  }, [isOpen, scrollbarWidth]);
 
   return (
     <>
       {/* ── Hamburger toggle circle (fixed top-right) ── */}
       <button
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
-        onClick={() => startTransition(() => setOpen(v => !v))}
+        onClick={() => setOpen(v => !v)}
         className="fixed top-4 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:top-5 sm:right-6 sm:h-12 sm:w-12"
         style={{
           background: isOpen ? 'var(--accent)' : 'var(--bg)',
@@ -155,7 +161,7 @@ export function Offcanvas() {
                       />
                       <Link
                         href={href}
-                        onClick={() => startTransition(() => setOpen(false))}
+                        onClick={() => setOpen(false)}
                         className="font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200"
                         style={{ fontSize: 'clamp(2.25rem, 6.5vh, 3.5rem)', lineHeight: 1.15 }}
                       >
