@@ -40,36 +40,34 @@ export default function Home() {
   const handleLoadingComplete = useCallback(() => setLoading(false), []);
 
   useEffect(() => {
-    // Yield to the main thread, then mount below-the-fold components
-    // This allows the browser to paint the Hero and Loading screen first,
-    // then download and parse the rest of the app in the background without a huge CPU spike.
+    // Reduced from 400ms → 100ms: below-fold sections mount sooner.
     const timer = setTimeout(() => {
       startTransition(() => {
         setMountHeavy(true);
       });
-    }, 400);
+    }, 100);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
+      {/* Loading screen overlays content — content renders immediately underneath
+          so the browser can measure the LCP element without waiting for the overlay. */}
       <AnimatePresence>
         {loading && (
           <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
         )}
       </AnimatePresence>
 
+      {/* Page content — always in DOM. Opacity-only reveal avoids the expensive
+          filter:blur GPU compositing layer that was hurting first paint. */}
       <motion.div
         key="content"
-        initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-        animate={{ 
-          opacity: loading ? 0 : 1, 
-          scale: loading ? 0.98 : 1, 
-          filter: loading ? "blur(10px)" : "blur(0px)" 
-        }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="relative"
-        style={{ pointerEvents: loading ? "none" : "auto", height: loading ? "100vh" : "auto", overflow: loading ? "hidden" : "visible" }}
+        style={{ pointerEvents: loading ? "none" : "auto" }}
       >
         <SmoothScroll>
           {/* Transparent navbar (overlays hero) */}

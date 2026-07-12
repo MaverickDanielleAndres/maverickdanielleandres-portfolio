@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export default function OverlapWrapper({
@@ -9,20 +9,27 @@ export default function OverlapWrapper({
   zIndex,
   bg = "var(--bg)",
   shadowClassName = "shadow-2xl",
+  parallax = false,
 }: {
   children: React.ReactNode;
   zIndex: number;
   bg?: string;
   shadowClassName?: string;
+  /** Enable scroll-driven parallax on this section. Off by default to reduce scroll listeners. */
+  parallax?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Only attach scroll listeners when parallax is explicitly enabled AND
+  // user hasn't opted out of motion. Avoids 8× simultaneous useScroll overhead.
+  const shouldAnimate = parallax && !prefersReducedMotion;
 
   const { scrollYProgress } = useScroll({
-    target: ref,
+    target: shouldAnimate ? ref : undefined,
     offset: ["end end", "end start"],
   });
 
-  // Move this section slightly down as the next section scrolls up over it
   const y = useTransform(scrollYProgress, [0, 1], ["0vh", "20vh"]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.6]);
 
@@ -30,11 +37,11 @@ export default function OverlapWrapper({
     <div ref={ref} className="relative w-full">
       <motion.div
         style={{
-          y,
-          opacity,
+          y: shouldAnimate ? y : undefined,
+          opacity: shouldAnimate ? opacity : undefined,
           zIndex,
           position: "relative",
-          background: bg, // ensures solid background so it covers previous sections
+          background: bg,
         }}
         className={cn("w-full", shadowClassName)}
       >

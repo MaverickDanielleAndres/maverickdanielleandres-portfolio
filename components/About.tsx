@@ -228,7 +228,7 @@ export default function About() {
                       fill
                       className="rounded-full object-cover shadow-lg"
                       sizes="72px"
-                      priority
+                      loading="lazy"
                     />
                   </div>
                 </div>

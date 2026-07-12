@@ -343,6 +343,7 @@ export default function Skills() {
                     fill
                     className="object-contain"
                     unoptimized={true}
+                    loading="lazy"
                     onError={(e: any) => {
                       e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(skill.name)}&background=random&color=fff`;
                     }}
