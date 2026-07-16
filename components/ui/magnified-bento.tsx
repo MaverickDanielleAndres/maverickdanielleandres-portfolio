@@ -114,7 +114,7 @@ const MagnifiedBento = () => {
                       key={`${item.id}-${idx}`}
                       className="flex gap-2 bg-background/50 backdrop-blur-sm whitespace-nowrap w-fit text-muted-foreground p-2 px-3 items-center border border-border/50 rounded-full text-xs"
                     >
-                      <HugeiconsIcon icon={item.icon} size={14} />
+                      <HugeiconsIcon icon={item.icon} size={14} aria-hidden="true" />
                       <span>{item.label}</span>
                     </div>
                   ))}
@@ -154,6 +154,7 @@ const MagnifiedBento = () => {
                         icon={item.icon}
                         size={14}
                         className="text-primary"
+                        aria-hidden="true"
                       />
                       <span className="font-medium text-primary">
                         {item.label}
@@ -201,6 +202,7 @@ export default MagnifiedBento;
 const MagnifyingLens = ({ size = 92 }: { size?: number }) => {
   return (
     <svg
+      aria-hidden="true"
       width={size}
       height={size}
       viewBox="0 0 512 512"

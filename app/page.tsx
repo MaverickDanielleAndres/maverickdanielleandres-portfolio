@@ -14,13 +14,13 @@ import Portal from "@/components/Portal";
 
 // --- Below-the-fold: dynamically imported to reduce initial bundle size ---
 // Each section is lazy-loaded when the client is ready, per performance-rules.md
-const About = dynamic(() => import("@/components/About"), { ssr: false });
-const TechStrip = dynamic(() => import("@/components/TechStrip"), { ssr: false });
-const Skills = dynamic(() => import("@/components/Skills"), { ssr: false });
-const Projects = dynamic(() => import("@/components/Projects"), { ssr: false });
-const Certificates = dynamic(() => import("@/components/Certificates"), { ssr: false });
-const ActivitySection = dynamic(() => import("@/components/ActivitySection"), { ssr: false });
-const Contact = dynamic(() => import("@/components/Contact"), { ssr: false });
+const About = dynamic(() => import("@/components/About"));
+const TechStrip = dynamic(() => import("@/components/TechStrip"));
+const Skills = dynamic(() => import("@/components/Skills"));
+const Projects = dynamic(() => import("@/components/Projects"));
+const Certificates = dynamic(() => import("@/components/Certificates"));
+const ActivitySection = dynamic(() => import("@/components/ActivitySection"));
+const Contact = dynamic(() => import("@/components/Contact"));
 
 // --- Dynamic-only UI components ---
 const ThemeToggle = dynamic(
@@ -28,26 +28,13 @@ const ThemeToggle = dynamic(
   { ssr: false }
 );
 
-const LoadingScreen = dynamic(
-  () => import("@/components/LoadingScreen"),
-  { ssr: false }
-);
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [mountHeavy, setMountHeavy] = useState(false);
+  
   // useCallback prevents LoadingScreen from re-rendering unnecessarily
   const handleLoadingComplete = useCallback(() => setLoading(false), []);
-
-  useEffect(() => {
-    // Reduced from 400ms → 100ms: below-fold sections mount sooner.
-    const timer = setTimeout(() => {
-      startTransition(() => {
-        setMountHeavy(true);
-      });
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <>
@@ -63,9 +50,6 @@ export default function Home() {
           filter:blur GPU compositing layer that was hurting first paint. */}
       <motion.div
         key="content"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: loading ? 0 : 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="relative"
         style={{ pointerEvents: loading ? "none" : "auto" }}
       >
@@ -86,31 +70,27 @@ export default function Home() {
               <Hero />
             </OverlapWrapper>
             
-            {mountHeavy && (
-              <>
-                <OverlapWrapper zIndex={2} bg="var(--bg-about)">
-                  <About />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
-                  <TechStrip />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={4} bg="var(--bg-about)">
-                  <ActivitySection />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
-                  <Skills />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
-                  <Projects />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
-                  <Certificates />
-                </OverlapWrapper>
-                <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
-                  <Contact />
-                </OverlapWrapper>
-              </>
-            )}
+            <OverlapWrapper zIndex={2} bg="var(--bg-about)">
+              <About />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
+              <TechStrip />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={4} bg="var(--bg-about)">
+              <ActivitySection />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
+              <Skills />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
+              <Projects />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
+              <Certificates />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
+              <Contact />
+            </OverlapWrapper>
           </main>
         </SmoothScroll>
       </motion.div>
