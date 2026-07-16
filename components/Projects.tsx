@@ -647,7 +647,7 @@ function ProjectModal({
                   </div>
 
                   <div>
-                    <h4 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Features</h4>
+                    <h3 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Features</h3>
                     <div className="flex flex-wrap gap-2">
                       {project.features.map((f) => (
                         <span 
@@ -664,7 +664,7 @@ function ProjectModal({
 
                 <div className="w-full md:w-80 space-y-10">
                   <div>
-                    <h4 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Tech Stack</h4>
+                    <h3 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Tech Stack</h3>
                     <div className="flex flex-wrap gap-2">
                       {project.tech.map((t) => (
                         <span key={t} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--muted)] border border-[var(--border-subtle)]">
@@ -675,7 +675,7 @@ function ProjectModal({
                   </div>
 
                   <div>
-                    <h4 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Contributions</h4>
+                    <h3 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Contributions</h3>
                     <ul className="space-y-4">
                       {project.contributions.map((c, i) => (
                         <li key={i} className="flex gap-4 text-sm opacity-80 leading-relaxed">

@@ -236,12 +236,14 @@ export default function Contact() {
             <InputField label="Subject" name="subject" value={form.subject} onChange={handleChange} required />
             <div>
               <label
+                htmlFor="message"
                 className="block text-xs uppercase tracking-widest mb-2"
                 style={{ color: "var(--fg-muted)" }}
               >
                 Message
               </label>
               <textarea
+                id="message"
                 name="message"
                 value={form.message}
                 onChange={handleChange}
@@ -344,12 +346,14 @@ function InputField({
   return (
     <div>
       <label
+        htmlFor={name}
         className="block text-xs uppercase tracking-widest mb-2"
         style={{ color: "var(--fg-muted)" }}
       >
         {label}
       </label>
       <input
+        id={name}
         type={type}
         name={name}
         value={value}
