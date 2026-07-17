@@ -233,6 +233,7 @@ export default function About() {
                   </div>
                 </div>
                 <button
+                  suppressHydrationWarning
                   onClick={() => setAwardsOpen(true)}
                   className="mt-3 text-xs underline underline-offset-2 hover:opacity-70 transition-opacity"
                   style={{ color: "var(--accent)" }}
@@ -369,6 +370,7 @@ export default function About() {
               </div>
 
               <button
+                suppressHydrationWarning
                 onClick={() => setAwardsOpen(false)}
                 className="absolute top-5 right-5 text-xs opacity-40 hover:opacity-80"
               >
@@ -394,6 +396,7 @@ export default function About() {
               onClick={(e) => e.stopPropagation()}
             >
               <button
+                suppressHydrationWarning
                 onClick={() => setSelectedAwardImage(null)}
                 className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
                 aria-label="Close image"

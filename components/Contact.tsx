@@ -243,6 +243,7 @@ export default function Contact() {
                 Message
               </label>
               <textarea
+                suppressHydrationWarning
                 id="message"
                 name="message"
                 value={form.message}
@@ -261,6 +262,7 @@ export default function Contact() {
             <div className="pt-2">
               <Magnet padding={50} magnetStrength={50}>
                 <button
+                  suppressHydrationWarning
                   type="submit"
                   disabled={status === "sending"}
                   className="flex items-center gap-3 text-sm font-light group disabled:opacity-50"
@@ -353,6 +355,7 @@ function InputField({
         {label}
       </label>
       <input
+        suppressHydrationWarning
         id={name}
         type={type}
         name={name}

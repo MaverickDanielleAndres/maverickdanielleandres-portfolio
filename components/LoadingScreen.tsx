@@ -4,8 +4,8 @@ import CountUp from "@/components/ui/CountUp";
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const handleEnd = () => {
-    // Longer delay at 100% for visual confirmation and to ensure spring settles
-    setTimeout(onComplete, 800);
+    // Shorter delay to improve LCP/FCP metrics
+    setTimeout(onComplete, 50);
   };
 
   return (
@@ -26,7 +26,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           <CountUp
             from={0}
             to={100}
-            duration={1.2}
+            duration={0.3}
             onEnd={handleEnd}
             className="text-7xl md:text-9xl font-medium tracking-tighter text-white tabular-nums w-[3.5ch] text-center"
           />

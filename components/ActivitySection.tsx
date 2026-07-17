@@ -45,6 +45,12 @@ const EXPERIENCE = [
     description: "Completed multiple freelance projects including full-system builds and frontend tasks, delivering end-to-end web applications for student and private clients with a focus on usability and performance.",
   },
   {
+    company: "Zentari & Optrizo",
+    role: "Freelance Full Stack Developer",
+    year: "2026",
+    description: <span>Developed and maintained end-to-end web applications for clients, focusing on usability and performance. View work at <a href="https://www.zentariph.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">zentariph.com</a>.</span>,
+  },
+  {
     company: "Dept. of Education – Central",
     role: "Office Clerk",
     year: "2024",

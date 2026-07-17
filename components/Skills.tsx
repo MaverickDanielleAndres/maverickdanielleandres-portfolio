@@ -70,7 +70,6 @@ const SKILLS: Skill[] = [
 
   // IT & QA
   { name: "Networking", level: 85, category: "IT", icon: "https://www.vectorlogo.zone/logos/cisco/cisco-icon.svg" },
-  { name: "Linux/CLI", level: 60, category: "IT", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-original.svg" },
   { name: "Playwright", level: 75, category: "QA", icon: "https://playwright.dev/img/playwright-logo.svg" },
 
   // MS Office
@@ -226,6 +225,7 @@ export default function Skills() {
           {/* Universal Filter Dropdown */}
           <div className="relative flex-1 max-w-[240px]">
             <button
+              suppressHydrationWarning
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               className="w-full flex items-center justify-between bg-secondary/50 border border-border/50 rounded-xl px-4 py-2.5 text-sm font-bold text-foreground transition-all hover:border-primary/30"
             >
@@ -259,6 +259,7 @@ export default function Skills() {
                     {CATEGORIES.map((cat) => (
                       <button
                         key={cat}
+                        suppressHydrationWarning
                         onClick={() => {
                           setActiveCategory(cat);
                           setIsFilterOpen(false);
@@ -278,6 +279,7 @@ export default function Skills() {
           </div>
 
           <button
+            suppressHydrationWarning
             onClick={() => setShowAllIcons(!showAllIcons)}
             className={cn(
               "shrink-0 p-2.5 rounded-xl border transition-all duration-300 flex items-center justify-center",

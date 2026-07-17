@@ -98,7 +98,7 @@ export default function Hero() {
             custom={0.35}
             className="mt-8 md:mt-12 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide text-white drop-shadow-md"
           >
-            Full-Stack Developer &amp; IT Specialist
+            Full-Stack Web & App Developer
             <br />
             Based in Pasig City, PH
           </motion.p>
@@ -142,7 +142,7 @@ export default function Hero() {
                   {label} <ArrowUpRight size={14} />
                 </a>
               ) : (
-                <button key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-white !text-white bg-black/10 backdrop-blur-sm hover:!bg-white hover:!text-black">
+                <button suppressHydrationWarning key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-white !text-white bg-black/10 backdrop-blur-sm hover:!bg-white hover:!text-black">
                   {label}
                 </button>
               )

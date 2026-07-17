@@ -103,6 +103,7 @@ export function Component({
           const Icon = layoutIcons[mode]
           return (
             <button
+              suppressHydrationWarning
               key={mode}
               onClick={() => setLayout(mode)}
               className={cn(

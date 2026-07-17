@@ -83,6 +83,7 @@ export function Offcanvas() {
     <>
       {/* ── Hamburger toggle circle (fixed top-right) ── */}
       <button
+        suppressHydrationWarning
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
         onClick={() => setOpen(v => !v)}
         className="fixed top-4 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:top-5 sm:right-6 sm:h-12 sm:w-12"
