@@ -41,7 +41,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
             transition={{ delay: 0.2 }}
             className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold"
           >
-            Digital Portfolio 2026
+            Maverick Portfolio 2026
           </motion.p>
 
           <div className="w-48 h-[1px] bg-white/10 relative overflow-hidden">
