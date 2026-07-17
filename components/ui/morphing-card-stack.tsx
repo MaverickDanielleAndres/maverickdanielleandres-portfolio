@@ -91,7 +91,7 @@ export function Component({
 
   const containerStyles = {
     stack: "relative h-[240px] sm:h-[280px] w-full max-w-[240px] sm:max-w-[300px] mt-12 mb-16",
-    grid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4",
+    grid: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4",
   }
 
   const displayCards = layout === "stack" ? getStackOrder() : cards.map((c, i) => ({ ...c, stackPosition: i }))
@@ -131,23 +131,25 @@ export function Component({
               const content = (
                 <div className={cn(
                   "flex relative z-10 w-full h-full",
-                  layout === "stack" ? "flex-col gap-3 p-5 sm:p-6" : "flex-row items-start gap-3 px-3.5 py-2 sm:py-2.5"
+                  layout === "stack" 
+                    ? "flex-col gap-3 p-5 sm:p-6 text-left" 
+                    : "flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3 p-3 sm:px-3.5 sm:py-2.5"
                 )}>
                   <div className={cn(
                     "flex shrink-0 items-center justify-center rounded-xl bg-secondary/50 text-foreground border border-border/50 shadow-sm",
-                    layout === "stack" ? "h-10 w-10" : "h-8 w-8 mt-0.5"
+                    layout === "stack" ? "h-10 w-10" : "h-8 w-8 sm:mt-0.5"
                   )}>
                     <div className={layout === "stack" ? "scale-90" : "scale-75"}>{card.icon}</div>
                   </div>
 
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 w-full">
                     <h3 className={cn(
                       "font-bold text-foreground tracking-tight leading-tight mb-1",
-                      layout === "stack" ? "text-lg" : "text-sm"
+                      layout === "stack" ? "text-lg" : "text-[13px] sm:text-sm"
                     )}>{card.title}</h3>
                     <p className={cn(
                       "text-muted-foreground leading-snug font-medium",
-                      layout === "stack" ? "text-sm line-clamp-5" : "text-[11px] line-clamp-2"
+                      layout === "stack" ? "text-sm" : "text-[11px]"
                     )}>
                       {card.description}
                     </p>
@@ -185,7 +187,7 @@ export function Component({
                     onCardClick?.(card)
                   }}
                   className={cn(
-                    "relative touch-pan-y",
+                    "relative touch-pan-y h-full",
                     layout === "stack" 
                       ? "cursor-grab active:cursor-grabbing rounded-[2rem] border border-border/50 absolute w-full max-w-[240px] sm:max-w-[300px] aspect-square bg-card/90 dark:bg-card/40 backdrop-blur-2xl shadow-xl" 
                       : "cursor-pointer rounded-2xl border border-border/40 w-full min-h-[85px] bg-card/70 dark:bg-card/30 backdrop-blur-md shadow-sm hover:border-primary/50 transition-colors",
