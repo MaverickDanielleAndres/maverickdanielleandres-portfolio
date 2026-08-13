@@ -8,7 +8,6 @@ import RotatingText from "@/components/RotatingText";
 import { Component as MorphingCardStack } from "@/components/ui/morphing-card-stack";
 import { Layers, TestTube, Bot, Globe, ShoppingCart, Cloud, Server, Link, Zap, ShieldCheck, Grid, LayoutGrid, Palette, Layout, Cpu, Database as DbIcon, Settings2, Sparkles, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-import MagnifiedBento from "@/components/ui/magnified-bento";
 
 
 type Skill = { name: string; level: number; category: string; icon: string; invertOnDark?: boolean };
@@ -414,25 +413,6 @@ export default function Skills() {
         </div>
       </div>
 
-      {/* ===== Soft Skills ===== */}
-      <div
-        className="mt-24 pt-16 flex flex-col items-center text-center"
-        style={{ borderTop: "1px solid var(--border-subtle)" }}
-      >
-        <motion.p
-          className="text-xs uppercase tracking-[0.18em] mb-3"
-          style={{ color: "var(--fg-muted)" }}
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          Soft Skills
-        </motion.p>
-        
-        <div className="w-full max-w-4xl mx-auto">
-          <MagnifiedBento />
-        </div>
-      </div>
     </section>
   );
 }

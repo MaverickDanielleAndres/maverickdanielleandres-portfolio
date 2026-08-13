@@ -105,7 +105,7 @@ export default function ActivitySection() {
     <section
       id="activity"
       ref={containerRef}
-      className="relative py-20 px-[var(--container-px)] overflow-hidden"
+      className="relative pt-6 pb-20 px-[var(--container-px)] overflow-hidden"
       style={{ background: "var(--bg-about)" }}
     >
       <motion.div

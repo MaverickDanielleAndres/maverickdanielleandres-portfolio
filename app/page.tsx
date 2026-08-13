@@ -15,7 +15,6 @@ import Portal from "@/components/Portal";
 // --- Below-the-fold: dynamically imported to reduce initial bundle size ---
 // Each section is lazy-loaded when the client is ready, per performance-rules.md
 const About = dynamic(() => import("@/components/About"));
-const TechStrip = dynamic(() => import("@/components/TechStrip"));
 const Skills = dynamic(() => import("@/components/Skills"));
 const Projects = dynamic(() => import("@/components/Projects"));
 const Certificates = dynamic(() => import("@/components/Certificates"));
@@ -73,22 +72,19 @@ export default function Home() {
             <OverlapWrapper zIndex={2} bg="var(--bg-about)">
               <About />
             </OverlapWrapper>
-            <OverlapWrapper zIndex={3} bg="var(--bg-about)" shadowClassName="shadow-none">
-              <TechStrip />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={4} bg="var(--bg-about)">
+            <OverlapWrapper zIndex={3} bg="var(--bg-about)">
               <ActivitySection />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={4} bg="var(--bg-projects)">
+              <Projects />
             </OverlapWrapper>
             <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
               <Skills />
             </OverlapWrapper>
-            <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
-              <Projects />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={7} bg="var(--bg-certificates)">
+            <OverlapWrapper zIndex={6} bg="var(--bg-certificates)">
               <Certificates />
             </OverlapWrapper>
-            <OverlapWrapper zIndex={8} bg="var(--bg-contact)">
+            <OverlapWrapper zIndex={7} bg="var(--bg-contact)">
               <Contact />
             </OverlapWrapper>
           </main>
