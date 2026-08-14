@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
+import { useState, useEffect, type ReactNode } from "react"
 import { motion, AnimatePresence, LayoutGroup, type PanInfo } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Grid3X3, Layers } from "lucide-react"
@@ -40,6 +40,16 @@ export function Component({
   const [expandedCard, setExpandedCard] = useState<string | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+
+  useEffect(() => {
+    if (isDragging || cards.length <= 1 || layout !== "stack") return;
+    
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % cards.length);
+    }, 4000); 
+    
+    return () => clearInterval(interval);
+  }, [isDragging, cards.length, layout]);
 
   if (!cards || cards.length === 0) {
     return null
@@ -90,7 +100,7 @@ export function Component({
   }
 
   const containerStyles = {
-    stack: "relative h-[240px] sm:h-[280px] w-full max-w-[240px] sm:max-w-[300px] mt-12 mb-16",
+    stack: "relative h-[240px] sm:h-[280px] w-full max-w-[240px] sm:max-w-[300px] mt-12 mb-8 lg:mb-16",
     grid: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4",
   }
 
@@ -98,28 +108,6 @@ export function Component({
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div className="flex items-center justify-center gap-1 rounded-lg bg-secondary/50 p-1 w-fit mx-auto">
-        {(Object.keys(layoutIcons) as LayoutMode[]).map((mode) => {
-          const Icon = layoutIcons[mode]
-          return (
-            <button
-              suppressHydrationWarning
-              key={mode}
-              onClick={() => setLayout(mode)}
-              className={cn(
-                "rounded-md p-2 transition-all",
-                layout === mode
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary",
-              )}
-              aria-label={`Switch to ${mode} layout`}
-            >
-              <Icon className="h-4 w-4" />
-            </button>
-          )
-        })}
-      </div>
-
       <LayoutGroup>
         <motion.div layout className={cn(containerStyles[layout], "mx-auto")}>
           <AnimatePresence mode="popLayout">

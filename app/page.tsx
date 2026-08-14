@@ -75,11 +75,11 @@ export default function Home() {
             <OverlapWrapper zIndex={3} bg="var(--bg-about)">
               <ActivitySection />
             </OverlapWrapper>
-            <OverlapWrapper zIndex={4} bg="var(--bg-projects)">
-              <Projects />
-            </OverlapWrapper>
-            <OverlapWrapper zIndex={5} bg="var(--bg-skills)">
+            <OverlapWrapper zIndex={4} bg="var(--bg-about)">
               <Skills />
+            </OverlapWrapper>
+            <OverlapWrapper zIndex={5} bg="var(--bg-projects)">
+              <Projects />
             </OverlapWrapper>
             <OverlapWrapper zIndex={6} bg="var(--bg-certificates)">
               <Certificates />
