@@ -41,5 +41,5 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  return <div className="relative overflow-x-hidden">{children}</div>;
+  return <div className="relative overflow-x-clip">{children}</div>;
 }

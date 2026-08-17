@@ -291,40 +291,37 @@ export default function Contact() {
         </motion.div>
       </div>
 
-      {/* Footer bottom bar */}
-      <div
-        style={{
-          padding: "1.5rem var(--container-px)",
-          borderTop: "1px solid var(--border-subtle)",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "1rem",
-        }}
-      >
-        <p className="text-xs" style={{ color: "var(--fg-muted)" }}>
-          &copy; 2026 Maverick Danielle Andres. All rights reserved.
-        </p>
-        <div className="flex items-center gap-6">
-          {[
-            { href: "https://github.com/MaverickDanielleAndres", label: "GitHub" },
-            { href: "https://linkedin.com/in/maverick-danielle-andres-641564373", label: "LinkedIn" },
-            { href: "https://www.facebook.com/maverickdanielle.andres", label: "Facebook" },
-            { href: "https://www.instagram.com/mavs_verick/", label: "Instagram" },
-          ].map(({ href, label }) => (
-            <a
-              key={href}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs transition-opacity hover:opacity-60"
-              style={{ color: "var(--fg-muted)", textDecoration: "none" }}
-            >
-              {label} <ArrowUpRight size={10} />
-            </a>
-          ))}
-        </div>
+      {/* Minimal Footer */}
+      <div style={{ padding: "0 var(--container-px)" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="flex flex-col md:flex-row justify-between items-center py-6 text-xs text-neutral-500 mt-12"
+          style={{ borderTop: "1px solid var(--border-subtle)" }}
+        >
+          <div className="mb-4 md:mb-0">
+            &copy; 2026 Maverick Danielle Andres. All rights reserved.
+          </div>
+          <div className="flex flex-wrap gap-6 justify-center">
+            {[
+              { href: "https://github.com/MaverickDanielleAndres", label: "GitHub" },
+              { href: "https://linkedin.com/in/maverick-danielle-andres-641564373", label: "LinkedIn" },
+              { href: "https://www.facebook.com/maverickdanielle.andres", label: "Facebook" },
+              { href: "https://www.instagram.com/mavs_verick/", label: "Instagram" },
+            ].map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-neutral-300 transition-colors flex items-center gap-1"
+              >
+                {label} <ArrowUpRight size={10} />
+              </a>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

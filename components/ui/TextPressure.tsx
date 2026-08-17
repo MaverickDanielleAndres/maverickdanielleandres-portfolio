@@ -64,6 +64,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
 
   const mouseRef = useRef({ x: 0, y: 0 });
   const cursorRef = useRef({ x: 0, y: 0 });
+  const spanCentersRef = useRef<{x: number, y: number}[]>([]);
 
   const [fontSize, setFontSize] = useState(minFontSize);
   const [scaleY, setScaleY] = useState(1);
@@ -119,6 +120,16 @@ const TextPressure: React.FC<TextPressureProps> = ({
         const yRatio = containerH / textRect.height;
         setScaleY(yRatio);
       }
+
+      // Cache span centers to prevent layout thrashing during rAF
+      spanCentersRef.current = spansRef.current.map(span => {
+        if (!span) return { x: 0, y: 0 };
+        const rect = span.getBoundingClientRect();
+        return {
+          x: rect.x + rect.width / 2,
+          y: rect.y + rect.height / 2
+        };
+      });
     });
   }, [chars.length, minFontSize, scale]);
 
@@ -131,22 +142,28 @@ const TextPressure: React.FC<TextPressureProps> = ({
 
   useEffect(() => {
     let rafId: number;
+    let lastX = mouseRef.current.x;
+    let lastY = mouseRef.current.y;
+
     const animate = () => {
       mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
       mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
 
-      if (titleRef.current) {
+      // Only perform heavy DOM writes if the mouse actually moved
+      const hasMoved = Math.abs(mouseRef.current.x - lastX) > 0.1 || Math.abs(mouseRef.current.y - lastY) > 0.1;
+      
+      if (hasMoved && titleRef.current && spanCentersRef.current.length > 0) {
+        lastX = mouseRef.current.x;
+        lastY = mouseRef.current.y;
+        
         const titleRect = titleRef.current.getBoundingClientRect();
         const maxDist = titleRect.width / 2;
 
-        spansRef.current.forEach(span => {
+        spansRef.current.forEach((span, i) => {
           if (!span) return;
 
-          const rect = span.getBoundingClientRect();
-          const charCenter = {
-            x: rect.x + rect.width / 2,
-            y: rect.y + rect.height / 2
-          };
+          const charCenter = spanCentersRef.current[i];
+          if (!charCenter) return;
 
           const d = dist(mouseRef.current, charCenter);
 

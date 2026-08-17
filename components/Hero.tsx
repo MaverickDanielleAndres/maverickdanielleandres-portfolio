@@ -31,7 +31,7 @@ export default function Hero() {
     <section
       id="home"
       className="relative flex flex-col md:flex-row items-stretch justify-between h-screen min-h-[100svh] w-full overflow-hidden"
-      style={{ background: "var(--bg-hero)", color: "#fff" }}
+      style={{ background: "var(--bg-hero)", color: "var(--fg)" }}
     >
       {/* Background Marquee Name (Lowest z-index) */}
       <div
@@ -41,7 +41,7 @@ export default function Hero() {
           <ScrollVelocity
             texts={["Maverick Danielle Andres"]}
             velocity={40}
-            className="font-normal leading-tight tracking-[-0.02em] text-white opacity-[0.12] md:opacity-[0.08]"
+            className="font-normal leading-tight tracking-[-0.02em] text-[var(--fg)] opacity-[0.12] md:opacity-[0.08]"
             parallaxStyle={{ fontSize: "clamp(3.5rem, 10vw, 15rem)" }}
           />
         </motion.div>
@@ -69,7 +69,7 @@ export default function Hero() {
                 weight={true}
                 italic={true}
                 scale={true}
-                textColor="#ffffff"
+                textColor="var(--fg)"
                 minFontSize={20}
                 className="w-full h-full"
               />
@@ -84,7 +84,7 @@ export default function Hero() {
                 weight={true}
                 italic={true}
                 scale={true}
-                textColor="#ffffff"
+                textColor="var(--fg)"
                 minFontSize={20}
                 className="w-full h-full"
               />
@@ -96,7 +96,7 @@ export default function Hero() {
             initial="initial"
             animate="enter"
             custom={0.35}
-            className="mt-8 md:mt-12 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide text-white drop-shadow-md"
+            className="mt-8 md:mt-12 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md"
           >
             Full-Stack Web & App Developer
             <br />
@@ -111,8 +111,8 @@ export default function Hero() {
             custom={0.4}
             className="mt-6 flex flex-col gap-1.5 text-left"
           >
-            <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-white drop-shadow-md">Available for work</p>
-            <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-white drop-shadow-md">
+            <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">Available for work</p>
+            <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-[var(--fg)] drop-shadow-md">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               Open to opportunities
             </span>
@@ -137,12 +137,12 @@ export default function Hero() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-white !text-white bg-black/10 backdrop-blur-sm hover:!bg-white hover:!text-black"
+                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
                 >
                   {label} <ArrowUpRight size={14} />
                 </a>
               ) : (
-                <button suppressHydrationWarning key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-white !text-white bg-black/10 backdrop-blur-sm hover:!bg-white hover:!text-black">
+                <button suppressHydrationWarning key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]">
                   {label}
                 </button>
               )
@@ -154,7 +154,7 @@ export default function Hero() {
         <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-center items-end h-full z-10 pointer-events-none overflow-visible">
           <div className="relative w-full min-w-[400px] sm:min-w-[500px] md:w-[120%] lg:w-[100%] max-w-[800px] h-[75%] md:h-[95%] lg:h-[100%] flex justify-center items-end mr-[-25%] sm:mr-[-10%] md:mr-0 mb-[-18%] md:mb-0 transition-all duration-700">
             <Image
-              src="/updatedprofile_pic.png"
+              src="/updatedprofile_pic.webp"
               alt="Maverick Danielle Andres"
               fill
               className="object-contain object-bottom"
@@ -162,6 +162,7 @@ export default function Hero() {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
               priority
               loading="eager"
+              unoptimized={true}
             />
           </div>
         </div>
@@ -183,7 +184,7 @@ export default function Hero() {
         aria-label="Scroll down"
       >
         <span className="text-xs tracking-[0.2em] uppercase">Scroll</span>
-        <span className="w-px bg-white/60" style={{ height: "clamp(2rem, 4vh, 3rem)" }} />
+        <span className="w-px bg-[var(--fg)]/60" style={{ height: "clamp(2rem, 4vh, 3rem)" }} />
       </motion.a>
     </section>
   );

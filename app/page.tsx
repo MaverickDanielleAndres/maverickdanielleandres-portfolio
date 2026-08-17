@@ -1,8 +1,4 @@
-"use client";
-
 import dynamic from "next/dynamic";
-import { useState, useCallback, useEffect, startTransition } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import SmoothScroll from "@/components/SmoothScroll";
 import { Navbar } from "@/components/Navbar";
 
@@ -11,6 +7,7 @@ import Hero from "@/components/Hero";
 
 import OverlapWrapper from "@/components/OverlapWrapper";
 import Portal from "@/components/Portal";
+import LazyLoad from "@/components/LazyLoad";
 
 // --- Below-the-fold: dynamically imported to reduce initial bundle size ---
 // Each section is lazy-loaded when the client is ready, per performance-rules.md
@@ -22,39 +19,15 @@ const ActivitySection = dynamic(() => import("@/components/ActivitySection"));
 const Contact = dynamic(() => import("@/components/Contact"));
 
 // --- Dynamic-only UI components ---
-const ThemeToggle = dynamic(
-  () => import("@/components/ThemeToggle"),
-  { ssr: false }
-);
-
-import LoadingScreen from "@/components/LoadingScreen";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  
-  // useCallback prevents LoadingScreen from re-rendering unnecessarily
-  const handleLoadingComplete = useCallback(() => setLoading(false), []);
-
   return (
     <>
-      {/* Loading screen overlays content — content renders immediately underneath
-          so the browser can measure the LCP element without waiting for the overlay. */}
-      <AnimatePresence>
-        {loading && (
-          <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
-        )}
-      </AnimatePresence>
-
-      {/* Page content — always in DOM. Opacity-only reveal avoids the expensive
-          filter:blur GPU compositing layer that was hurting first paint. */}
-      <motion.div
-        key="content"
-        className="relative"
-        style={{ pointerEvents: loading ? "none" : "auto" }}
-      >
+      <div className="relative">
         <SmoothScroll>
           {/* Transparent navbar (overlays hero) */}
-          <Navbar onMenuOpen={() => {}} />
+          <Navbar />
 
           {/* Theme toggle — fixed bottom-right */}
           <Portal>
@@ -65,31 +38,43 @@ export default function Home() {
 
           {/* Page sections */}
           <main className="relative" style={{ position: 'relative' }}>
-            <OverlapWrapper zIndex={1} bg="var(--bg-hero)">
+            <OverlapWrapper zIndex={1} bg="var(--bg-hero)" sticky={true}>
               <Hero />
             </OverlapWrapper>
-            
-            <OverlapWrapper zIndex={2} bg="var(--bg-about)">
-              <About />
+
+            <OverlapWrapper zIndex={2} bg="var(--bg-projects)">
+              <LazyLoad height="100vh">
+                <Projects />
+              </LazyLoad>
             </OverlapWrapper>
             <OverlapWrapper zIndex={3} bg="var(--bg-about)">
-              <ActivitySection />
+              <LazyLoad height="100vh">
+                <About />
+              </LazyLoad>
             </OverlapWrapper>
             <OverlapWrapper zIndex={4} bg="var(--bg-about)">
-              <Skills />
+              <LazyLoad height="100vh">
+                <ActivitySection />
+              </LazyLoad>
             </OverlapWrapper>
-            <OverlapWrapper zIndex={5} bg="var(--bg-projects)">
-              <Projects />
+            <OverlapWrapper zIndex={5} bg="var(--bg-about)">
+              <LazyLoad height="100vh">
+                <Skills />
+              </LazyLoad>
             </OverlapWrapper>
-            <OverlapWrapper zIndex={6} bg="var(--bg-certificates)">
-              <Certificates />
+            <OverlapWrapper zIndex={6} bg="var(--bg-projects)" sticky={true}>
+              <LazyLoad height="100vh">
+                <Certificates />
+              </LazyLoad>
             </OverlapWrapper>
             <OverlapWrapper zIndex={7} bg="var(--bg-contact)">
-              <Contact />
+              <LazyLoad height="100vh">
+                <Contact />
+              </LazyLoad>
             </OverlapWrapper>
           </main>
         </SmoothScroll>
-      </motion.div>
+      </div>
     </>
   );
 }

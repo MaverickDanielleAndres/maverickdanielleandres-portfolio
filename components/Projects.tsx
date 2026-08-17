@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState, useEffect, useMemo } from "react";
-import { motion, useInView, AnimatePresence, useMotionValue } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Github, ExternalLink } from "lucide-react";
 import Portal from "@/components/Portal";
@@ -712,141 +712,352 @@ function ProjectModal({
   );
 }
 
+// ─── Project Card ────────────────────────────────────────────────────────────
+function ProjectCard({
+  project,
+  onClick,
+}: {
+  project: Project;
+  onClick: () => void;
+}) {
+  // Show at most 3 tech tags to keep card scannable
+  const visibleTech = project.tech.slice(0, 3);
+
+  return (
+    <article
+      className="project-card"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open details for ${project.title}`}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    >
+      {/* Image */}
+      <div className="project-card__image-wrap">
+        <Image
+          src={project.image}
+          alt={project.title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 28vw"
+          unoptimized
+          draggable={false}
+          onError={(e: any) => {
+            e.currentTarget.src =
+              "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800";
+          }}
+        />
+      </div>
+
+      {/* Body */}
+      <div className="project-card__body">
+        {/* Meta row */}
+        <p className="project-card__meta">
+          {project.category}&nbsp;&middot;&nbsp;{project.year}
+        </p>
+
+        {/* Title */}
+        <h3 className="project-card__title">{project.title}</h3>
+
+        {/* Description — 2-line clamp */}
+        <p className="project-card__desc">{project.description}</p>
+
+        {/* Tech tags */}
+        {visibleTech.length > 0 && (
+          <div className="project-card__tags">
+            {visibleTech.map((tag) => (
+              <span key={tag} className="project-card__tag">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* CTA */}
+        <span className="project-card__cta" aria-hidden="true">
+          View Project&nbsp;<ArrowUpRight size={11} strokeWidth={2} />
+        </span>
+      </div>
+    </article>
+  );
+}
+
+// ─── Projects Section ─────────────────────────────────────────────────────────
+const CARD_STEP_PX = 420;
+const LOOP_DURATION_S = 55; // seconds for one full loop
+
 export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
-  const [hovered, setHovered] = useState<number | null>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-5% 0px" });
+  const [isDragging, setIsDragging]       = useState(false);
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef   = useRef<HTMLDivElement>(null);
+  const outerRef   = useRef<HTMLDivElement>(null);
+  
+  // Animation trigger (runs once)
+  const inView     = useInView(sectionRef, { once: true, margin: "-5% 0px" });
+  
+  // Visibility tracking for rAF performance (pauses when offscreen)
+  const isVisible  = useInView(sectionRef, { margin: "400px" });
+
+  // ── rAF engine state (all refs → zero React re-renders per frame)
+  const xRef        = useRef(0);          // current rendered position px (unbounded, negative)
+  const targetXRef  = useRef<number | null>(null); // null = auto-scroll, number = spring target
+  const speedRef    = useRef(0);          // px/s, computed once from DOM
+  const isPausedRef = useRef(false);      // hover pause
+  const reducedRef  = useRef(false);      // prefers-reduced-motion
+
+  // ── Drag state
+  const drag = useRef({
+    active:   false,
+    startX:   0,
+    frozenX:  0,
+    lastX:    0,
+    lastTime: 0,
+    velocity: 0, // px/s
+    hasMoved: false,
+  });
+  const velocityRef = useRef(0); // post-drag inertia px/s
+  // Ref to active window drag listeners so we can clean them up on unmount
+  const activeDragListeners = useRef<{
+    move: (e: PointerEvent) => void;
+    up:   (e: PointerEvent) => void;
+  } | null>(null);
+
+  // ── Duplicate for seamless visual loop
+  const marqueeProjects = [...PROJECTS, ...PROJECTS];
+
+  // ── rAF loop — only one effect, cleans up on unmount
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
+    // If section is far offscreen, don't run the animation loop
+    if (!isVisible) return;
+
+    // Respect prefers-reduced-motion
+    reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (outerRef.current) {
+      outerRef.current.dataset.reducedMotion = reducedRef.current ? "1" : "";
+    }
+
+    let rafId = 0;
+    let lastTime = 0;
+
+    function tick(time: number) {
+      rafId = requestAnimationFrame(tick);
+      const el = trackRef.current;
+      if (!el) return;
+
+      // Measure half-width once (after first paint)
+      if (!speedRef.current && el.scrollWidth > 0) {
+        const hw = el.scrollWidth / 2;
+        speedRef.current = reducedRef.current ? 0 : hw / LOOP_DURATION_S;
+      }
+      const hw = el.scrollWidth / 2;
+      if (!hw) return;
+
+      const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.1) : 0;
+      lastTime = time;
+      if (!dt) return;
+
+      if (!drag.current.active) {
+        // Post-drag inertia (frame-rate independent exponential decay)
+        if (velocityRef.current !== 0) {
+          xRef.current += velocityRef.current * dt;
+          velocityRef.current *= Math.pow(0.88, dt * 60);
+          if (Math.abs(velocityRef.current) < 1.5) velocityRef.current = 0;
+        } else if (targetXRef.current !== null) {
+          // Exponential spring toward button-click target
+          const diff = targetXRef.current - xRef.current;
+          const t    = 1 - Math.exp(-12 * dt); // ~12 = snappy-but-smooth
+          xRef.current += diff * t;
+          if (Math.abs(diff) < 0.4) {
+            xRef.current    = targetXRef.current;
+            targetXRef.current = null; // spring done → resume auto-scroll
+          }
+        } else if (!isPausedRef.current && speedRef.current > 0) {
+          // Auto-scroll
+          xRef.current -= speedRef.current * dt;
+        }
+      }
+      // (during drag, xRef is written by window listeners — nothing to do here)
+
+      // Wrap visually: map unbounded x into [-hw, 0]
+      const displayX = ((xRef.current % hw) + hw) % hw - hw;
+      el.style.transform = `translate3d(${displayX}px, 0, 0)`;
+    }
+
+    rafId = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(rafId);
+      // Clean up any window drag listeners left from an interrupted drag
+      if (activeDragListeners.current) {
+        window.removeEventListener("pointermove", activeDragListeners.current.move);
+        window.removeEventListener("pointerup",   activeDragListeners.current.up);
+        activeDragListeners.current = null;
+      }
     };
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [isVisible]);
+
+  // ── Button navigation — spring to target
+  const handlePrev = () => {
+    velocityRef.current = 0;
+    targetXRef.current  = (targetXRef.current ?? xRef.current) + CARD_STEP_PX;
+    isPausedRef.current = false;
+  };
+
+  const handleNext = () => {
+    velocityRef.current = 0;
+    targetXRef.current  = (targetXRef.current ?? xRef.current) - CARD_STEP_PX;
+    isPausedRef.current = false;
+  };
+
+  // ── Pointer drag — window-level listeners so card onClick fires normally on simple clicks
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    targetXRef.current  = null;
+    velocityRef.current = 0;
+    drag.current = {
+      active:   true,
+      startX:   e.clientX,
+      frozenX:  xRef.current,
+      lastX:    e.clientX,
+      lastTime: performance.now(),
+      velocity: 0,
+      hasMoved: false,
+    };
+    isPausedRef.current = true;
+    setIsDragging(true);
+
+    const onMove = (ev: PointerEvent) => {
+      if (!drag.current.active) return;
+      const now  = performance.now();
+      const dtMs = now - drag.current.lastTime;
+      if (dtMs > 0) drag.current.velocity = (ev.clientX - drag.current.lastX) / (dtMs / 1000);
+      drag.current.lastX    = ev.clientX;
+      drag.current.lastTime = now;
+      const totalDelta = ev.clientX - drag.current.startX;
+      if (Math.abs(totalDelta) > 5) drag.current.hasMoved = true;
+      xRef.current = drag.current.frozenX + totalDelta;
+    };
+
+    const onUp = (ev: PointerEvent) => {
+      if (!drag.current.active) return;
+      const finalX = drag.current.frozenX + (ev.clientX - drag.current.startX);
+      xRef.current        = finalX;
+      velocityRef.current = drag.current.velocity * 0.45;
+      drag.current.active = false;
+      isPausedRef.current = false;
+      setIsDragging(false);
+      // hasMoved resets AFTER the synchronous click event fires
+      setTimeout(() => { drag.current.hasMoved = false; }, 50);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup",   onUp);
+      activeDragListeners.current = null;
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup",   onUp);
+    activeDragListeners.current = { move: onMove, up: onUp };
+  };
+
+
 
   return (
     <section
       id="projects"
-      ref={ref}
+      ref={sectionRef}
       style={{
-        background: "var(--bg-projects)",
-        color: "var(--fg)",
-        padding: "clamp(4rem,10vh,7rem) var(--container-px)",
-        position: "relative",
-      }}
-      onTouchMove={(e) => {
-        if (e.touches.length > 0) {
-          mouseX.set(e.touches[0].clientX);
-          mouseY.set(e.touches[0].clientY);
-        }
+        background:    "var(--bg-projects)",
+        color:         "var(--fg)",
+        paddingTop:    "clamp(4rem,10vh,7rem)",
+        paddingBottom: "clamp(1rem,3vh,2rem)",
+        position:      "relative",
+        overflow:      "hidden",
       }}
     >
-      <motion.p
-        className="text-xs uppercase tracking-[0.18em] mb-4"
-        style={{ color: "var(--fg-muted)" }}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6 }}
-      >
-        Portfolio
-      </motion.p>
-      <motion.h2
+      {/* ── Section header */}
+      <div
         style={{
-          fontSize: "clamp(1.75rem,3vw,2.5rem)",
-          fontWeight: 400,
-          lineHeight: 1.2,
-          letterSpacing: "-0.01em",
-          marginBottom: "clamp(2rem,5vh,3rem)",
+          paddingInline:  "var(--container-px)",
+          marginBottom:   "clamp(2rem,4vh,3rem)",
+          display:        "flex",
+          alignItems:     "flex-end",
+          justifyContent: "space-between",
+          gap:            "1rem",
         }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.1 }}
       >
-        Selected Projects &amp; Work
-      </motion.h2>
-
-      <ul className="thumbnail-list-group" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-        {PROJECTS.map((project, i) => (
-          <motion.li
-            key={project.id}
-            className="thumbnail-row cursor-none group"
+        <div>
+          <motion.p
+            className="text-xs uppercase tracking-[0.18em] mb-4"
+            style={{ color: "var(--fg-muted)" }}
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            Portfolio
+          </motion.p>
+          <motion.h2
             style={{
-              borderTop: "1px solid var(--border-subtle)",
-              paddingBlock: "clamp(1.5rem,4vw,2.5rem)",
+              fontSize:      "clamp(1.75rem,3vw,2.5rem)",
+              fontWeight:    400,
+              lineHeight:    1.2,
+              letterSpacing: "-0.01em",
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: i * 0.05 }}
-            onMouseEnter={() => setHovered(project.id)}
-            onMouseLeave={() => setHovered(null)}
-            onClick={() => setActiveProject(project)}
+            transition={{ duration: 0.7, delay: 0.1 }}
           >
-            <div className="flex items-center justify-between gap-4">
-              <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight leading-[0.9] transition-transform duration-500 group-hover:translate-x-4">
-                {project.title}
-              </h3>
-              <div className="flex items-center gap-4 sm:gap-10">
-                <span className="hidden sm:inline text-xs uppercase tracking-widest opacity-40">{project.year}</span>
-                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full border border-[var(--border)] flex items-center justify-center transition-all duration-500 group-hover:bg-[var(--accent)] group-hover:border-[var(--accent)] group-hover:text-white group-hover:rotate-45">
-                  <ArrowUpRight size={20} />
-                </div>
-              </div>
-            </div>
-          </motion.li>
-        ))}
-      </ul>
+            Selected Projects &amp; Work
+          </motion.h2>
+        </div>
 
-      <Portal>
-        <AnimatePresence>
-          {hovered !== null && (
-            <motion.div
-              key={hovered}
-              className="pointer-events-none fixed z-[9999] overflow-hidden rounded-2xl flex items-center justify-center"
-              style={{
-                width: "clamp(280px, 30vw, 400px)",
-                aspectRatio: "16/10",
-                left: mouseX,
-                top: mouseY,
-                x: "-50%",
-                y: "-50%",
-                background: "var(--bg)",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
-              }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 400, 
-                damping: 30,
-                opacity: { duration: 0.15 }
-              }}
-            >
-              <Image
-                src={PROJECTS.find((p) => p.id === hovered)?.image || ""}
-                alt="preview"
-                fill
-                className="object-cover transition-opacity duration-300 opacity-100"
-                sizes="(max-width: 768px) 40vw, 30vw"
-                unoptimized
-                onError={(e: any) => {
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600";
-                }}
-              />
-              <div className="absolute inset-0 bg-black/10 transition-opacity group-hover:opacity-30" />
-              <div className="relative z-10 px-6 py-3 rounded-full bg-white text-black text-xs font-black tracking-[0.2em] uppercase shadow-[0_10px_30px_rgba(0,0,0,0.3)] transform transition-transform hover:scale-110">
-                Click to View
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </Portal>
+        {/* Nav buttons */}
+        <motion.div
+          className="flex items-center gap-2 flex-shrink-0"
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <button onClick={handlePrev} aria-label="Previous projects" className="marquee-nav-btn">
+            <ChevronLeft size={18} strokeWidth={1.5} />
+          </button>
+          <button onClick={handleNext} aria-label="Next projects" className="marquee-nav-btn">
+            <ChevronRight size={18} strokeWidth={1.5} />
+          </button>
+        </motion.div>
+      </div>
 
+      {/* ── Infinite Marquee */}
+      <motion.div
+        ref={outerRef}
+        className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`}
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.25 }}
+        onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true;  }}
+        onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }}
+        onPointerDown={onPointerDown}
+        style={{ paddingBlock: "1.5rem", userSelect: "none" }}
+        aria-label="Project showcase — drag or use arrows to browse, click any card to view details"
+      >
+        <div className="projects-marquee-track" ref={trackRef}>
+          {marqueeProjects.map((project, i) => (
+            <ProjectCard
+              key={`${project.id}-${i}`}
+              project={project}
+              onClick={() => {
+                if (!drag.current.hasMoved) setActiveProject(project);
+              }}
+            />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── Project Modal (unchanged) */}
       <AnimatePresence>
         {activeProject && (
           <ProjectModal

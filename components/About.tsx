@@ -57,7 +57,7 @@ export default function About() {
     <section
       id="about"
       ref={containerRef}
-      className="relative pt-20 pb-6 px-[var(--container-px)] overflow-hidden"
+      className="relative pt-8 pb-6 px-[var(--container-px)] overflow-hidden"
       style={{ background: "var(--bg-about)", color: "var(--fg)" }}
     >
       <motion.div

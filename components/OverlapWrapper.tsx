@@ -10,6 +10,7 @@ export default function OverlapWrapper({
   bg = "var(--bg)",
   shadowClassName = "shadow-2xl",
   parallax = false,
+  sticky = false,
 }: {
   children: React.ReactNode;
   zIndex: number;
@@ -17,6 +18,7 @@ export default function OverlapWrapper({
   shadowClassName?: string;
   /** Enable scroll-driven parallax on this section. Off by default to reduce scroll listeners. */
   parallax?: boolean;
+  sticky?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -34,7 +36,7 @@ export default function OverlapWrapper({
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.6]);
 
   return (
-    <div ref={ref} className="relative w-full">
+    <div ref={ref} className={cn("w-full", sticky ? "sticky top-0 h-screen overflow-hidden" : "relative")}>
       <motion.div
         style={{
           y: shouldAnimate ? y : undefined,
@@ -43,7 +45,7 @@ export default function OverlapWrapper({
           position: "relative",
           background: bg,
         }}
-        className={cn("w-full", shadowClassName)}
+        className={cn("w-full", sticky ? "h-screen" : "", shadowClassName)}
       >
         {children}
       </motion.div>
