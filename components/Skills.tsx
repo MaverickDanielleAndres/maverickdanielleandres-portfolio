@@ -35,12 +35,12 @@ const CATEGORIES = [
 ];
 
 const COMPETENCIES_CARDS = [
+  { id: "1", title: "Graphics Designing", description: "Visual identity, digital assets, and high-fidelity mockups", icon: <Palette className="h-5 w-5" /> },
+  { id: "20", title: "Workflow Architecture", description: "Streamlining business processes with intelligent integrations", icon: <Activity className="h-5 w-5" /> },
+  { id: "19", title: "Performance Scaling", description: "High-traffic optimization and responsive infrastructure", icon: <TrendingUp className="h-5 w-5" /> },
+  { id: "18", title: "SEO Optimization", description: "Advanced technical SEO and search visibility strategies", icon: <Search className="h-5 w-5" /> },
   { id: "5", title: "Agentic Engineering", description: "Autonomous AI agents and complex tool-use orchestration", icon: <Bot className="h-5 w-5" /> },
   { id: "17", title: "Custom Systems", description: "Bespoke software architecture and tailored business solutions", icon: <Blocks className="h-5 w-5" /> },
-  { id: "18", title: "SEO Optimization", description: "Advanced technical SEO and search visibility strategies", icon: <Search className="h-5 w-5" /> },
-  { id: "19", title: "Performance Scaling", description: "High-traffic optimization and responsive infrastructure", icon: <TrendingUp className="h-5 w-5" /> },
-  { id: "20", title: "Workflow Architecture", description: "Streamlining business processes with intelligent integrations", icon: <Activity className="h-5 w-5" /> },
-  { id: "1", title: "Graphics Designing", description: "Visual identity, digital assets, and high-fidelity mockups", icon: <Palette className="h-5 w-5" /> },
   { id: "2", title: "Frontend Development", description: "Responsive, interactive, and high-performance user interfaces", icon: <Layout className="h-5 w-5" /> },
   { id: "3", title: "Backend Development", description: "Scalable server architecture and business logic implementation", icon: <Cpu className="h-5 w-5" /> },
   { id: "4", title: "Database Management", description: "Efficient data modeling, indexing, and optimization", icon: <DbIcon className="h-5 w-5" /> },

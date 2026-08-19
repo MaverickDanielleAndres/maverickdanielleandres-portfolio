@@ -54,12 +54,12 @@ export default function Home() {
             </OverlapWrapper>
             <OverlapWrapper zIndex={4} bg="var(--bg-about)">
               <LazyLoad height="100vh">
-                <ActivitySection />
+                <Skills />
               </LazyLoad>
             </OverlapWrapper>
             <OverlapWrapper zIndex={5} bg="var(--bg-about)">
               <LazyLoad height="100vh">
-                <Skills />
+                <ActivitySection />
               </LazyLoad>
             </OverlapWrapper>
             <OverlapWrapper zIndex={6} bg="var(--bg-projects)" sticky={true}>
