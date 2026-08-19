@@ -1,0 +1,24 @@
+# Maverick Danielle Andres — Portfolio
+
+Personal portfolio website of Maverick Danielle Andres, a Full-Stack Web & App Developer based in Pasig City, Philippines.
+
+## About
+
+Maverick is a Full-Stack Developer and Project Lead specializing in scalable web and mobile applications. Core expertise includes React, Next.js, Node.js, Supabase, and AI/automation integrations.
+
+## Sections
+
+- [Projects](/): Showcase of web apps, mobile apps, and design projects
+- [About](/): Background, bio, and social links
+- [Skills](/): Tech stack covering frontend, backend, DevOps, SEO, and AI tools
+- [Certificates](/): Professional certifications and academic awards
+- [Contact](/): Hire or connect with Maverick
+
+## Contact
+
+- GitHub: https://github.com/MaverickDanielleAndres
+- LinkedIn: https://linkedin.com/in/maverick-danielle-andres-641564373
+
+## Usage Policy
+
+This site may be crawled and indexed by AI agents and search engines. Content is personal portfolio material and is not intended for training datasets without permission.

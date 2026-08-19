@@ -137,6 +137,14 @@ const TextPressure: React.FC<TextPressureProps> = ({
     const debouncedSetSize = debounce(setSize, 100);
     debouncedSetSize();
     window.addEventListener('resize', debouncedSetSize);
+    
+    // Recalculate when fonts finish loading to avoid scale mismatch on first load
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.ready.then(() => {
+        debouncedSetSize();
+      });
+    }
+
     return () => window.removeEventListener('resize', debouncedSetSize);
   }, [setSize]);
 
@@ -144,15 +152,17 @@ const TextPressure: React.FC<TextPressureProps> = ({
     let rafId: number;
     let lastX = mouseRef.current.x;
     let lastY = mouseRef.current.y;
+    let initialRender = true;
 
     const animate = () => {
       mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
       mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
 
-      // Only perform heavy DOM writes if the mouse actually moved
+      // Only perform heavy DOM writes if the mouse actually moved, OR if it's the very first render
       const hasMoved = Math.abs(mouseRef.current.x - lastX) > 0.1 || Math.abs(mouseRef.current.y - lastY) > 0.1;
       
-      if (hasMoved && titleRef.current && spanCentersRef.current.length > 0) {
+      if ((hasMoved || initialRender) && titleRef.current && spanCentersRef.current.length > 0) {
+        initialRender = false;
         lastX = mouseRef.current.x;
         lastY = mouseRef.current.y;
         

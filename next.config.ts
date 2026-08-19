@@ -4,15 +4,19 @@ const nextConfig: NextConfig = {
   compiler: {
     styledComponents: true,
   },
+  experimental: {
+    // Inline critical CSS and defer non-critical stylesheets.
+    // Eliminates the 3 render-blocking CSS chunks flagged by Lighthouse.
+    optimizeCss: true,
+  },
   images: {
     // Auto-convert to WebP/AVIF for massive size savings (critical for LCP)
     formats: ["image/avif", "image/webp"],
     // Proper breakpoints for responsive srcset generation
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 64, 96, 128, 256, 384],
-    qualities: [75, 80, 90],
-    // Minimize cache overhead in dev
-    minimumCacheTTL: 60,
+    // 1-year cache TTL for optimized images (fixes cache-insight audit)
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         protocol: "https",
@@ -34,11 +38,22 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "playwright.dev",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
-  // Add long-lived cache headers for static assets
+  // Long-lived cache headers for all static assets (fixes cache-insight audit)
   async headers() {
     return [
+      {
+        // JS/CSS chunks are content-hashed — safe to cache for 1 year
+        source: "/_next/static/(.*)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
       {
         source: "/fonts/(.*)",
         headers: [
@@ -46,9 +61,20 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/(.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.webp|.*\\.avif|.*\\.svg)",
+        // All public images cached for 1 year (was 1 day — fixes cache-insight)
+        source: "/(.+\\.(?:png|jpg|jpeg|webp|avif|svg|ico|gif))",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        // Security headers — improve Best Practices score
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
       },
     ];
@@ -56,4 +82,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-

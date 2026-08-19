@@ -728,7 +728,7 @@ function ProjectCard({
   const visibleTech = project.tech.slice(0, 3);
 
   return (
-    <article
+    <div
       className="project-card"
       onClick={onClick}
       role="button"
@@ -749,7 +749,6 @@ function ProjectCard({
           fill
           className="object-cover"
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 28vw"
-          unoptimized
           draggable={false}
           onError={(e: any) => {
             e.currentTarget.src =
@@ -787,7 +786,7 @@ function ProjectCard({
           View Project&nbsp;<ArrowUpRight size={11} strokeWidth={2} />
         </span>
       </div>
-    </article>
+    </div>
   );
 }
 

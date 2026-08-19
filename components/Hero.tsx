@@ -1,22 +1,67 @@
 "use client";
 
 import Image from "next/image";
-
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import TextPressure from "@/components/ui/TextPressure";
 import ScrollVelocity from "@/components/ui/ScrollVelocity";
 
-const enterVariants = {
-  initial: { opacity: 0, y: 30 },
-  enter: (delay: number = 0) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.6, delay: delay * 0.7, ease: [0.16, 1, 0.3, 1] as const },
+// ─── Animation variants ──────────────────────────────────────────────────────
+
+// Staggered slide-up for text/UI elements
+const slideUp = {
+  hidden: { opacity: 0, y: 48, filter: "blur(8px)" },
+  visible: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: {
+      duration: 0.85,
+      delay,
+      ease: [0.16, 1, 0.3, 1],
+    },
   }),
 };
 
-export default function Hero() {
+// Profile image: rises from below with a subtle scale
+const imageReveal = {
+  hidden: { opacity: 0, y: 60, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 1.1,
+      delay: 0.15,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
 
+// Background marquee: fades in last
+const marqueeReveal = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 1.4, delay: 0.8, ease: "easeOut" },
+  },
+};
+
+// Horizontal line that draws across the screen before elements appear
+const lineReveal = {
+  hidden: { scaleX: 0, opacity: 1 },
+  visible: {
+    scaleX: 1,
+    opacity: 0,
+    transition: {
+      scaleX: { duration: 0.55, ease: [0.76, 0, 0.24, 1] },
+      opacity: { duration: 0.3, delay: 0.55, ease: "easeOut" },
+    },
+  },
+};
+
+export default function Hero() {
   const handleDownloadResume = () => {
     const link = document.createElement("a");
     link.href = "/Files/Resume.pdf";
@@ -32,12 +77,37 @@ export default function Hero() {
       id="home"
       className="relative flex flex-col md:flex-row items-stretch justify-between h-screen min-h-[100svh] w-full overflow-hidden"
       style={{ background: "var(--bg-hero)", color: "var(--fg)" }}
+      suppressHydrationWarning
     >
-      {/* Background Marquee Name (Lowest z-index) */}
-      <div
-        className="absolute bottom-2 md:bottom-[-1rem] left-0 w-full overflow-hidden select-none z-0"
-      >
-        <motion.div variants={enterVariants} initial="initial" animate="enter" custom={0.15} className="w-full">
+      {/* ── Sweeping reveal line (fires first) ─────────────────────────────── */}
+      <motion.div
+        variants={lineReveal}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "2px",
+          background:
+            "linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)",
+          transformOrigin: "left",
+          zIndex: 50,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── Background Marquee Name ─────────────────────────────────────────── */}
+      <div className="absolute bottom-2 md:bottom-[-1rem] left-0 w-full overflow-hidden select-none z-0">
+        <motion.div
+          variants={marqueeReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="w-full"
+        >
           <ScrollVelocity
             texts={["Maverick Danielle Andres"]}
             velocity={40}
@@ -47,16 +117,19 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Main Content Container */}
+      {/* ── Main Content Container ──────────────────────────────────────────── */}
       <div className="relative z-[2] flex flex-col md:flex-row w-full h-full px-[var(--container-px)]">
 
         {/* Left Column: Text & CTA */}
         <div className="w-full md:w-auto flex-none flex flex-col justify-start md:justify-center items-start h-full pt-[10vh] md:pt-0 pb-16 md:pb-24 z-20">
+
+          {/* Name block */}
           <motion.div
-            variants={enterVariants}
-            initial="initial"
-            animate="enter"
-            custom={0.2}
+            variants={slideUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0.05}
             className="w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-4 md:gap-6 lg:mt-12"
           >
             <div className="w-full" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
@@ -91,11 +164,13 @@ export default function Hero() {
             </div>
           </motion.div>
 
+          {/* Subtitle */}
           <motion.p
-            variants={enterVariants}
-            initial="initial"
-            animate="enter"
-            custom={0.35}
+            variants={slideUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0.22}
             className="mt-8 md:mt-12 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md"
           >
             Full-Stack Web & App Developer
@@ -105,13 +180,16 @@ export default function Hero() {
 
           {/* Availability */}
           <motion.div
-            variants={enterVariants}
-            initial="initial"
-            animate="enter"
-            custom={0.4}
+            variants={slideUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0.34}
             className="mt-6 flex flex-col gap-1.5 text-left"
           >
-            <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">Available for work</p>
+            <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
+              Available for work
+            </p>
             <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-[var(--fg)] drop-shadow-md">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               Open to opportunities
@@ -120,10 +198,11 @@ export default function Hero() {
 
           {/* Buttons */}
           <motion.div
-            variants={enterVariants}
-            initial="initial"
-            animate="enter"
-            custom={0.5}
+            variants={slideUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0.46}
             className="mt-8 flex flex-wrap gap-2.5 sm:gap-3"
           >
             {[
@@ -142,7 +221,12 @@ export default function Hero() {
                   {label} <ArrowUpRight size={14} />
                 </a>
               ) : (
-                <button suppressHydrationWarning key={label} onClick={handleDownloadResume} className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]">
+                <button
+                  suppressHydrationWarning
+                  key={label}
+                  onClick={handleDownloadResume}
+                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
+                >
                   {label}
                 </button>
               )
@@ -152,7 +236,13 @@ export default function Hero() {
 
         {/* Right Column / Background: Profile Image */}
         <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-center items-end h-full z-10 pointer-events-none overflow-visible">
-          <div className="relative w-full min-w-[400px] sm:min-w-[500px] md:w-[120%] lg:w-[100%] max-w-[800px] h-[75%] md:h-[95%] lg:h-[100%] flex justify-center items-end mr-[-25%] sm:mr-[-10%] md:mr-0 mb-[-18%] md:mb-0 transition-all duration-700">
+          <motion.div
+            variants={imageReveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="relative w-full min-w-[400px] sm:min-w-[500px] md:w-[120%] lg:w-[100%] max-w-[800px] h-[75%] md:h-[95%] lg:h-[100%] flex justify-center items-end mr-[-25%] sm:mr-[-10%] md:mr-0 mb-[-18%] md:mb-0 transition-all duration-700"
+          >
             <Image
               src="/updatedprofile_pic.webp"
               alt="Maverick Danielle Andres"
@@ -162,9 +252,9 @@ export default function Hero() {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
               priority
               loading="eager"
-              unoptimized={true}
+              fetchPriority="high"
             />
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -177,10 +267,11 @@ export default function Hero() {
           right: "clamp(1rem, 4vw, 4.4rem)",
           zIndex: 4,
         }}
-        variants={enterVariants}
-        initial="initial"
-        animate="enter"
-        custom={0.9}
+        variants={slideUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        custom={0.75}
         aria-label="Scroll down"
       >
         <span className="text-xs tracking-[0.2em] uppercase">Scroll</span>
