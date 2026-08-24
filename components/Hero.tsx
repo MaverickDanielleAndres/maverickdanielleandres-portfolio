@@ -179,38 +179,38 @@ export default function Hero() {
             Based in Pasig City, PH
           </motion.p>
 
-          {/* Availability and Get Started */}
-          <motion.div
-            variants={slideUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            custom={0.34}
-            className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4 text-left"
-          >
-            <div className="flex flex-col gap-1.5">
-              <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
-                Available for work
-              </p>
-              <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-[var(--fg)] drop-shadow-md">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                Open to opportunities
-              </span>
-            </div>
-            <div className="sm:ml-4">
+          {/* Availability and Buttons Wrapper */}
+          <div className="flex flex-col w-fit max-w-full">
+            {/* Availability and Get Started */}
+            <motion.div
+              variants={slideUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={0.34}
+              className="mt-6 flex items-center justify-between w-full gap-6 text-left"
+            >
+              <div className="flex flex-col gap-1.5">
+                <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
+                  Available for work
+                </p>
+                <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-[var(--fg)] drop-shadow-md">
+                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                  Open to opportunities
+                </span>
+              </div>
               <GetStartedButton onClick={() => window.dispatchEvent(new CustomEvent('open-inquiry-modal'))} />
-            </div>
-          </motion.div>
+            </motion.div>
 
-          {/* Buttons */}
-          <motion.div
-            variants={slideUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            custom={0.46}
-            className="mt-8 flex flex-wrap gap-2.5 sm:gap-3"
-          >
+            {/* Buttons */}
+            <motion.div
+              variants={slideUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={0.46}
+              className="mt-8 flex flex-wrap gap-2.5 sm:gap-3"
+            >
             {[
               { label: "Resume", href: null, onClick: true },
               { label: "GitHub", href: "https://github.com/MaverickDanielleAndres" },
@@ -238,6 +238,7 @@ export default function Hero() {
               )
             )}
           </motion.div>
+          </div>
         </div>
 
         {/* Right Column / Background: Profile Image */}

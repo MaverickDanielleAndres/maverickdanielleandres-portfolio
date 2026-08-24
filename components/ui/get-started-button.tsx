@@ -4,13 +4,18 @@ import { cn } from "@/lib/utils";
 
 export function GetStartedButton({ className, ...props }: ButtonProps) {
   return (
-    <Button className={cn("group relative overflow-hidden", className)} size="lg" {...props}>
-      <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0">
+    <Button 
+      className={cn(
+        "group flex items-center justify-center overflow-hidden rounded-md bg-[#1A1A1A] hover:bg-[#2A2A2A] !text-[#FFFFFF] border border-[#FFFFFF]/20 transition-all duration-300", 
+        className
+      )} 
+      size="lg" 
+      {...props}
+    >
+      <span className="font-medium tracking-wide pr-2">
         Get Started
       </span>
-      <i className="absolute right-1 top-1 bottom-1 rounded-sm z-10 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
-        <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
-      </i>
+      <ChevronRight size={16} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-1" />
     </Button>
   );
 }
