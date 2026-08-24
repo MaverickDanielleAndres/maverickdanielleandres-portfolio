@@ -7,6 +7,7 @@ import { X, Menu } from 'lucide-react';
 import { FaWhatsapp, FaFacebookMessenger } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import ThemeToggle from './ThemeToggle';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -84,6 +85,7 @@ export function Offcanvas() {
     <>
       {/* ── Fixed top-right action buttons ── */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2 sm:top-5 sm:right-6 sm:gap-3">
+        <ThemeToggle />
         <a
           href="https://m.me/maverickdanielle.andres"
           target="_blank"

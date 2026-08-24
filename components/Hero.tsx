@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import TextPressure from "@/components/ui/TextPressure";
 import ScrollVelocity from "@/components/ui/ScrollVelocity";
+import { GetStartedButton } from "@/components/ui/get-started-button";
 
 // ─── Animation variants ──────────────────────────────────────────────────────
 
@@ -19,7 +20,7 @@ const slideUp = {
     transition: {
       duration: 0.85,
       delay,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.16, 1, 0.3, 1] as const,
     },
   }),
 };
@@ -34,7 +35,7 @@ const imageReveal = {
     transition: {
       duration: 1.1,
       delay: 0.15,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.16, 1, 0.3, 1] as const,
     },
   },
 };
@@ -44,7 +45,7 @@ const marqueeReveal = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 1.4, delay: 0.8, ease: "easeOut" },
+    transition: { duration: 1.4, delay: 0.8, ease: "easeOut" as const },
   },
 };
 
@@ -55,8 +56,8 @@ const lineReveal = {
     scaleX: 1,
     opacity: 0,
     transition: {
-      scaleX: { duration: 0.55, ease: [0.76, 0, 0.24, 1] },
-      opacity: { duration: 0.3, delay: 0.55, ease: "easeOut" },
+      scaleX: { duration: 0.55, ease: [0.76, 0, 0.24, 1] as const },
+      opacity: { duration: 0.3, delay: 0.55, ease: "easeOut" as const },
     },
   },
 };
@@ -178,22 +179,27 @@ export default function Hero() {
             Based in Pasig City, PH
           </motion.p>
 
-          {/* Availability */}
+          {/* Availability and Get Started */}
           <motion.div
             variants={slideUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.34}
-            className="mt-6 flex flex-col gap-1.5 text-left"
+            className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4 text-left"
           >
-            <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
-              Available for work
-            </p>
-            <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-[var(--fg)] drop-shadow-md">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              Open to opportunities
-            </span>
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
+                Available for work
+              </p>
+              <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-[var(--fg)] drop-shadow-md">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                Open to opportunities
+              </span>
+            </div>
+            <div className="sm:ml-4">
+              <GetStartedButton onClick={() => window.dispatchEvent(new CustomEvent('open-inquiry-modal'))} />
+            </div>
           </motion.div>
 
           {/* Buttons */}

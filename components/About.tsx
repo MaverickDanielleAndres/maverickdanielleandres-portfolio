@@ -24,7 +24,11 @@ const ABOUT_SWIPER_IMAGES = [
   "/AboutMe-Photo/aboutme-6.jpg",
 ].join(",");
 
-export default function About() {
+interface AboutProps {
+  onStartProject?: () => void;
+}
+
+export default function About({ onStartProject }: AboutProps) {
   const containerRef = useRef<HTMLElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-10%" });
   const { resolvedTheme } = useTheme();
@@ -126,13 +130,14 @@ export default function About() {
                       >
                         <Download size={14} /> Resume
                       </a>
-                      <a
-                        href="#contact"
+                      <button
+                        type="button"
+                        onClick={onStartProject}
                         className="inline-flex items-center gap-2 justify-center text-xs font-bold px-4 py-2.5 rounded-xl transition-all hover:scale-[1.02] active:scale-95 shadow-[0_4px_12px_rgba(96,85,240,0.15)]"
                         style={{ background: "var(--accent)", color: "#fff" }}
                       >
-                        Hire Me <ArrowUpRight size={14} />
-                      </a>
+                        Start a Project <ArrowUpRight size={14} />
+                      </button>
                     </div>
                   </div>
                 </div>
