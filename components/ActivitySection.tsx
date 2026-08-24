@@ -178,8 +178,8 @@ export default function ActivitySection() {
             </div>
  
             <div className="w-full bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden">
-              <div ref={calendarScrollRef} className="w-full overflow-x-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--accent)] scrollbar-track-transparent" style={{ direction: 'rtl' }}>
-                <div className="min-w-[800px]" style={{ direction: 'ltr' }}>
+              <div ref={calendarScrollRef} className="w-full overflow-x-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--accent)] scrollbar-track-transparent">
+                <div className="w-max mx-auto">
                   <GitHubCalendar
                     username="MaverickDanielleAndres"
                     fontSize={12}
@@ -188,9 +188,6 @@ export default function ActivitySection() {
                     blockRadius={3}
                     theme={calendarTheme}
                     colorScheme={theme === "light" ? "light" : "dark"}
-                    style={{
-                      width: '100%',
-                    }}
                   />
                 </div>
               </div>

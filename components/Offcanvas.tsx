@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import { X, Menu } from 'lucide-react';
+import { FaWhatsapp, FaFacebookMessenger } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
@@ -81,37 +82,69 @@ export function Offcanvas() {
 
   return (
     <>
-      {/* ── Hamburger toggle circle (fixed top-right) ── */}
-      <button
-        suppressHydrationWarning
-        aria-label={isOpen ? 'Close menu' : 'Open menu'}
-        onClick={() => setOpen(v => !v)}
-        className="fixed top-4 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:top-5 sm:right-6 sm:h-12 sm:w-12"
-        style={{
-          background: isOpen ? 'var(--accent)' : 'var(--bg)',
-          color: isOpen ? '#fff' : 'var(--fg)',
-          border: isOpen ? 'none' : '1px solid var(--border-subtle)',
-          boxShadow: "var(--shadow-subtle)",
-        }}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          {isOpen ? (
-            <motion.span key="close"
-              initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}
-            >
-              <X size={18} strokeWidth={1.8} />
-            </motion.span>
-          ) : (
-            <motion.span key="open"
-              initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}
-            >
-              <Menu size={18} strokeWidth={1.8} />
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </button>
+      {/* ── Fixed top-right action buttons ── */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2 sm:top-5 sm:right-6 sm:gap-3">
+        <a
+          href="https://m.me/maverickdanielle.andres"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105"
+          style={{
+            background: 'var(--bg)',
+            color: 'var(--fg)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: "var(--shadow-subtle)",
+          }}
+          aria-label="Messenger"
+        >
+          <FaFacebookMessenger size={20} />
+        </a>
+        <a
+          href="https://wa.me/639632968188"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105"
+          style={{
+            background: 'var(--bg)',
+            color: 'var(--fg)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: "var(--shadow-subtle)",
+          }}
+          aria-label="WhatsApp"
+        >
+          <FaWhatsapp size={20} />
+        </a>
+        <button
+          suppressHydrationWarning
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen(v => !v)}
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12"
+          style={{
+            background: isOpen ? 'var(--accent)' : 'var(--bg)',
+            color: isOpen ? '#fff' : 'var(--fg)',
+            border: isOpen ? 'none' : '1px solid var(--border-subtle)',
+            boxShadow: "var(--shadow-subtle)",
+          }}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {isOpen ? (
+              <motion.span key="close"
+                initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}
+              >
+                <X size={18} strokeWidth={1.8} />
+              </motion.span>
+            ) : (
+              <motion.span key="open"
+                initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}
+              >
+                <Menu size={18} strokeWidth={1.8} />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </button>
+      </div>
 
       {/* ── Offcanvas overlay ── */}
       <AnimatePresence mode="wait">
