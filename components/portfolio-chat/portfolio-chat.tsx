@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUp, MessageCircle, RefreshCw, Sparkles, X } from "lucide-react";
+import { ArrowUp, MessageCircle, RefreshCw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Portal from "@/components/Portal";
 import {
   SUGGESTED_QUESTIONS,
   makeId,
@@ -28,7 +30,7 @@ export default function PortfolioChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<Status>("idle");
-  const [hasUnread, setHasUnread] = useState(false);
+  const [hasUnread, setHasUnread] = useState(true);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -61,7 +63,7 @@ export default function PortfolioChat() {
           id: makeId("assistant"),
           role: "assistant",
           content:
-            "Hey! I'm Mavs' portfolio assistant. Ask about his projects, skills, experience, or what he can build.",
+            "Hey! 👋 I'm Mavs' portfolio assistant. Happy to help — ask me anything about his projects, skills, experience, or how to start a project together.",
         },
       ]);
       setHasUnread(false);
@@ -196,44 +198,37 @@ export default function PortfolioChat() {
   );
 
   return (
-    <>
+    <Portal>
       {/* ── Floating Trigger ──────────────────────────────────────── */}
-      <motion.button
-        type="button"
-        onClick={handleOpen}
-        aria-label="Open Mavs AI — portfolio assistant"
-        aria-expanded={isOpen}
-        className={cn(
-          "fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[60]",
-          "group flex items-center gap-2.5",
-          "h-12 pl-4 pr-5 rounded-full",
-          "border border-[var(--border-subtle)]",
-          "shadow-[0_10px_40px_rgba(0,0,0,0.35)]",
-          "transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]",
-          "bg-[var(--bg)] text-[var(--fg)]",
-        )}
-        style={{ display: isOpen ? "none" : "inline-flex" }}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <span
-          aria-hidden="true"
-          className="flex h-8 w-8 items-center justify-center rounded-full"
-          style={{ background: "var(--accent)", color: "#fff" }}
+      {!isOpen && (
+        <button
+          type="button"
+          onClick={handleOpen}
+          aria-label="Open Mavs AI — portfolio assistant"
+          aria-expanded={isOpen}
+          className={cn(
+            "fixed bottom-4 right-4 sm:bottom-5 sm:right-6",
+            "flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full",
+            "transition-all duration-300 hover:scale-105 active:scale-95",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]",
+            "bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 dark:border-white/10 shadow-lg",
+          )}
+          style={{ color: "var(--fg)", zIndex: 2147483646 }}
         >
-          <MessageCircle size={16} strokeWidth={2} />
-        </span>
-        <span className="text-sm font-medium tracking-wide">Ask Mavs AI</span>
-        {hasUnread && (
-          <span
-            aria-hidden="true"
-            className="ml-0.5 h-2 w-2 rounded-full"
-            style={{ background: "var(--accent)" }}
-          />
-        )}
-      </motion.button>
+          <MessageCircle size={18} strokeWidth={1.8} />
+          {hasUnread && (
+            <span
+              aria-hidden="true"
+              className="absolute h-2 w-2 rounded-full"
+              style={{
+                top: "calc(50% - 14px)",
+                right: "calc(50% - 14px)",
+                background: "var(--accent)",
+              }}
+            />
+          )}
+        </button>
+      )}
 
       {/* ── Chat Window ───────────────────────────────────────────── */}
       <AnimatePresence>
@@ -243,16 +238,16 @@ export default function PortfolioChat() {
             aria-label="Mavs AI — portfolio assistant"
             aria-modal="false"
             className={cn(
-              "fixed z-[70]",
-              // Positioning: full-screen sheet on mobile, floating panel on desktop
-              "inset-0 sm:inset-auto sm:bottom-6 sm:right-6",
-              "sm:w-[400px] sm:max-w-[calc(100vw-2rem)]",
-              "sm:h-[600px] sm:max-h-[calc(100vh-3rem)]",
-              "flex flex-col overflow-hidden",
-              "border border-[var(--border-subtle)] sm:rounded-2xl",
-              "shadow-[0_24px_64px_rgba(0,0,0,0.5)]",
-              "bg-[var(--bg)] text-[var(--fg)]",
+              "fixed",
+              "bottom-0 right-0 sm:bottom-5 sm:right-6",
+              "w-full sm:w-[360px] md:w-[400px]",
+              "h-[calc(100vh-80px)] sm:h-[550px] md:h-[650px] max-h-[calc(100vh-80px)]",
+              "flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl",
+              "border border-black/10 dark:border-white/10",
+              "shadow-[0_24px_64px_rgba(0,0,0,0.2)] dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]",
+              "bg-black/10 dark:bg-black/40 backdrop-blur-3xl text-[var(--fg)]",
             )}
+            style={{ zIndex: 2147483647 }}
             initial={{ opacity: 0, y: 20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
@@ -266,10 +261,19 @@ export default function PortfolioChat() {
               <div className="flex items-center gap-3 min-w-0">
                 <span
                   aria-hidden="true"
-                  className="flex h-9 w-9 items-center justify-center rounded-full shrink-0"
-                  style={{ background: "var(--accent)", color: "#fff" }}
+                  className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full overflow-hidden"
+                  style={{
+                    background: "var(--bg)",
+                    border: "1px solid var(--border-subtle)",
+                  }}
                 >
-                  <Sparkles size={16} strokeWidth={2} />
+                  <Image
+                    src="/updatedprofile_pic.webp"
+                    alt="Maverick Danielle Andres"
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                  />
                 </span>
                 <div className="min-w-0">
                   <p
@@ -313,15 +317,16 @@ export default function PortfolioChat() {
               className="px-4 sm:px-5 py-2 text-[11px] leading-snug"
               style={{ color: "var(--fg-muted)" }}
             >
-              Ask about projects, skills, experience, or how to start a project with Maverick.
+              Ask me anything about Maverick&apos;s work — I&apos;ll keep it friendly and on-topic. ✨
             </div>
 
             {/* ── Messages ────────────────────────────────────────── */}
             <div
               ref={scrollRef}
-              className="flex-1 overflow-y-auto px-4 sm:px-5 pb-3 space-y-3 scrollbar-hide"
+              className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 sm:px-5 pb-3 space-y-3 scrollbar-hide"
               aria-live="polite"
               aria-relevant="additions"
+              data-lenis-prevent="true"
             >
               {messages.map((m) => (
                 <MessageBubble key={m.id} message={m} />
@@ -341,7 +346,7 @@ export default function PortfolioChat() {
             {/* ── Input ───────────────────────────────────────────── */}
             <div
               ref={inputAreaRef}
-              className="px-3 sm:px-4 pt-2 pb-3 sm:pb-4"
+              className="px-3 sm:px-4 pt-3 pb-3 sm:pb-4"
               style={{ borderTop: "1px solid var(--border-subtle)" }}
             >
               <div
@@ -351,7 +356,6 @@ export default function PortfolioChat() {
                 )}
                 style={{
                   borderColor: "var(--border-subtle)",
-                  background: "var(--fg-muted)/5",
                   backgroundColor: "color-mix(in srgb, var(--fg) 4%, transparent)",
                 }}
               >
@@ -361,17 +365,22 @@ export default function PortfolioChat() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   rows={1}
-                  placeholder="Ask about projects, skills, experience..."
+                  placeholder="Ask about Maverick's work…"
                   aria-label="Ask a question about Maverick's portfolio"
                   disabled={status === "loading"}
                   className={cn(
-                    "flex-1 resize-none bg-transparent outline-none",
+                    "block w-full min-w-0 flex-1 resize-none border-0 bg-transparent",
+                    "py-1 outline-none focus:outline-none focus:ring-0",
                     "text-sm leading-relaxed",
-                    "placeholder:text-[var(--fg-muted)]",
+                    "placeholder:text-[var(--fg-muted)] placeholder:opacity-70",
                     "disabled:opacity-50",
-                    "max-h-[140px]",
+                    "scrollbar-hide",
                   )}
-                  style={{ color: "var(--fg)" }}
+                  style={{
+                    color: "var(--fg)",
+                    minHeight: "28px",
+                    maxHeight: "120px",
+                  }}
                 />
                 <button
                   type="button"
@@ -379,7 +388,7 @@ export default function PortfolioChat() {
                   disabled={!canSend}
                   aria-label="Send message"
                   className={cn(
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
                     "transition-all duration-200",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]",
                     canSend
@@ -391,20 +400,20 @@ export default function PortfolioChat() {
                     color: canSend ? "#fff" : "var(--bg)",
                   }}
                 >
-                  <ArrowUp size={15} strokeWidth={2} />
+                  <ArrowUp size={14} strokeWidth={2.25} />
                 </button>
               </div>
               <p
                 className="mt-1.5 px-1 text-[10px] tracking-wide"
                 style={{ color: "var(--fg-muted)", opacity: 0.7 }}
               >
-                Powered by Gemini. Responses are about Maverick&apos;s portfolio only.
+                Powered by Gemini · Portfolio answers only 💬
               </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </Portal>
   );
 }
 
@@ -432,10 +441,10 @@ function MessageBubble({ message }: { message: ChatMessage }) {
                 borderBottomRightRadius: "0.4rem",
               }
             : {
-                background: "color-mix(in srgb, var(--fg) 6%, transparent)",
+                background: "transparent",
                 color: "var(--fg)",
                 borderBottomLeftRadius: "0.4rem",
-                border: "1px solid var(--border-subtle)",
+                borderLeft: "1px solid rgba(255,255,255,0.08)",
               }
         }
       >
@@ -452,10 +461,7 @@ function TypingIndicator() {
     <div className="flex justify-start" aria-label="Mavs AI is typing">
       <div
         className="flex items-center gap-1 rounded-2xl px-3.5 py-2.5"
-        style={{
-          background: "color-mix(in srgb, var(--fg) 6%, transparent)",
-          border: "1px solid var(--border-subtle)",
-        }}
+        style={{ background: "transparent", borderLeft: "1px solid rgba(255,255,255,0.08)" }}
       >
         {[0, 1, 2].map((i) => (
           <motion.span

@@ -90,13 +90,8 @@ export function Offcanvas() {
           href="https://m.me/maverickdanielle.andres"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105"
-          style={{
-            background: 'var(--bg)',
-            color: 'var(--fg)',
-            border: '1px solid var(--border-subtle)',
-            boxShadow: "var(--shadow-subtle)",
-          }}
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 shadow-lg"
+          style={{ color: 'var(--fg)' }}
           aria-label="Messenger"
         >
           <FaFacebookMessenger size={20} />
@@ -105,13 +100,8 @@ export function Offcanvas() {
           href="https://wa.me/639632968188"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105"
-          style={{
-            background: 'var(--bg)',
-            color: 'var(--fg)',
-            border: '1px solid var(--border-subtle)',
-            boxShadow: "var(--shadow-subtle)",
-          }}
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 shadow-lg"
+          style={{ color: 'var(--fg)' }}
           aria-label="WhatsApp"
         >
           <FaWhatsapp size={20} />
@@ -120,12 +110,10 @@ export function Offcanvas() {
           suppressHydrationWarning
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen(v => !v)}
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 shadow-lg"
           style={{
-            background: isOpen ? 'var(--accent)' : 'var(--bg)',
+            background: isOpen ? 'var(--accent)' : undefined,
             color: isOpen ? '#fff' : 'var(--fg)',
-            border: isOpen ? 'none' : '1px solid var(--border-subtle)',
-            boxShadow: "var(--shadow-subtle)",
           }}
         >
           <AnimatePresence mode="wait" initial={false}>
