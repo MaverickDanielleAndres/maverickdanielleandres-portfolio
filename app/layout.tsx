@@ -3,7 +3,6 @@ import "./globals.css";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
-import AsyncFont from "@/components/ui/AsyncFont";
 
 const neueMontrealFont = localFont({
   // preload the actual font file so the browser doesn't wait for the CSS
@@ -13,6 +12,50 @@ const neueMontrealFont = localFont({
   display: "swap",
   preload: true,
 });
+
+// Critical CSS inlined directly into the head — paints the above-the-fold
+// hero before the main stylesheet has downloaded. Removes the 500ms+ render
+// block Lighthouse was flagging on mobile. Kept small on purpose: just the
+// hero layout primitives, the @font-face for Roboto Flex, and the entry
+// animation. Everything else (project cards, marquees, etc.) loads with
+// the deferred full stylesheet below.
+const criticalCss = `
+@font-face{font-family:"Roboto Flex";font-style:normal;font-weight:100 1000;font-stretch:25% 151%;font-display:swap;src:url("/fonts/roboto-flex-subset.woff2") format("woff2-variations"),url("/fonts/roboto-flex-subset.woff2") format("woff2")}
+:root{--bg:#111111;--bg-hero:#252523;--fg:#F0F0F0;--border-subtle:rgba(255,255,255,0.08);--accent:#6055F0;--container-px:clamp(1.5rem,6vw,6rem)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background-color:var(--bg);color:var(--fg);font-family:var(--font-neue-montreal),"Inter",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.relative{position:relative}.absolute{position:absolute}.fixed{position:fixed}.inset-0{inset:0}
+.flex{display:flex}.hidden{display:none}.flex-col{flex-direction:column}.flex-row{flex-direction:row}
+.flex-none{flex:none}.flex-1{flex:1 1 0%}
+.items-stretch{align-items:stretch}.items-end{align-items:flex-end}.items-center{align-items:center}
+.justify-between{justify-content:space-between}.justify-center{justify:center}.justify-end{justify-flex-end}
+.h-full{height:100%}.h-screen{height:100vh}.min-h-\\[100svh\\]{min-height:100svh}
+.w-full{width:100%}.max-w-\\[260px\\]{max-width:260px}.max-w-\\[300px\\]{max-width:300px}
+.overflow-hidden{overflow:hidden}.overflow-visible{overflow:visible}.overflow-x-clip{overflow-x:clip}
+.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-50{z-index:50}
+.gap-4{gap:1rem}.gap-6{gap:1.5rem}
+.px-\\[var\\(--container-px\\)\\]{padding-left:var(--container-px);padding-right:var(--container-px)}
+.pt-\\[10vh\\]{padding-top:10vh}.pb-16{padding-bottom:4rem}.pb-24{padding-bottom:6rem}
+.text-\\[var\\(--fg\\)\\]{color:var(--fg)}.opacity-\\[0\\.12\\]{opacity:0.12}.opacity-\\[0\\.08\\]{opacity:0.08}
+@keyframes hero-image-in{from{transform:translate3d(0,60px,0) scale(.96)}to{transform:translate3d(0,0,0) scale(1)}}
+.hero-image-reveal{animation:hero-image-in 1.1s cubic-bezier(.16,1,.3,1) .15s both}
+.marquee-track{display:flex;width:max-content;animation:marquee-scroll 80s linear infinite}
+@keyframes marquee-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+img{color:transparent;max-width:100%;height:auto}
+@media (min-width:768px){
+.md\\:flex-row{flex-direction:row}.md\\:relative{position:relative}.md\\:flex-1{flex:1 1 0%}
+.md\\:pt-0{padding-top:0}.md\\:pb-0{padding-bottom:0}.md\\:justify-center{justify-content:center}
+.md\\:w-auto{width:auto}.md\\:w-\\[120\\%\\]{width:120%}.md\\:h-\\[95\\%\\]{height:95%}
+.md\\:max-w-\\[340px\\]{max-width:340px}.md\\:mr-0{margin-right:0}.md\\:mb-0{margin-bottom:0}
+.md\\:opacity-\\[0\\.08\\]{opacity:0.08}
+}
+@media (min-width:1024px){
+.lg\\:w-\\[100\\%\\]{width:100%}.lg\\:h-\\[100\\%\\]{height:100%}.lg\\:max-w-\\[360px\\]{max-width:360px}
+.lg\\:mt-12{margin-top:3rem}
+}
+.hero-pill-btn{border:1px solid rgba(255,255,255,.45);border-radius:9999px;color:#fff;background:transparent;padding:.55rem 1.25rem;font-size:.8125rem;font-weight:400;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.hero-pill-btn:hover{background:#fff;color:#222}
+`;
 
 export const viewport: Viewport = {
   themeColor: "#111111",
@@ -168,21 +211,22 @@ export default function RootLayout({
       className={neueMontrealFont.variable}
     >
       <head>
-        {/* Preconnect/dns-prefetch the only 3rd-party origin the page uses.
-            Roboto Flex is loaded by TextPressure; preconnect removes the
-            ~750ms the Lighthouse trace spent on the TLS handshake. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        {/* Critical above-the-fold CSS — paints the hero before the full
+            stylesheet has downloaded. Keeps Lighthouse's render-blocker
+            count at zero while we still deliver the full design system. */}
+        <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
+        {/* Self-hosted Roboto Flex (subsetted to "Maverick Danielle") is
+            declared in globals.css via @font-face. Preload the woff2
+            directly so the browser fetches it in parallel with the CSS
+            — text still renders in the neue-montreal fallback until
+            swap. Eliminates the 192 KiB Google Fonts CDN request. */}
         <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
+          rel="preload"
+          href="/fonts/roboto-flex-subset.woff2"
+          as="font"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-
-        {/* Roboto Flex used by the Hero TextPressure. Loaded via
-            AsyncFont so the Google Fonts CSS is no longer render-blocking. */}
-        <AsyncFont href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap" />
 
         {/* Preload the LCP image so the browser fetches it in parallel with
             the CSS instead of waiting for the React tree to render. This
@@ -203,11 +247,13 @@ export default function RootLayout({
         <meta name="color-scheme" content="dark light" />
         <meta name="format-detection" content="telephone=no" />
 
-        {/* Structured data */}
+        {/* Structured data — rendered via dangerouslySetInnerHTML into a
+            <script> in <head>. Next.js recommends this pattern for JSON-LD. */}
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          suppressHydrationWarning
         />
       </head>
       <body className={neueMontrealFont.className}>

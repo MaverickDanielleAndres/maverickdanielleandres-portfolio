@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import TextPressure from "@/components/ui/TextPressure";
 import ScrollVelocity from "@/components/ui/ScrollVelocity";
@@ -77,6 +77,7 @@ export default function Hero() {
   };
 
   return (
+    <LazyMotion features={domAnimation} strict>
     <section
       id="home"
       className="relative flex flex-col md:flex-row items-stretch justify-between h-screen min-h-[100svh] w-full overflow-hidden"
@@ -84,11 +85,10 @@ export default function Hero() {
       suppressHydrationWarning
     >
       {/* ── Sweeping reveal line (fires first) ─────────────────────────────── */}
-      <motion.div
+      <m.div
         variants={lineReveal}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+        animate="visible"
         style={{
           position: "absolute",
           top: 0,
@@ -105,7 +105,7 @@ export default function Hero() {
 
       {/* ── Background Marquee Name ─────────────────────────────────────────── */}
       <div className="absolute bottom-2 md:bottom-[-1rem] left-0 w-full overflow-hidden select-none z-0">
-        <motion.div
+        <m.div
           variants={marqueeReveal}
           initial="hidden"
           whileInView="visible"
@@ -118,7 +118,7 @@ export default function Hero() {
             className="font-normal leading-tight tracking-[-0.02em] text-[var(--fg)] opacity-[0.12] md:opacity-[0.08]"
             parallaxStyle={{ fontSize: "clamp(3.5rem, 10vw, 15rem)" }}
           />
-        </motion.div>
+        </m.div>
       </div>
 
       {/* ── Main Content Container ──────────────────────────────────────────── */}
@@ -128,7 +128,7 @@ export default function Hero() {
         <div className="w-full md:w-auto flex-none flex flex-col justify-start md:justify-center items-start h-full pt-[10vh] md:pt-0 pb-16 md:pb-24 z-20">
 
           {/* Name block */}
-          <motion.div
+          <m.div
             variants={slideUp}
             initial="hidden"
             whileInView="visible"
@@ -166,10 +166,10 @@ export default function Hero() {
                 className="w-full h-full"
               />
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Subtitle */}
-          <motion.p
+          <m.p
             variants={slideUp}
             initial="hidden"
             whileInView="visible"
@@ -180,12 +180,12 @@ export default function Hero() {
             Full-Stack Web & App Developer
             <br />
             Based in Pasig City, PH
-          </motion.p>
+          </m.p>
 
           {/* Availability and Buttons Wrapper */}
           <div className="flex flex-col w-fit max-w-full">
             {/* Availability and Get Started */}
-            <motion.div
+            <m.div
               variants={slideUp}
               initial="hidden"
               whileInView="visible"
@@ -203,10 +203,10 @@ export default function Hero() {
                 </span>
               </div>
               <GetStartedButton onClick={() => window.dispatchEvent(new CustomEvent('open-inquiry-modal'))} />
-            </motion.div>
+            </m.div>
 
             {/* Buttons */}
-            <motion.div
+            <m.div
               variants={slideUp}
               initial="hidden"
               whileInView="visible"
@@ -240,19 +240,18 @@ export default function Hero() {
                 </button>
               )
             )}
-          </motion.div>
+          </m.div>
           </div>
         </div>
 
-        {/* Right Column / Background: Profile Image */}
+        {/* Right Column / Background: Profile Image — LCP element.
+            Intentionally NOT wrapped in motion.div with `initial="hidden"`:
+            framer-motion's hidden state sets opacity:0, which made the image
+            wait for hydration + a 4s element-render delay on mobile. The
+            image now paints as soon as the bytes arrive; a CSS-only entry
+            animation runs alongside (and after) the first paint. */}
         <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-center items-end h-full z-10 pointer-events-none overflow-visible">
-          <motion.div
-            variants={imageReveal}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="relative w-full min-w-[400px] sm:min-w-[500px] md:w-[120%] lg:w-[100%] max-w-[800px] h-[75%] md:h-[95%] lg:h-[100%] flex justify-center items-end mr-[-25%] sm:mr-[-10%] md:mr-0 mb-[-18%] md:mb-0 transition-all duration-700"
-          >
+          <div className="hero-image-reveal relative w-full min-w-[400px] sm:min-w-[500px] md:w-[120%] lg:w-[100%] max-w-[800px] h-[75%] md:h-[95%] lg:h-[100%] flex justify-center items-end mr-[-25%] sm:mr-[-10%] md:mr-0 mb-[-18%] md:mb-0">
             <Image
               src="/updatedprofile_pic.webp"
               alt="Maverick Danielle Andres"
@@ -264,12 +263,12 @@ export default function Hero() {
               loading="eager"
               fetchPriority="high"
             />
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Scroll hint */}
-      <motion.a
+      <m.a
         href="#about"
         className="absolute hidden lg:flex flex-col items-center gap-2 opacity-40 hover:opacity-70 transition-opacity"
         style={{
@@ -279,14 +278,14 @@ export default function Hero() {
         }}
         variants={slideUp}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+        animate="visible"
         custom={0.75}
         aria-label="Scroll down"
       >
         <span className="text-xs tracking-[0.2em] uppercase">Scroll</span>
         <span className="w-px bg-[var(--fg)]/60" style={{ height: "clamp(2rem, 4vh, 3rem)" }} />
-      </motion.a>
+      </m.a>
     </section>
+    </LazyMotion>
   );
 }

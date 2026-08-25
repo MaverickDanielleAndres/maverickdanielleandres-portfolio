@@ -81,6 +81,22 @@
 /* ===== Base ===== */
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ===== Self-hosted Roboto Flex =====
+   Subsetted to just "Maverick Danielle" (11 glyphs). ~24 KB on the wire
+   instead of Google Fonts' 192 KB. font-display:swap keeps first paint
+   unblocked — text shows the neue-montreal fallback until Roboto Flex
+   loads. The variable axes (wght, wdth, ital) are preserved so the
+   TextPressure mouse-proximity effect works exactly as before. */
+@font-face {
+  font-family: "Roboto Flex";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
+  font-display: swap;
+  src: url("/fonts/roboto-flex-subset.woff2") format("woff2-variations"),
+       url("/fonts/roboto-flex-subset.woff2") format("woff2");
+}
+
 html {
   background-color: var(--bg);
 }
@@ -421,6 +437,28 @@ html.lenis, html.lenis body { height: auto; }
 
 .image-card {
   will-change: transform;
+}
+
+/* ===== Hero image: CSS-only entry reveal =====
+   Was a framer-motion `motion.div initial="hidden"` that set opacity:0
+   until hydration ran. That hid the LCP image for ~4s on mobile.
+   Now the image paints on first frame; the transform-only animation
+   below runs alongside without affecting LCP. */
+@keyframes hero-image-in {
+  from {
+    transform: translate3d(0, 60px, 0) scale(0.96);
+  }
+  to {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+.hero-image-reveal {
+  animation: hero-image-in 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  /* Hint the browser to GPU-composite this layer — transform-only animation */
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-image-reveal { animation: none !important; will-change: auto; }
 }
 
 /* ===== Performance: Content Visibility ===== */

@@ -200,10 +200,12 @@ const TextPressure: React.FC<TextPressureProps> = ({
     return () => cancelAnimationFrame(rafId);
   }, [width, weight, italic, alpha]);
 
+  // The font @font-face is declared in globals.css (self-hosted, preloaded).
+  // No @import here — that would re-trigger a Google Fonts CDN fetch and
+  // re-introduce the render-blocking stylesheet Lighthouse flagged.
   const styleElement = useMemo(() => {
     return (
       <style>{`
-        @import url('${fontUrl}');
         .stroke span {
           position: relative;
           color: ${textColor};
@@ -220,7 +222,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
         }
       `}</style>
     );
-  }, [fontFamily, fontUrl, stroke, textColor, strokeColor, strokeWidth]);
+  }, [stroke, textColor, strokeColor, strokeWidth]);
 
   return (
     <div ref={containerRef} className="relative w-full h-full overflow-visible bg-transparent">
