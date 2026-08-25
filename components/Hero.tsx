@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import TextPressure from "@/components/ui/TextPressure";
 import ScrollVelocity from "@/components/ui/ScrollVelocity";
 import { GetStartedButton } from "@/components/ui/get-started-button";
 
@@ -134,38 +133,14 @@ export default function Hero() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.05}
-            className="w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-4 md:gap-6 lg:mt-12"
+            className="w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[500px] flex flex-col lg:mt-12"
           >
-            <div className="w-full" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
-              <TextPressure
-                text="Maverick"
-                flex={true}
-                alpha={false}
-                stroke={false}
-                width={true}
-                weight={true}
-                italic={true}
-                scale={true}
-                textColor="var(--fg)"
-                minFontSize={20}
-                className="w-full h-full"
-              />
-            </div>
-            <div className="w-full" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
-              <TextPressure
-                text="Danielle"
-                flex={true}
-                alpha={false}
-                stroke={false}
-                width={true}
-                weight={true}
-                italic={true}
-                scale={true}
-                textColor="var(--fg)"
-                minFontSize={20}
-                className="w-full h-full"
-              />
-            </div>
+            <h1 
+              className="text-[clamp(3.5rem,12vw,6.5rem)] leading-[0.95] font-[100] tracking-tight uppercase"
+              style={{ fontFamily: "'Roboto Flex', sans-serif" }}
+            >
+              Maverick<br />Danielle
+            </h1>
           </motion.div>
 
           {/* Subtitle */}

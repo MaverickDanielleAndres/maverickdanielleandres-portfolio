@@ -118,7 +118,10 @@ export default function Contact() {
       {/* Two-column: info left, form right */}
       <div
         style={{
-          padding: "clamp(3rem,8vh,5rem) var(--container-px)",
+          paddingTop: "clamp(3rem,8vh,5rem)",
+          paddingBottom: "2rem",
+          paddingLeft: "var(--container-px)",
+          paddingRight: "var(--container-px)",
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
           gap: "clamp(2.5rem,6vw,6rem)",
@@ -190,7 +193,7 @@ export default function Contact() {
           </div>
 
           {/* Social links */}
-          <div style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1.5rem" }}>
+          <div style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "1.5rem", paddingBottom: "0.75rem" }}>
             <p className="text-xs uppercase tracking-widest mb-4" style={{ color: "var(--fg-muted)" }}>
               Follow me
             </p>
@@ -200,6 +203,37 @@ export default function Contact() {
                 { href: "https://linkedin.com/in/maverick-danielle-andres-641564373", label: "LinkedIn" },
                 { href: "https://www.facebook.com/maverickdanielle.andres", label: "Facebook" },
                 { href: "https://www.instagram.com/mavs_verick/", label: "Instagram" },
+              ].map(({ href, label }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-xs transition-opacity hover:opacity-60"
+                  style={{
+                    color: "var(--fg)",
+                    border: "1px solid var(--border-subtle)",
+                    borderRadius: 9999,
+                    padding: "0.35rem 0.85rem",
+                    textDecoration: "none",
+                  }}
+                >
+                  {label} <ArrowUpRight size={10} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Direct message links */}
+          <div>
+            <p className="text-xs uppercase tracking-widest mb-4" style={{ color: "var(--fg-muted)" }}>
+              Or Message Me
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { href: "https://m.me/maverickdanielle.andres", label: "Messenger" },
+                { href: "https://wa.me/639632968188", label: "WhatsApp" },
+                { href: "tel:09632968188", label: "09632968188" },
               ].map(({ href, label }) => (
                 <a
                   key={href}
@@ -297,7 +331,7 @@ export default function Contact() {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-col md:flex-row justify-between items-center py-6 text-xs text-neutral-500 mt-12"
+          className="flex flex-col md:flex-row justify-between items-center py-6 text-xs text-neutral-500"
           style={{ borderTop: "1px solid var(--border-subtle)" }}
         >
           <div className="mb-4 md:mb-0">
