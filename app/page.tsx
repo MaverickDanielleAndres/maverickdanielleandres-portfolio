@@ -1,25 +1,24 @@
 import dynamic from "next/dynamic";
 import SmoothScroll from "@/components/SmoothScroll";
+import FloatingUI from "@/components/FloatingUI";
 import { Navbar } from "@/components/Navbar";
 
 // --- Above-the-fold: statically imported (critical for FCP) ---
 import Hero from "@/components/Hero";
 
 import OverlapWrapper from "@/components/OverlapWrapper";
-import Portal from "@/components/Portal";
 import LazyLoad from "@/components/LazyLoad";
 
 // --- Below-the-fold: dynamically imported to reduce initial bundle size ---
-// Each section is lazy-loaded when the client is ready, per performance-rules.md
+// Each section is lazy-loaded when the client is ready, per performance-rules.md.
 const AboutWithInquiry = dynamic(() => import("@/components/AboutWithInquiry"));
-import GlobalInquiry from "@/components/GlobalInquiry";
 const Skills = dynamic(() => import("@/components/Skills"));
 const Projects = dynamic(() => import("@/components/Projects"));
 const Certificates = dynamic(() => import("@/components/Certificates"));
 const ActivitySection = dynamic(() => import("@/components/ActivitySection"));
 const Contact = dynamic(() => import("@/components/Contact"));
 
-// --- Dynamic-only UI components ---
+// --- Page ----------------------------------------------------------------
 export default function Home() {
   return (
     <>
@@ -28,10 +27,7 @@ export default function Home() {
           {/* Transparent navbar (overlays hero) */}
           <Navbar />
 
-
-          {/* Page sections */}
-          <GlobalInquiry />
-          <main className="relative" style={{ position: 'relative' }}>
+          <main className="relative" style={{ position: "relative" }}>
             <OverlapWrapper zIndex={1} bg="var(--bg-hero)" sticky={true}>
               <Hero />
             </OverlapWrapper>
@@ -69,6 +65,10 @@ export default function Home() {
           </main>
         </SmoothScroll>
       </div>
+
+      {/* Floating UI lives in a client wrapper so its JS (framer-motion,
+          react-icons, ai chat bundle) ships after the critical path. */}
+      <FloatingUI />
     </>
   );
 }

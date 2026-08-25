@@ -1,6 +1,7 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
+import { FaWhatsapp, FaFacebookMessenger } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   const [currentYear] = useState(new Date().getFullYear());
@@ -105,6 +106,39 @@ const Footer: React.FC = () => {
                       </span>
                     </a>
                   ))}
+                </div>
+              </div>
+
+              {/* Message Me */}
+              <div className="pt-2">
+                <p className="text-neutral-300 font-medium mb-3 text-xs uppercase tracking-wider">Message me</p>
+                <div className="flex justify-center md:justify-start gap-2">
+                  <a
+                    href="https://m.me/maverickdanielle.andres"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative text-neutral-500 hover:text-neutral-200 transition-all duration-300 p-2 hover:bg-neutral-900/50 rounded-lg hover:scale-110 hover:rotate-3"
+                    aria-label="Messenger"
+                  >
+                    <FaFacebookMessenger className="w-4 h-4" />
+                    {/* Tooltip */}
+                    <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-neutral-800 text-neutral-200 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+                      Messenger
+                    </span>
+                  </a>
+                  <a
+                    href="https://wa.me/639632968188"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative text-neutral-500 hover:text-neutral-200 transition-all duration-300 p-2 hover:bg-neutral-900/50 rounded-lg hover:scale-110 hover:rotate-3"
+                    aria-label="WhatsApp"
+                  >
+                    <FaWhatsapp className="w-4 h-4" />
+                    {/* Tooltip */}
+                    <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-neutral-800 text-neutral-200 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+                      WhatsApp
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>

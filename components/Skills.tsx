@@ -131,7 +131,7 @@ export default function Skills() {
 
               {/* Right Section - 70% */}
               <div className="w-full lg:w-[70%] pt-6 px-8 pb-8 sm:pt-8 sm:px-12 sm:pb-12 lg:pt-12 flex flex-col">
-                <div className="mb-8">
+                <div className="mb-8 text-center lg:text-left">
                   <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--fg)] mb-2">Tech Stack</h3>
                   <p className="text-xs font-bold text-[var(--accent)] uppercase tracking-widest">
                     Technologies used by Maverick.
@@ -140,11 +140,11 @@ export default function Skills() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8 sm:gap-y-10">
                   {CATEGORIES.map((category, idx) => (
-                    <div key={idx} className="space-y-3 sm:space-y-4">
+                    <div key={idx} className="space-y-3 sm:space-y-4 text-center sm:text-left">
                       <h4 className="text-base font-bold text-[var(--fg)]">
                         {category.title}
                       </h4>
-                      <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-2.5">
                         {category.skills.map((skill, sIdx) => (
                           <span
                             key={sIdx}

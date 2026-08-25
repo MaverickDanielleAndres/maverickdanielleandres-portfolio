@@ -10,13 +10,16 @@ import { GetStartedButton } from "@/components/ui/get-started-button";
 
 // ─── Animation variants ──────────────────────────────────────────────────────
 
-// Staggered slide-up for text/UI elements
+// Staggered slide-up for text/UI elements.
+// `filter: blur` was removed because Lighthouse flagged it as a
+// non-composited animation (it triggers paint on every frame and breaks
+// GPU compositing). We get the same reveal feel with translateY + opacity,
+// which are both compositor-only properties and animate on the GPU.
 const slideUp = {
-  hidden: { opacity: 0, y: 48, filter: "blur(8px)" },
+  hidden: { opacity: 0, y: 48 },
   visible: (delay: number = 0) => ({
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
       duration: 0.85,
       delay,

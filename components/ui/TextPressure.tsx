@@ -200,10 +200,13 @@ const TextPressure: React.FC<TextPressureProps> = ({
     return () => cancelAnimationFrame(rafId);
   }, [width, weight, italic, alpha]);
 
+  // The font is now preloaded via <link rel="preload"> in app/layout.tsx
+  // (see the Roboto Flex entry there). We previously did an `@import`
+  // here which forced a serial CSS dependency chain (~750ms Lighthouse
+  // flagged). Falling back to font-display:swap lets text paint immediately.
   const styleElement = useMemo(() => {
     return (
       <style>{`
-        @import url('${fontUrl}');
         .stroke span {
           position: relative;
           color: ${textColor};
@@ -220,7 +223,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
         }
       `}</style>
     );
-  }, [fontFamily, fontUrl, stroke, textColor, strokeColor, strokeWidth]);
+  }, [stroke, textColor, strokeColor, strokeWidth]);
 
   return (
     <div ref={containerRef} className="relative w-full h-full overflow-visible bg-transparent">
