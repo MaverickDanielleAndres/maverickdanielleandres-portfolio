@@ -203,9 +203,17 @@ const TextPressure: React.FC<TextPressureProps> = ({
   // The font @font-face is declared in globals.css (self-hosted, preloaded).
   // No @import here — that would re-trigger a Google Fonts CDN fetch and
   // re-introduce the render-blocking stylesheet Lighthouse flagged.
+  // However, we inject a custom font-face if a different fontUrl is explicitly passed.
   const styleElement = useMemo(() => {
     return (
       <style>{`
+        ${fontFamily !== 'Roboto Flex' && fontUrl ? `
+        @font-face {
+          font-family: '${fontFamily}';
+          src: url('${fontUrl}');
+          font-style: normal;
+        }
+        ` : ''}
         .stroke span {
           position: relative;
           color: ${textColor};
@@ -222,7 +230,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
         }
       `}</style>
     );
-  }, [stroke, textColor, strokeColor, strokeWidth]);
+  }, [fontFamily, fontUrl, stroke, textColor, strokeColor, strokeWidth]);
 
   return (
     <div ref={containerRef} className="relative w-full h-full overflow-visible bg-transparent">

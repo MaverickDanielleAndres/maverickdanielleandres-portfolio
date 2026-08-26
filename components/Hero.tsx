@@ -77,7 +77,7 @@ export default function Hero() {
   };
 
   return (
-    <LazyMotion features={domAnimation} strict>
+    <LazyMotion features={domAnimation}>
     <section
       id="home"
       className="relative flex flex-col md:flex-row items-stretch justify-between h-screen min-h-[100svh] w-full overflow-hidden"
@@ -142,9 +142,9 @@ export default function Hero() {
                 flex={true}
                 alpha={false}
                 stroke={false}
-                width={false}
-                weight={false}
-                italic={false}
+                width={true}
+                weight={true}
+                italic={true}
                 scale={true}
                 textColor="var(--fg)"
                 minFontSize={20}
@@ -157,9 +157,9 @@ export default function Hero() {
                 flex={true}
                 alpha={false}
                 stroke={false}
-                width={false}
-                weight={false}
-                italic={false}
+                width={true}
+                weight={true}
+                italic={true}
                 scale={true}
                 textColor="var(--fg)"
                 minFontSize={20}

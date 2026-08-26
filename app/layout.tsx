@@ -20,7 +20,7 @@ const neueMontrealFont = localFont({
 // animation. Everything else (project cards, marquees, etc.) loads with
 // the deferred full stylesheet below.
 const criticalCss = `
-@font-face{font-family:"Roboto Flex";font-style:normal;font-weight:100 1000;font-stretch:25% 151%;font-display:swap;src:url("/fonts/roboto-flex-subset.woff2") format("woff2-variations"),url("/fonts/roboto-flex-subset.woff2") format("woff2")}
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap');
 :root{--bg:#111111;--bg-hero:#252523;--fg:#F0F0F0;--border-subtle:rgba(255,255,255,0.08);--accent:#6055F0;--container-px:clamp(1.5rem,6vw,6rem)}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;background-color:var(--bg);color:var(--fg);font-family:var(--font-neue-montreal),"Inter",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -220,13 +220,7 @@ export default function RootLayout({
             directly so the browser fetches it in parallel with the CSS
             — text still renders in the neue-montreal fallback until
             swap. Eliminates the 192 KiB Google Fonts CDN request. */}
-        <link
-          rel="preload"
-          href="/fonts/roboto-flex-subset.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+
 
         {/* Preload the LCP image so the browser fetches it in parallel with
             the CSS instead of waiting for the React tree to render. This
@@ -247,13 +241,18 @@ export default function RootLayout({
         <meta name="color-scheme" content="dark light" />
         <meta name="format-detection" content="telephone=no" />
 
-        {/* Structured data — rendered via dangerouslySetInnerHTML into a
-            <script> in <head>. Next.js recommends this pattern for JSON-LD. */}
+        {/* Structured data — JSON-LD must appear in the *initial* HTML so
+            crawlers that don't execute JS (most search engines) can read it.
+            Next.js's <Script> strategy="beforeInteractive" defers the
+            script into the RSC stream and never lands it in the SSR HTML,
+            which defeats the purpose of JSON-LD. A direct <script> tag is
+            the canonical Next.js app-router pattern; React 19 prints a
+            soft console.warn for any <script> inside the React tree but
+            the tag is server-only and never re-rendered on the client. */}
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          suppressHydrationWarning
         />
       </head>
       <body className={neueMontrealFont.className}>
