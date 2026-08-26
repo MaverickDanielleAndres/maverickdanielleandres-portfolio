@@ -100,7 +100,7 @@ export function Component({
   }
 
   const containerStyles = {
-    stack: "relative h-[240px] sm:h-[280px] w-full max-w-[240px] sm:max-w-[300px] mt-12 mb-8 lg:mb-16",
+    stack: "relative h-[190px] md:h-[200px] w-full max-w-[200px] md:max-w-[210px] mt-6 mb-4",
     grid: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4",
   }
 
@@ -133,11 +133,11 @@ export function Component({
                   <div className="flex-1 min-w-0 w-full">
                     <h3 className={cn(
                       "font-bold text-foreground tracking-tight leading-tight mb-1",
-                      layout === "stack" ? "text-lg" : "text-[13px] sm:text-sm"
+                      layout === "stack" ? "text-base" : "text-[13px] sm:text-sm"
                     )}>{card.title}</h3>
                     <p className={cn(
                       "text-muted-foreground leading-snug font-medium",
-                      layout === "stack" ? "text-sm" : "text-[11px]"
+                      layout === "stack" ? "text-xs" : "text-[11px]"
                     )}>
                       {card.description}
                     </p>
@@ -177,7 +177,7 @@ export function Component({
                   className={cn(
                     "relative touch-pan-y h-full",
                     layout === "stack" 
-                      ? "cursor-grab active:cursor-grabbing rounded-[2rem] border border-border/50 absolute w-full max-w-[240px] sm:max-w-[300px] aspect-square bg-card/90 dark:bg-card/40 backdrop-blur-2xl shadow-xl" 
+                      ? "cursor-grab active:cursor-grabbing rounded-[2rem] border border-border/50 absolute overflow-hidden w-full max-w-[200px] md:max-w-[210px] aspect-square bg-card/90 dark:bg-card/40 backdrop-blur-2xl shadow-xl" 
                       : "cursor-pointer rounded-2xl border border-border/40 w-full min-h-[85px] bg-card/70 dark:bg-card/30 backdrop-blur-md shadow-sm hover:border-primary/50 transition-colors",
                     isExpanded && "ring-2 ring-primary z-50",
                   )}

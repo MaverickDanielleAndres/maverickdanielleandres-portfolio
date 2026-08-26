@@ -68,17 +68,17 @@ export default function About({ onStartProject }: AboutProps) {
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        className="max-w-7xl mx-auto space-y-12"
+        className="max-w-6xl mx-auto space-y-12"
       >
         <motion.div variants={itemVariants} className="w-full">
           <SpotlightCard 
             className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-6 sm:p-8" 
             spotlightColor="rgba(96, 85, 240, 0.15)"
           >
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start">
               
               {/* Image Swiper Container (Minimized) */}
-              <div className="relative shrink-0 flex flex-col items-center justify-start w-full lg:w-auto lg:-mt-4">
+              <div className="relative shrink-0 flex flex-col items-center justify-start w-full md:w-auto md:-mt-4">
                 <div className="relative">
                   <ImageSwiper images={ABOUT_SWIPER_IMAGES} cardWidth={175} cardHeight={230} />
                 </div>
@@ -94,7 +94,7 @@ export default function About({ onStartProject }: AboutProps) {
               <div className="flex flex-col flex-1 w-full relative">
                 
                 {/* Header, Socials & Actions */}
-                <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-6">
+                <div className="flex flex-col md:flex-row flex-wrap justify-between items-start md:items-center gap-4 sm:gap-6 mb-6">
                   <div>
                     <h3 className="text-3xl font-bold tracking-tight text-[var(--fg)] mb-1">About Me</h3>
                     <p className="text-sm font-bold text-[var(--accent)] uppercase tracking-widest">

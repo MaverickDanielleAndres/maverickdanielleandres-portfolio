@@ -136,28 +136,65 @@ export async function POST(request: Request) {
     const typeLabel = mapProjectType(projectType);
 
     const htmlContent = `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
-        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 24px; color: #111;">New Project Inquiry</h2>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 20px; color: #1a1a1a; background-color: #ffffff; border: 1px solid #eaeaea; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+        <div style="text-align: center; margin-bottom: 32px;">
+          <h1 style="font-size: 24px; font-weight: 700; margin: 0; color: #111;">New Project Inquiry 🚀</h1>
+          <p style="font-size: 15px; color: #666; margin-top: 8px;">You have received a new inquiry from your portfolio.</p>
+        </div>
         
-        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 24px; border: 1px solid #eaeaea;">
-          <p style="margin: 0 0 12px 0;"><strong>Name:</strong> ${sanitizedName}</p>
-          ${sanitizedCompany ? `<p style="margin: 0 0 12px 0;"><strong>Company / Organization:</strong> ${sanitizedCompany}</p>` : ''}
-          <p style="margin: 0 0 12px 0;"><strong>Intent:</strong> ${intentLabel}</p>
-          <p style="margin: 0 0 12px 0;"><strong>Project Type:</strong> ${typeLabel}</p>
-          <p style="margin: 0 0 12px 0;"><strong>Budget:</strong> ${mapBudget(budget)}</p>
-          <p style="margin: 0 0 0 0;"><strong>Timeline:</strong> ${mapTimeline(timeline)}</p>
-        </div>
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #111; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px;">Project Details</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; width: 40%; font-size: 14px;"><strong>Intent</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;">${intentLabel}</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 14px;"><strong>Project Type</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;">${typeLabel}</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 14px;"><strong>Budget</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;">${mapBudget(budget)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 14px;"><strong>Timeline</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;">${mapTimeline(timeline)}</td>
+          </tr>
+        </table>
 
-        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #111;">Contact Details</h3>
-        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 24px; border: 1px solid #eaeaea;">
-          <p style="margin: 0 0 12px 0;"><strong>Preferred Contact:</strong> ${contactMethod === 'email' ? 'Email' : 'Phone'}</p>
-          ${contactMethod === 'email' ? `<p style="margin: 0 0 12px 0;"><strong>Email:</strong> <a href="mailto:${contactEmail}" style="color: #6055F0;">${contactEmail}</a></p>` : ''}
-          ${contactMethod === 'phone' ? `<p style="margin: 0 0 12px 0;"><strong>Phone:</strong> <a href="tel:${contactPhone}" style="color: #6055F0;">${contactPhone}</a></p>` : ''}
-        </div>
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #111; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px;">Client Information</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; width: 40%; font-size: 14px;"><strong>Name</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;">${sanitizedName}</td>
+          </tr>
+          ${sanitizedCompany ? `
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 14px;"><strong>Company</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;">${sanitizedCompany}</td>
+          </tr>` : ''}
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 14px;"><strong>Preferred Contact</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px; text-transform: capitalize;">${contactMethod}</td>
+          </tr>
+          ${contactMethod === 'email' ? `
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 14px;"><strong>Email</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;"><a href="mailto:${contactEmail}" style="color: #6055F0; text-decoration: none;">${contactEmail}</a></td>
+          </tr>` : ''}
+          ${contactMethod === 'phone' ? `
+          <tr>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 14px;"><strong>Phone</strong></td>
+            <td style="padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #111; font-size: 15px;"><a href="tel:${contactPhone}" style="color: #6055F0; text-decoration: none;">${contactPhone}</a></td>
+          </tr>` : ''}
+        </table>
 
-        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #111;">Message</h3>
-        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eaeaea; line-height: 1.5;">
-          ${sanitizedMessage}
+        ${sanitizedMessage && sanitizedMessage !== 'No additional message provided.' ? `
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #111; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px;">Additional Message</h2>
+        <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #eaeaea; line-height: 1.6; color: #333; margin-bottom: 32px; font-size: 15px; white-space: pre-wrap;">${sanitizedMessage}</div>` : ''}
+        
+        <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #eaeaea; font-size: 13px; color: #999;">
+          Sent from your portfolio onboarding form.
         </div>
       </div>
     `;
