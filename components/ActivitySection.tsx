@@ -118,8 +118,8 @@ export default function ActivitySection() {
         <motion.div variants={itemVariants} className="w-full">
           <SpotlightCard className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" spotlightColor="rgba(96, 85, 240, 0.15)">
             <div className="mb-6 px-2">
-              <h3 className="text-xl font-medium text-[var(--fg)]">Work Experience</h3>
-              <p className="text-sm text-[var(--fg-muted)] mt-1">A timeline of my professional growth and technical leadership</p>
+              <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">Work Experience</h3>
+              <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">A timeline of my professional growth and technical leadership</p>
             </div>
             
             <div className="flex flex-col md:flex-row items-stretch justify-between gap-1 md:gap-0 relative">
@@ -164,8 +164,8 @@ export default function ActivitySection() {
           <SpotlightCard className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" spotlightColor="rgba(96, 85, 240, 0.1)">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 px-2">
               <div>
-                <h3 className="text-xl font-medium text-[var(--fg)]">GitHub Activity</h3>
-                <p className="text-sm text-[var(--fg-muted)] mt-1">My open source contributions and coding streak</p>
+                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">GitHub Activity</h3>
+                <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">My open source contributions and coding streak</p>
               </div>
               <a
                 href="https://github.com/MaverickDanielleAndres"

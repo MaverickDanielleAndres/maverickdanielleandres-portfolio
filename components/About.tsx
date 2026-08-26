@@ -68,7 +68,7 @@ export default function About({ onStartProject }: AboutProps) {
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        className="max-w-6xl mx-auto space-y-12"
+        className="max-w-[90rem] mx-auto space-y-12"
       >
         <motion.div variants={itemVariants} className="w-full">
           <SpotlightCard 
