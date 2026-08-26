@@ -116,7 +116,7 @@ export default function Skills() {
             <div className="flex flex-col lg:flex-row w-full relative min-h-[650px]">
                 
               {/* Left Section - 30% */}
-              <div className="w-full lg:w-[30%] pt-8 px-8 pb-2 sm:pt-12 sm:px-12 sm:pb-4 lg:pb-12 flex flex-col justify-center items-center lg:items-start text-center lg:text-left border-b lg:border-b-0 border-black/10 dark:border-white/10">
+              <div className="w-full lg:w-[30%] pt-8 px-8 pb-2 sm:pt-12 sm:px-12 sm:pb-4 lg:pb-12 flex flex-col justify-center items-center text-center border-b lg:border-b-0 border-black/10 dark:border-white/10">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] mb-3" style={{ color: "var(--fg-muted)" }}>
                   Core Competencies
                 </p>
@@ -124,27 +124,27 @@ export default function Skills() {
                   What I Bring
                 </h3>
                 
-                <div className="w-full flex flex-col items-center lg:items-start justify-center lg:justify-start -mt-8">
+                <div className="w-full flex flex-col items-center justify-center -mt-8">
                   <MorphingCardStack cards={COMPETENCIES_CARDS} defaultLayout="stack" />
                 </div>
               </div>
 
               {/* Right Section - 70% */}
               <div className="w-full lg:w-[70%] pt-6 px-8 pb-8 sm:pt-8 sm:px-12 sm:pb-12 lg:pt-12 flex flex-col">
-                <div className="mb-8 text-center lg:text-left">
+                <div className="mb-8">
                   <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--fg)] mb-2">Tech Stack</h3>
                   <p className="text-xs font-bold text-[var(--accent)] uppercase tracking-widest">
-                    Technologies I use.
+                    Technologies used by Maverick.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8 sm:gap-y-10">
                   {CATEGORIES.map((category, idx) => (
-                    <div key={idx} className="space-y-3 sm:space-y-4 text-center sm:text-left">
+                    <div key={idx} className="space-y-3 sm:space-y-4">
                       <h4 className="text-base font-bold text-[var(--fg)]">
                         {category.title}
                       </h4>
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-2.5">
+                      <div className="flex flex-wrap gap-2 sm:gap-2.5">
                         {category.skills.map((skill, sIdx) => (
                           <span
                             key={sIdx}
