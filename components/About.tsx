@@ -94,8 +94,8 @@ export default function About({ onStartProject }: AboutProps) {
               <div className="flex flex-col flex-1 w-full relative">
                 
                 {/* Header, Socials & Actions */}
-                <div className="flex flex-col xl:flex-row justify-between items-center gap-6 mb-6 text-center xl:text-left">
-                  <div>
+                <div className="flex flex-col lg:flex-row justify-between items-center gap-6 mb-6 text-center lg:text-left">
+                  <div className="flex flex-col items-center lg:items-start">
                     <h3 className="text-3xl font-bold tracking-tight text-[var(--fg)] mb-1">About Me</h3>
                     <p className="text-sm font-bold text-[var(--accent)] uppercase tracking-widest">
                       Full-Stack Developer
@@ -143,7 +143,7 @@ export default function About({ onStartProject }: AboutProps) {
                 </div>
 
                 {/* Bio */}
-                <div className="space-y-4 text-center xl:text-left">
+                <div className="space-y-4 text-center lg:text-left">
                   <p className="text-base sm:text-lg leading-relaxed text-[var(--fg)] font-medium">
                     I'm Maverick, a Full-Stack Developer and Project Lead who loves building scalable apps that actually work. Whether it's crafting a smooth React and Next.js frontend or architecting a solid Node.js and Supabase backend, I enjoy making code clean and useful. From integrating AI features to developing enterprise-grade systems, I'm all about creating digital tools that solve real problems.
                   </p>
