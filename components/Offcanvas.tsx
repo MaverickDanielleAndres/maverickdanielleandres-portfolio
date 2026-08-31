@@ -90,7 +90,7 @@ export function Offcanvas() {
           href="https://m.me/maverickdanielle.andres"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 shadow-lg"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
           style={{ color: 'var(--fg)' }}
           aria-label="Messenger"
         >
@@ -100,7 +100,7 @@ export function Offcanvas() {
           href="https://wa.me/639632968188"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 shadow-lg"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
           style={{ color: 'var(--fg)' }}
           aria-label="WhatsApp"
         >
@@ -110,7 +110,7 @@ export function Offcanvas() {
           suppressHydrationWarning
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen(v => !v)}
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 shadow-lg"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
           style={{
             background: isOpen ? 'var(--accent)' : undefined,
             color: isOpen ? '#fff' : 'var(--fg)',

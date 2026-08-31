@@ -21,7 +21,34 @@ const neueMontrealFont = localFont({
 // the deferred full stylesheet below.
 const criticalCss = `
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap');
-:root{--bg:#111111;--bg-hero:#252523;--fg:#F0F0F0;--border-subtle:rgba(255,255,255,0.08);--accent:#6055F0;--container-px:clamp(1.5rem,6vw,6rem)}
+:root, html.dark, .dark {
+  --bg: #111111;
+  --bg-hero: #252523;
+  --bg-about: #161616;
+  --bg-skills: #161616;
+  --bg-projects: #161616;
+  --bg-certificates: #121212;
+  --bg-contact: #101010;
+  --fg: #F0F0F0;
+  --fg-muted: #888888;
+  --border-subtle: rgba(255,255,255,0.08);
+  --accent: #6055F0;
+  --container-px: clamp(1.5rem,6vw,6rem);
+}
+html.light, .light {
+  --bg: #FFFFFF;
+  --bg-hero: #EAEAE5;
+  --bg-about: #F5F5F2;
+  --bg-skills: #F5F5F2;
+  --bg-projects: #F5F5F2;
+  --bg-certificates: #F8F8F6;
+  --bg-contact: #EFEFEA;
+  --fg: #111111;
+  --fg-muted: #555555;
+  --border-subtle: rgba(0,0,0,0.12);
+  --accent: #6055F0;
+  --container-px: clamp(1.5rem,6vw,6rem);
+}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;background-color:var(--bg);color:var(--fg);font-family:var(--font-neue-montreal),"Inter",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .relative{position:relative}.absolute{position:absolute}.fixed{position:fixed}.inset-0{inset:0}
@@ -53,8 +80,8 @@ img{color:transparent;max-width:100%;height:auto}
 .lg\\:w-\\[100\\%\\]{width:100%}.lg\\:h-\\[100\\%\\]{height:100%}.lg\\:max-w-\\[360px\\]{max-width:360px}
 .lg\\:mt-12{margin-top:3rem}
 }
-.hero-pill-btn{border:1px solid rgba(255,255,255,.45);border-radius:9999px;color:#fff;background:transparent;padding:.55rem 1.25rem;font-size:.8125rem;font-weight:400;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
-.hero-pill-btn:hover{background:#fff;color:#222}
+.hero-pill-btn{border:1px solid var(--border-subtle);border-radius:9999px;color:var(--fg);background:transparent;padding:.55rem 1.25rem;font-size:.8125rem;font-weight:400;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.hero-pill-btn:hover{background:var(--fg);color:var(--bg)}
 `;
 
 export const viewport: Viewport = {

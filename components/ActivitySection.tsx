@@ -116,7 +116,7 @@ export default function ActivitySection() {
       >
         {/* Work Experience - Responsive Grid Layout */}
         <motion.div variants={itemVariants} className="w-full">
-          <SpotlightCard className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" spotlightColor="rgba(96, 85, 240, 0.15)">
+          <SpotlightCard className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" spotlightColor="rgba(96, 85, 240, 0.15)">
             <div className="mb-6 px-2">
               <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">Work Experience</h3>
               <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">A timeline of my professional growth and technical leadership</p>
@@ -125,14 +125,14 @@ export default function ActivitySection() {
             <div className="flex flex-col md:flex-row items-stretch justify-between gap-1 md:gap-0 relative">
               {EXPERIENCE.map((exp, i) => (
                 <React.Fragment key={i}>
-                  <div className="flex-1 relative group p-2 md:p-4 rounded-2xl transition-colors hover:bg-white/[0.02]">
+                  <div className="flex-1 relative group p-2 md:p-4 rounded-2xl transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
                     <div className="flex flex-col h-full">
                       <div className="flex justify-between items-start mb-2 md:mb-3">
                         <div className="flex-1 pr-2">
                           <h4 className="font-bold text-lg text-[var(--fg)] tracking-tight leading-tight">{exp.company}</h4>
                           <p className="text-[var(--accent)] font-bold text-[10px] mt-0.5 uppercase tracking-wider">{exp.role}</p>
                         </div>
-                        <span className="shrink-0 text-[10px] font-black text-[var(--fg-muted)] bg-secondary/50 px-2 py-1 rounded-md border border-border/30">{exp.year}</span>
+                        <span className="shrink-0 text-[10px] font-bold text-[var(--fg-muted)] bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-black/10 dark:border-white/10">{exp.year}</span>
                       </div>
                       <p className="text-[11px] leading-relaxed text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors duration-300">
                         {exp.description}
@@ -161,7 +161,7 @@ export default function ActivitySection() {
  
         {/* Bottom Row: GitHub Activity */}
         <motion.div variants={itemVariants} className="w-full">
-          <SpotlightCard className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" spotlightColor="rgba(96, 85, 240, 0.1)">
+          <SpotlightCard className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" spotlightColor="rgba(96, 85, 240, 0.1)">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 px-2">
               <div>
                 <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">GitHub Activity</h3>
@@ -171,13 +171,13 @@ export default function ActivitySection() {
                 href="https://github.com/MaverickDanielleAndres"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-medium px-4 py-2 rounded-full border border-[var(--border-subtle)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-all duration-300"
+                className="text-xs font-medium px-4 py-2 rounded-full border border-[var(--border-subtle)] text-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-all duration-300"
               >
                 View Profile
               </a>
             </div>
  
-            <div className="w-full bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden">
+            <div className="w-full bg-black/[0.02] dark:bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden">
               <div ref={calendarScrollRef} className="w-full overflow-x-auto p-4 sm:p-6 scrollbar-hide">
                 <div className="w-max mx-auto">
                   <GitHubCalendar

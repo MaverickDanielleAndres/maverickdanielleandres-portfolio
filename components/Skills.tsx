@@ -34,7 +34,7 @@ const COMPETENCIES_CARDS = [
 const CATEGORIES = [
   {
     title: "Frontend & Mobile",
-    skills: ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS", "JQuery", "React Native", "Expo Go"]
+    skills: ["HTML", "CSS", "JavaScript", "TypeScript", "Expo Go", "Next.js", "Tailwind CSS", "JQuery", "React Native", "React"]
   },
   {
     title: "Backend & Databases",
@@ -113,7 +113,7 @@ export default function Skills() {
       >
         <motion.div variants={itemVariants} className="w-full">
           <SpotlightCard 
-            className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" 
+            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" 
             spotlightColor="rgba(96, 85, 240, 0.15)"
           >
             <div className="mb-6 px-2 text-left">
@@ -138,7 +138,7 @@ export default function Skills() {
 
         <motion.div variants={itemVariants} className="w-full">
           <SpotlightCard 
-            className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6" 
+            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" 
             spotlightColor="rgba(96, 85, 240, 0.15)"
           >
             <div className="w-full flex flex-col justify-start text-left">
@@ -157,8 +157,8 @@ export default function Skills() {
                       {category.skills.map((skill, sIdx) => (
                         <span
                           key={sIdx}
-                          className="flex-grow text-center px-3 py-1.5 text-[11px] sm:text-xs font-medium border rounded-full bg-transparent hover:scale-105 transition-all duration-200 cursor-default shadow-sm"
-                          style={{ borderColor: "var(--fg)", color: "var(--fg)" }}
+                          className="flex-grow text-center px-3 py-1.5 text-[11px] sm:text-xs font-medium border rounded-full bg-black/[0.03] dark:bg-transparent hover:scale-105 transition-all duration-200 cursor-default shadow-sm"
+                          style={{ borderColor: "var(--border-subtle)", color: "var(--fg)" }}
                         >
                           {skill}
                         </span>

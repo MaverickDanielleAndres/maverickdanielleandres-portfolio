@@ -6,6 +6,10 @@
   --spotlight-color: rgba(255, 255, 255, 0.05);
 }
 
+.light .card-spotlight {
+  --spotlight-color: rgba(96, 85, 240, 0.08);
+}
+
 .card-spotlight::before {
   content: '';
   position: absolute;

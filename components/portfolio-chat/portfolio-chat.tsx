@@ -244,8 +244,8 @@ export default function PortfolioChat() {
               "h-[calc(100vh-80px)] sm:h-[550px] md:h-[650px] max-h-[calc(100vh-80px)]",
               "flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl",
               "border border-black/10 dark:border-white/10",
-              "shadow-[0_24px_64px_rgba(0,0,0,0.2)] dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]",
-              "bg-black/10 dark:bg-black/40 backdrop-blur-3xl text-[var(--fg)]",
+              "shadow-[0_24px_64px_rgba(0,0,0,0.12)] dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]",
+              "bg-white/95 dark:bg-[#141414]/90 backdrop-blur-2xl text-[var(--fg)]",
             )}
             style={{ zIndex: 2147483647 }}
             initial={{ opacity: 0, y: 20, scale: 0.96 }}

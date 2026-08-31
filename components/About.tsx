@@ -72,7 +72,7 @@ export default function About({ onStartProject }: AboutProps) {
       >
         <motion.div variants={itemVariants} className="w-full">
           <SpotlightCard 
-            className="w-full border-2 border-black/15 dark:border-white/15 rounded-[2rem] overflow-hidden p-6 sm:p-8" 
+            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-6 sm:p-8 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" 
             spotlightColor="rgba(96, 85, 240, 0.15)"
           >
             <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start">

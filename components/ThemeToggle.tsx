@@ -23,13 +23,13 @@ export default function ThemeToggle() {
         display: "inline-flex",
         alignItems: "center",
         borderRadius: 9999,
-        border: "1px solid rgba(255,255,255,0.1)",
-        background: "rgba(0,0,0,0.1)",
+        border: isDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.1)",
+        background: isDark ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.8)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
         padding: "3px",
         gap: 2,
-        boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
       }}
     >
       {/* Light button */}
