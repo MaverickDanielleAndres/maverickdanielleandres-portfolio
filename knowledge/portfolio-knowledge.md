@@ -180,7 +180,51 @@ Maverick offers the following services (per the project inquiry stepper in the p
 
 ## Projects
 
-Maverick has built a large number of projects across web, mobile, AI, e-commerce, HR, and design. Below is the documented list, drawn from the `PROJECTS` array in `components/Projects.tsx`, plus a few additional projects mentioned in the codebase directories or resume.
+Maverick has built a large number of projects across web, mobile, AI, e-commerce, HR, logistics, and design. Below is the documented list, drawn from the `PROJECTS` array in `components/Projects.tsx`, plus a few additional projects mentioned in the codebase directories or resume.
+
+---
+
+### 1. Logistics System — Enterprise Logistics Operating System
+- **Category:** Enterprise Logistics & Fleet OS
+- **Year:** 2026
+- **Summary:** A unified, end-to-end cloud logistics operating system designed to manage and orchestrate the full lifecycle of supply chain, fleet dispatch, hub sorting, last-mile parcel distribution, workforce payroll, and financial settlement across 20 specialized multi-tenant roles.
+- **Live:** https://logistics-system-two.vercel.app/
+- **Technologies:** Next.js 16, React 19, TypeScript, Tailwind CSS, Supabase, PostgreSQL, Leaflet, Framer Motion, Recharts
+- **Features:** Live GPS Radar, Trip Dispatch Matrix, Last-Mile Rider Portal, Digital POD Capture, 3D Bay Warehouse Sortation, COD Remittance Vault, Statutory Payroll & DTR, AI Operations Copilot, Garage & PMS Motorpool, Multi-Tenant Portals (20 Roles)
+- **Core Pillars:**
+  1. *Operations & Fleet Dispatch:* Live GPS Radar, Trip Matrix, Route Engine, PMS & Garage.
+  2. *Last-Mile & Field Portals:* Rider Mobile App, Driver Portal, Digital POD, Helper App.
+  3. *Hub & Warehouse:* 3D Bay Layout, Inbound/Outbound, Sortation Throughput, SKU Staging.
+  4. *Finance & Workforce:* Billing & AR Aging, COD Remittance Float Vault, Statutory Payroll (SSS/PhilHealth/Pag-IBIG), Biometric Attendance Logs (DTR).
+  5. *AI Intelligence:* Operations Copilot, Anomaly Detection & Freight Forecasting.
+- **Pre-Configured Accounts (20 Roles):**
+  - **Super Admin:** `admin@logisticssystemlogistics.demo` (Pwd: `Admin123!`) — Unrestricted access across all companies, settings, rates, users, reports.
+  - **Company Admin:** `operations@logisticssystemlogistics.demo` (Pwd: `Ops123!`) — Company-wide oversight across shipments, hub flow, riders, COD, fleet.
+  - **Executive:** `executive@logisticssystemlogistics.demo` (Pwd: `Executive123!`) — High-level KPI dashboards, financial overview, AI predictive insights.
+  - **Operations Manager:** `opsmanager@logisticssystemlogistics.demo` (Pwd: `OpsManager123!`) — Vehicle tracking, driver metrics, dispatch matrix, regional hub flows.
+  - **Dispatcher:** `dispatcher@logisticssystemlogistics.demo` (Pwd: `Dispatch123!`) — Linehaul/last-mile trip scheduling, truck/rider assignment, real-time hub tracking.
+  - **Viewer:** `viewer@logisticssystemlogistics.demo` (Pwd: `Viewer123!`) — Read-only dashboard and analytics access.
+  - **Driver:** `driver.mark@logisticssystemlogistics.demo` (Pwd: `Driver123!`) — Driver mobile portal: assigned linehaul trips, status updates, POD upload, fuel/expense logs.
+  - **Last-Mile Rider:** `rider.juan@logisticssystemlogistics.demo` (Pwd: `Rider123!`) — Rider app: stop-by-stop route execution, digital POD photo capture, COD float collection, GPS.
+  - **Helper:** `helper.roberto@logisticssystemlogistics.demo` (Pwd: `Helper123!`) — Helper portal: assigned trips, cargo loading/unloading checks, verification photos.
+  - **Garage Coordinator:** `garage@logisticssystemlogistics.demo` (Pwd: `Garage123!`) — Fleet motorpool: document turnover, PMS mechanical service logs, spare parts inventory, purchase requests.
+  - **Hub Manager:** `hubmanager@logisticssystemlogistics.demo` (Pwd: `HubManager123!`) — Hub sortation: parcel inflow, automated sortation throughput, warehouse dwell times.
+  - **Warehouse Staff:** `warehouse@logisticssystemlogistics.demo` (Pwd: `Warehouse123!`) — 3D bay layout, receiving, pallet staging, cold chain storage, return-to-hub.
+  - **Accounting / HR:** `finance@logisticssystemlogistics.demo` (Pwd: `Finance123!`) — Payroll runs, attendance logs, expense claims, deductions, financial summaries.
+  - **Finance:** `finance.exact@logisticssystemlogistics.demo` (Pwd: `FinanceExact123!`) — Invoices, AR aging, payment reconciliation, expense auditing, COD remittance float vaults, bank API batch settlements.
+  - **HR:** `hr@logisticssystemlogistics.demo` (Pwd: `HR123!`) — Biometric time records (DTR), employee files, statutory compliance (SSS/PhilHealth/Pag-IBIG), payslips.
+  - **Client / Customer:** `client@abcconstruction.demo` (Pwd: `Client123!`) — Self-service shipment tracking, delivery milestones, POD / Waybill downloads, invoices.
+  - **Client / Shipper:** `shipper@abcconstruction.demo` (Pwd: `Shipper123!`) — Bulk shipment bookings, live freight tracking, waybills, client-scoped analytics.
+  - **Subcon Partner:** `partner@logisticssystemlogistics.demo` (Pwd: `Partner123!`) — 3PL subcontractor portal: contracted trips, fuel/cash advances, hauler earnings, payouts.
+  - **Customer Service:** `cs@logisticssystemlogistics.demo` (Pwd: `CS123!`) — Parcel/waybill lookup, exception tracking, return investigations, ticketing.
+  - **Employee:** `employee.maria@logisticssystemlogistics.demo` (Pwd: `Employee123!`) — Staff portal: payslips, leave / cash advance forms, HR files, virtual employee ID.
+- **Contributions:**
+  - Architected a unified, end-to-end cloud logistics operating system supporting 20 pre-configured multi-tenant operational roles.
+  - Engineered real-time operations stack with live GPS radar tracking, trip dispatch matrix, route engine, and garage PMS motorpool.
+  - Developed dedicated field portals for drivers, last-mile motorbike riders (digital POD & COD float), and warehouse helpers.
+  - Built automated hub sorting workflows, 3D bay layout management, and inventory dwell-time monitoring.
+  - Implemented enterprise financial & HR settlement engine covering AR billing, COD reconciliation, and Philippine statutory payroll (DTR/SSS/PhilHealth/Pag-IBIG).
+  - Integrated AI Operations Copilot with anomaly detection, freight forecasting, and predictive maintenance insights.
 
 ---
 
@@ -793,7 +837,10 @@ Yes. At NexVision he led a team of 6+ and handled task delegation, architecture,
 He served as Lead Full-Stack Developer, leading the development of two enterprise applications, designing REST APIs (Node.js, PostgreSQL, Supabase), managing 50+ features, conducting system testing, and ensuring stakeholder requirements were met.
 
 ### What projects has Maverick built?
-LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, and more.
+Logistics System, LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, and more.
+
+### Tell me about Logistics System.
+Logistics System is an enterprise cloud logistics operating system designed to manage and orchestrate the full lifecycle of supply chains, fleet dispatch, hub sortation, last-mile distribution, workforce payroll, and financial settlement across 20 specialized multi-tenant personas. Built with Next.js 16, React 19, TypeScript, Tailwind CSS, Supabase, and PostgreSQL. Live at https://logistics-system-two.vercel.app/.
 
 ### Tell me about Beauty Connect.
 A professional beauty services / booking platform with Next.js, Tailwind CSS, and Supabase. Features service booking, provider portal, real-time chat, and payments. Live at https://www.beautyconnect.us/.
