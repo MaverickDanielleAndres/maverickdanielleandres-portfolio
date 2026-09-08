@@ -550,15 +550,20 @@ html.lenis, html.lenis body { height: auto; }
 
   .hero-text-col > .hero-name-block {
     margin-top: 3rem !important;
+    max-width: 360px !important;
+    overflow: visible !important;
+    gap: 1.5rem !important;
   }
 
   .hero-text-col .hero-name-row {
     text-align: left !important;
+    overflow: visible !important;
+    height: clamp(3.2rem, 8vh, 6rem) !important;
   }
 
   .hero-text-col .hero-subtitle {
     text-align: left !important;
-    margin-top: 3rem !important;
+    margin-top: 2.5rem !important;
     font-size: 1.05rem !important;
   }
 
@@ -567,6 +572,8 @@ html.lenis, html.lenis body { height: auto; }
     align-items: center !important;
     justify-content: space-between !important;
     text-align: left !important;
+    gap: 1.5rem !important;
+    margin-top: 2rem !important;
   }
 
   .hero-text-col .hero-availability-block {
@@ -583,6 +590,7 @@ html.lenis, html.lenis body { height: auto; }
 
   .hero-text-col .hero-buttons-row {
     justify-content: flex-start !important;
+    margin-top: 2rem !important;
   }
 
   .hero-text-col .hero-buttons-wrapper {

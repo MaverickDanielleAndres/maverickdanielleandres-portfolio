@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import { X, Menu } from 'lucide-react';
@@ -27,22 +27,17 @@ const SOCIAL_LINKS = [
 
 const easeOut: [number, number, number, number] = [0.76, 0, 0.24, 1];
 
+/* ── Panel animation (GPU-only transform, no blur during slide) ──────── */
 const panelVariants: Variants = {
   initial: { x: '100%' },
-  enter: { x: 0, transition: { duration: 0.7, ease: easeOut } },
-  exit: { x: '100%', transition: { duration: 0.6, ease: easeOut } },
+  enter: { x: 0, transition: { duration: 0.5, ease: easeOut } },
+  exit: { x: '100%', transition: { duration: 0.4, ease: easeOut } },
 };
 
 const backdropVariants: Variants = {
   initial: { opacity: 0 },
-  enter: { opacity: 1, transition: { duration: 0.4 } },
-  exit: { opacity: 0, transition: { duration: 0.4, delay: 0.2 } },
-};
-
-const linkVariants: Variants = {
-  initial: { y: 60, opacity: 0 },
-  enter: { y: 0, opacity: 1 },
-  exit: { y: 40, opacity: 0 },
+  enter: { opacity: 1, transition: { duration: 0.3 } },
+  exit: { opacity: 0, transition: { duration: 0.3, delay: 0.1 } },
 };
 
 export function Offcanvas() {
@@ -81,72 +76,87 @@ export function Offcanvas() {
     };
   }, [isOpen, scrollbarWidth]);
 
+  const toggle = useCallback(() => setOpen(v => !v), []);
+
+  /* ── Shared button style matching ThemeToggle ─────────── */
+  const btnStyle: React.CSSProperties = {
+    background: isDark ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.85)',
+    border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
+    color: isDark ? '#ffffff' : '#111111',
+    backdropFilter: 'blur(24px)',
+    WebkitBackdropFilter: 'blur(24px)',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+  };
+
+  /* ── Menu button: accent background when open, theme-aware otherwise ─ */
+  const menuBtnStyle: React.CSSProperties = isOpen
+    ? {
+        background: 'var(--accent)',
+        border: '1px solid var(--accent)',
+        color: '#ffffff',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+      }
+    : btnStyle;
+
+  const btnClasses =
+    'flex h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full transition-transform duration-200 hover:scale-105 cursor-pointer';
+
   return (
     <>
       {/* ── Fixed top action buttons (centered on mobile, right on desktop) ── */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-6 lg:top-5 z-50 flex items-center justify-center lg:justify-end gap-1.5 sm:gap-3">
+      <div className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-6 lg:top-5 z-50 flex items-center justify-center lg:justify-end gap-2 sm:gap-3">
         <ThemeToggle />
+
+        {/* Messenger */}
         <a
           href="https://m.me/maverickdanielle.andres"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden min-[420px]:flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
-          style={{ color: 'var(--fg)' }}
+          className={btnClasses}
+          style={btnStyle}
           aria-label="Messenger"
         >
-          <FaFacebookMessenger size={18} className="sm:hidden md:block" />
-          <FaFacebookMessenger size={20} className="hidden sm:block md:hidden" />
+          <FaFacebookMessenger size={18} />
         </a>
+
+        {/* WhatsApp */}
         <a
           href="https://wa.me/639632968188"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden min-[420px]:flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
-          style={{ color: 'var(--fg)' }}
+          className={btnClasses}
+          style={btnStyle}
           aria-label="WhatsApp"
         >
-          <FaWhatsapp size={18} className="sm:hidden md:block" />
-          <FaWhatsapp size={20} className="hidden sm:block md:hidden" />
+          <FaWhatsapp size={19} />
         </a>
+
+        {/* Menu toggle — instant responsive click with no delay */}
         <button
           suppressHydrationWarning
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
-          onClick={() => setOpen(v => !v)}
-          className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full transition-all duration-300 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
-          style={{
-            background: isOpen ? 'var(--accent)' : undefined,
-            color: isOpen ? '#fff' : 'var(--fg)',
-          }}
+          onClick={toggle}
+          className={btnClasses}
+          style={menuBtnStyle}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            {isOpen ? (
-              <motion.span key="close"
-                initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}
-              >
-                <X size={18} strokeWidth={1.8} />
-              </motion.span>
-            ) : (
-              <motion.span key="open"
-                initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}
-              >
-                <Menu size={18} strokeWidth={1.8} />
-              </motion.span>
-            )}
-          </AnimatePresence>
+          {isOpen ? (
+            <X size={18} strokeWidth={2} />
+          ) : (
+            <Menu size={18} strokeWidth={2} />
+          )}
         </button>
       </div>
 
       {/* ── Offcanvas overlay ── */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop — GPU composited */}
             <motion.div
               key="backdrop"
-              className="fixed inset-0 z-40"
-              style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(6px)' }}
+              className="fixed inset-0 z-40 bg-black/40"
               variants={backdropVariants}
               initial="initial"
               animate="enter"
@@ -154,11 +164,17 @@ export function Offcanvas() {
               onClick={() => setOpen(false)}
             />
 
-            {/* Panel */}
+            {/* Panel — GPU-composited slide via translateX */}
             <motion.div
               key="panel"
               className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm flex flex-col justify-start gap-8 overflow-y-auto"
-              style={{ background: 'var(--bg)', color: 'var(--fg)', padding: 'clamp(4rem, 10vh, 6rem) 3rem 3rem', borderLeft: '1px solid var(--border-subtle)' }}
+              style={{
+                background: 'var(--bg)',
+                color: 'var(--fg)',
+                padding: 'clamp(4rem, 10vh, 6rem) 3rem 3rem',
+                borderLeft: '1px solid var(--border-subtle)',
+                willChange: 'transform',
+              }}
               variants={panelVariants}
               initial="initial"
               animate="enter"

@@ -117,7 +117,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
       const textRect = titleRef.current.getBoundingClientRect();
 
       if (scale && textRect.height > 0) {
-        const yRatio = containerH / textRect.height;
+        const yRatio = Math.min((containerH * 0.96) / textRect.height, 1.25);
         setScaleY(yRatio);
       }
 

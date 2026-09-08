@@ -125,7 +125,7 @@ export default function Hero() {
       <div className="relative z-[2] flex flex-col md:flex-row w-full h-full px-[var(--container-px)]">
 
         {/* Left Column: Text & CTA */}
-        <div className="hero-text-col relative z-20 flex-none flex flex-col justify-start items-center h-full pt-[8vh] pb-4 w-full">
+        <div className="hero-text-col relative z-20 flex-none flex flex-col justify-start items-center lg:items-start h-full pt-14 sm:pt-16 lg:pt-0 pb-4 w-full">
 
           {/* Name block */}
           <m.div
@@ -134,9 +134,9 @@ export default function Hero() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.05}
-            className="hero-name-block w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-4 md:gap-6 overflow-hidden"
+            className="hero-name-block w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-1.5 sm:gap-2.5 lg:gap-4 overflow-visible"
           >
-            <div className="hero-name-row w-full overflow-hidden text-center" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
+            <div className="hero-name-row w-full overflow-visible text-center lg:text-left" style={{ height: "clamp(2.2rem, 6vh, 5.5rem)" }}>
               <TextPressure
                 text="Maverick"
                 flex={true}
@@ -148,10 +148,10 @@ export default function Hero() {
                 scale={true}
                 textColor="var(--fg)"
                 minFontSize={20}
-                className="w-full h-full"
+                className="w-full h-full overflow-visible"
               />
             </div>
-            <div className="hero-name-row w-full overflow-hidden text-center" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
+            <div className="hero-name-row w-full overflow-visible text-center lg:text-left" style={{ height: "clamp(2.2rem, 6vh, 5.5rem)" }}>
               <TextPressure
                 text="Danielle"
                 flex={true}
@@ -163,7 +163,7 @@ export default function Hero() {
                 scale={true}
                 textColor="var(--fg)"
                 minFontSize={20}
-                className="w-full h-full"
+                className="w-full h-full overflow-visible"
               />
             </div>
           </m.div>
@@ -175,7 +175,7 @@ export default function Hero() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.22}
-            className="hero-subtitle mt-6 text-[0.95rem] font-medium leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md text-center"
+            className="hero-subtitle mt-2.5 sm:mt-3.5 lg:mt-10 text-[0.82rem] sm:text-[0.95rem] lg:text-[1.05rem] font-medium leading-snug sm:leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md text-center lg:text-left"
           >
             Full-Stack Web & App Developer
             <br />
@@ -183,23 +183,23 @@ export default function Hero() {
           </m.p>
 
           {/* Availability and Buttons Wrapper */}
-          <div className="hero-buttons-wrapper flex flex-col w-full max-w-full items-center">
-            {/* Availability and Get Started - side-by-side from sm+ (640px+), stacked on xs */}
+          <div className="hero-buttons-wrapper flex flex-col w-full max-w-[280px] sm:max-w-[340px] lg:max-w-none items-center lg:items-start">
+            {/* Availability and Get Started */}
             <m.div
               variants={slideUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               custom={0.34}
-              className="hero-availability-row mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-4 sm:gap-6 text-left"
+              className="hero-availability-row mt-2.5 sm:mt-3.5 lg:mt-8 flex flex-row items-center justify-between lg:justify-start w-full gap-2 sm:gap-3 text-left"
             >
-              <div className="hero-availability-block flex flex-col gap-1.5 text-left">
-                <p className="hero-availability-label text-[10px] tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
+              <div className="hero-availability-block flex flex-col gap-0.5 sm:gap-1 text-left min-w-0 flex-1">
+                <p className="hero-availability-label text-[9.5px] sm:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md leading-tight whitespace-nowrap">
                   Available for work
                 </p>
-                <span className="inline-flex items-center gap-2 text-[11px] font-medium text-[var(--fg)] drop-shadow-md hero-availability-status">
-                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  Open to opportunities
+                <span className="inline-flex items-center gap-1.5 text-[10.5px] sm:text-sm font-medium text-[var(--fg)] drop-shadow-md hero-availability-status whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
+                  <span className="truncate">Open to opportunities</span>
                 </span>
               </div>
               <GetStartedButton onClick={() => window.dispatchEvent(new CustomEvent('open-inquiry-modal'))} />
@@ -212,7 +212,7 @@ export default function Hero() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={0.46}
-              className="hero-buttons-row mt-6 flex flex-wrap gap-2.5 sm:gap-3 justify-start"
+              className="hero-buttons-row mt-2.5 sm:mt-3.5 lg:mt-8 flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start"
             >
             {[
               { label: "Resume", href: null, onClick: true },
@@ -225,16 +225,16 @@ export default function Hero() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
+                  className="hero-pill-btn !px-3 !py-1 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
                 >
-                  {label} <ArrowUpRight size={14} />
+                  {label} <ArrowUpRight size={14} className="inline-block" />
                 </a>
               ) : (
                 <button
                   suppressHydrationWarning
                   key={label}
                   onClick={handleDownloadResume}
-                  className="hero-pill-btn !px-4 !py-2 text-[0.85rem] sm:!px-5 sm:!py-2.5 sm:!text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
+                  className="hero-pill-btn !px-3 !py-1 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
                 >
                   {label}
                 </button>
