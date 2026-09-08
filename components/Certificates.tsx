@@ -240,14 +240,15 @@ export default function Certificates() {
         {selected && (
           <Portal>
             <motion.div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => { setSelected(null); setIsEnlarged(false); }}>
-              <motion.div className="relative w-full max-w-xl rounded-2xl overflow-y-auto max-h-[90vh] shadow-2xl" style={{ background: "var(--bg)", color: "var(--fg)" }} initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
-                <div className="relative group/img cursor-zoom-in" style={{ aspectRatio: "16/10", borderBottom: "1px solid var(--border-subtle)" }} onClick={() => setIsEnlarged(true)}>
-                  <Image src={selected.image} alt={selected.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 600px" />
+              <motion.div className="relative w-full max-w-3xl md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col" style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 820px)" }} initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
+                <div className="relative group/img cursor-zoom-in shrink-0" style={{ aspectRatio: "16/9", borderBottom: "1px solid var(--border-subtle)" }} onClick={() => setIsEnlarged(true)}>
+                  <button onClick={() => setSelected(null)} className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95" style={{ background: "rgba(0,0,0,0.6)", color: "#fff", backdropFilter: "blur(4px)" }} aria-label="Close modal"><X size={18} /></button>
+                  <Image src={selected.image} alt={selected.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 900px" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <div className="bg-white/20 backdrop-blur-md p-4 rounded-full border border-white/30 transform scale-90 group-hover/img:scale-100 transition-transform duration-300"><Maximize2 size={24} color="#fff" /></div>
                   </div>
                 </div>
-                <div className="p-8">
+                <div className="overflow-y-auto p-8 md:p-10 grow">
                   <div className="flex justify-between items-start gap-4 mb-4">
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] mb-1 font-semibold" style={{ color: "var(--accent)" }}>{selected.issuer}</p>
@@ -255,7 +256,7 @@ export default function Certificates() {
                     </div>
                   </div>
                   <p className="text-sm leading-relaxed mb-8" style={{ color: "var(--fg-muted)" }}>{selected.description}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-8 mb-8">
                     {selected.recipient    && <DetailItem label="Recipient"       value={selected.recipient} />}
                     {selected.instructor   && <DetailItem label="Instructor"      value={selected.instructor} />}
                     {selected.authorizedBy && <DetailItem label="Authorized By"   value={selected.authorizedBy} />}
@@ -281,7 +282,6 @@ export default function Certificates() {
                     </div>
                   )}
                 </div>
-                <button onClick={() => setSelected(null)} className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95" style={{ background: "rgba(0,0,0,0.6)", color: "#fff", backdropFilter: "blur(4px)" }} aria-label="Close modal"><X size={18} /></button>
               </motion.div>
             </motion.div>
           </Portal>

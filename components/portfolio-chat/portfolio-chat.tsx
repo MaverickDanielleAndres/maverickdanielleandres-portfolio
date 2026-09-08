@@ -245,10 +245,11 @@ export default function PortfolioChat() {
             aria-modal="false"
             className={cn(
               "fixed",
-              "bottom-0 right-0 sm:bottom-5 sm:right-6",
-              "w-full sm:w-[380px] md:w-[420px]",
-              "h-[min(100dvh-3rem,720px)] sm:h-[600px]",
-              "flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl",
+              "bottom-0 right-0 sm:bottom-5 sm:right-5 md:bottom-6 md:right-6",
+              "w-[calc(100vw-2rem)] sm:w-[320px] md:w-[360px] lg:w-[380px]",
+              "max-w-[380px]",
+              "h-[min(100dvh-3rem,720px)] sm:h-[540px] md:h-[600px] lg:h-[640px]",
+              "flex flex-col overflow-hidden rounded-2xl",
               "border backdrop-blur-2xl",
             )}
             style={{

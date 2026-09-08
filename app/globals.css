@@ -225,9 +225,9 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 .project-card__title {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.018em;
   line-height: 1.25;
   color: var(--fg);
 }
@@ -282,33 +282,37 @@ html.lenis, html.lenis body { height: auto; }
   gap: 0.4rem;
 }
 
-/* Subtle editorial numbering — large, faded, bottom-right corner.
-   Uses a tabluar-figure font-variant so numbers stay aligned across cards. */
+/* Subtle editorial numbering — bold white watermark in the bottom-right corner.
+   Larger, heavier, and slightly more present so the index reads at a glance
+   without competing with the project title. */
 .project-card__number {
   position: absolute;
   right: 0.875rem;
-  bottom: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 600;
+  bottom: 0.25rem;
+  font-size: 2.25rem;
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
-  color: var(--accent);
-  opacity: 0.18;
+  color: #ffffff;
+  opacity: 0.22;
   pointer-events: none;
   user-select: none;
   transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
   transform: translateY(0);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
 .project-card:hover .project-card__number {
-  opacity: 0.42;
+  opacity: 0.55;
   transform: translateY(-2px);
 }
 
 .light .project-card__number {
-  opacity: 0.22;
+  color: #111111;
+  opacity: 0.18;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 .light .project-card:hover .project-card__number {

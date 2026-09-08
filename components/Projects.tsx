@@ -630,7 +630,7 @@ function ProjectModal({
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-4xl rounded-3xl overflow-hidden flex flex-col shadow-[0_32px_64px_rgba(0,0,0,0.5)]"
+          className="relative w-full max-w-6xl rounded-3xl overflow-hidden flex flex-col shadow-[0_32px_64px_rgba(0,0,0,0.5)]"
           style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(94vh, 960px)" }}
           initial={{ y: 100, opacity: 0, scale: 0.95 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -662,7 +662,7 @@ function ProjectModal({
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 priority
                 unoptimized
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 60vw"
                 onError={(e: any) => {
                   e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
                 }}
@@ -682,83 +682,100 @@ function ProjectModal({
             </div>
 
             {/* Content Body */}
-            <div className="p-6 sm:p-10 md:p-14">
-              <div className="flex flex-col md:flex-row gap-10 items-start">
-                <div className="flex-1 space-y-8">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] mb-3 font-semibold" style={{ color: "var(--accent)" }}>
-                      {project.category} &middot; {project.year}
-                    </p>
-                    <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-none mb-6">
-                      {project.title}
-                    </h2>
-                    <p className="text-lg leading-relaxed opacity-80 max-w-xl">
-                      {project.description}
-                    </p>
-                  </div>
+            <div className="p-6 sm:p-10 md:p-12">
+              {/* Title block — full width so the description / CTAs own the room */}
+              <div className="mb-10">
+                <p className="text-xs uppercase tracking-[0.2em] mb-3 font-semibold" style={{ color: "var(--accent)" }}>
+                  {project.category} &middot; {project.year}
+                </p>
+                <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-none mb-5">
+                  {project.title}
+                </h2>
+                <p className="text-lg leading-relaxed opacity-80 max-w-3xl">
+                  {project.description}
+                </p>
 
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    {project.live && (
-                      <a
-                        href={project.live}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--fg)] text-[var(--bg)] font-medium text-sm transition-transform hover:scale-105"
-                      >
-                        Visit Site <ExternalLink size={16} />
-                      </a>
-                    )}
-                    {project.github && (
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--border)] font-medium text-sm transition-all hover:bg-[var(--fg)] hover:text-[var(--bg)]"
-                      >
-                        GitHub <Github size={16} />
-                      </a>
-                    )}
-                  </div>
+                <div className="flex flex-wrap gap-3 pt-6">
+                  {project.live && (
+                    <a
+                      href={project.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--fg)] text-[var(--bg)] font-medium text-sm transition-transform hover:scale-105"
+                    >
+                      Visit Site <ExternalLink size={16} />
+                    </a>
+                  )}
+                  {project.github && (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--border)] font-medium text-sm transition-all hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+                    >
+                      GitHub <Github size={16} />
+                    </a>
+                  )}
+                </div>
+              </div>
 
-                  <div>
-                    <h3 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Features</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {project.features.map((f) => (
-                        <span 
-                          key={f} 
-                          className="px-4 py-2 rounded-full text-xs font-medium border border-[var(--accent)] text-[var(--accent)]"
-                          style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
-                        >
-                          {f}
-                        </span>
-                      ))}
-                    </div>
+              {/* Two columns: Tech Stack (left) | Key Contributions (right).
+                  Below them: full-width Key Features so we never waste the
+                  wide modal. */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mb-10">
+                <div>
+                  <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
+                    Tech Stack
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--muted)] border border-[var(--border-subtle)]"
+                      >
+                        {t}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                <div className="w-full md:w-80 space-y-10">
-                  <div>
-                    <h3 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Tech Stack</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map((t) => (
-                        <span key={t} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--muted)] border border-[var(--border-subtle)]">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                <div>
+                  <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
+                    Key Contributions
+                  </h3>
+                  <ul className="space-y-3.5">
+                    {project.contributions.map((c, i) => (
+                      <li
+                        key={i}
+                        className="flex gap-3 text-sm opacity-85 leading-relaxed"
+                      >
+                        <span className="text-[var(--accent)] font-bold shrink-0 mt-0.5">→</span>
+                        <span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
-                  <div>
-                    <h3 className="text-xs uppercase tracking-widest mb-6 opacity-40 font-bold">Key Contributions</h3>
-                    <ul className="space-y-4">
-                      {project.contributions.map((c, i) => (
-                        <li key={i} className="flex gap-4 text-sm opacity-80 leading-relaxed">
-                          <span className="text-[var(--accent)] font-bold">→</span>
-                          {c}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              {/* Full-width Key Features — uses the entire modal width
+                  so the bottom of the modal never lands on dead space. */}
+              <div className="pt-8" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+                <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
+                  Key Features
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {project.features.map((f) => (
+                    <span
+                      key={f}
+                      className="px-4 py-2 rounded-full text-xs font-medium border border-[var(--accent)] text-[var(--accent)]"
+                      style={{
+                        backgroundColor:
+                          "color-mix(in srgb, var(--accent) 10%, transparent)",
+                      }}
+                    >
+                      {f}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
