@@ -18,6 +18,12 @@ interface TextPressureProps {
   strokeWidth?: number;
   className?: string;
   minFontSize?: number;
+  /** Lower bound of the weight axis when cursor is far. Default 100 (Roboto Flex minimum). */
+  minWeight?: number;
+  /** Upper bound of the weight axis when cursor is near. Default 200 — keeps the
+   *  name in editorial-thin territory even at peak cursor proximity, instead of
+   *  the original 900 (heavy display face). Pass 900 to restore the old behavior. */
+  maxWeight?: number;
 }
 
 const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => {
@@ -56,7 +62,9 @@ const TextPressure: React.FC<TextPressureProps> = ({
   strokeColor = '#FF0000',
   strokeWidth = 2,
   className = '',
-  minFontSize = 24
+  minFontSize = 24,
+  minWeight = 100,
+  maxWeight = 200
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
@@ -160,12 +168,12 @@ const TextPressure: React.FC<TextPressureProps> = ({
 
       // Only perform heavy DOM writes if the mouse actually moved, OR if it's the very first render
       const hasMoved = Math.abs(mouseRef.current.x - lastX) > 0.1 || Math.abs(mouseRef.current.y - lastY) > 0.1;
-      
+
       if ((hasMoved || initialRender) && titleRef.current && spanCentersRef.current.length > 0) {
         initialRender = false;
         lastX = mouseRef.current.x;
         lastY = mouseRef.current.y;
-        
+
         const titleRect = titleRef.current.getBoundingClientRect();
         const maxDist = titleRect.width / 2;
 
@@ -178,7 +186,11 @@ const TextPressure: React.FC<TextPressureProps> = ({
           const d = dist(mouseRef.current, charCenter);
 
           const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 25;
-          const wght = weight ? Math.floor(getAttr(d, maxDist, 100, 900)) : 100;
+          // Weight ramps between minWeight (cursor far) and maxWeight
+          // (cursor near). The default maxWeight of 400 keeps the name
+          // thin like the original — previously this clamped to 900 and
+          // turned the hero into a heavy display face on first load.
+          const wght = weight ? Math.floor(getAttr(d, maxDist, minWeight, maxWeight)) : minWeight;
           const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : '0';
           const alphaVal = alpha ? getAttr(d, maxDist, 0, 1).toFixed(2) : '1';
 
@@ -198,7 +210,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
 
     animate();
     return () => cancelAnimationFrame(rafId);
-  }, [width, weight, italic, alpha]);
+  }, [width, weight, italic, alpha, minWeight, maxWeight]);
 
   // The font @font-face is declared in globals.css (self-hosted, preloaded).
   // No @import here — that would re-trigger a Google Fonts CDN fetch and
@@ -247,7 +259,10 @@ const TextPressure: React.FC<TextPressureProps> = ({
           transform: `scale(1, ${scaleY})`,
           transformOrigin: 'center center',
           margin: 0,
-          fontWeight: 100,
+          // Anchor the resting weight to minWeight so the first frame
+          // (before the rAF tick has set the variation settings) matches
+          // the final look — no visible "swell to bold then settle" jolt.
+          fontWeight: minWeight,
           color: stroke ? undefined : textColor
         }}
       >

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
+import { AnimatePresence, m, type Variants } from 'framer-motion';
 import { X, ArrowRight, ArrowLeft, ArrowUpRight, Loader2 } from 'lucide-react';
 import ProjectInquiryStepper from './project-inquiry-stepper';
 import IntentStep from './steps/intent-step';
@@ -300,7 +300,7 @@ export default function ProjectInquiryModal({
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
+          <m.div
             key="inquiry-backdrop"
             className="fixed inset-0 z-[9999]"
             style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)' }}
@@ -313,7 +313,7 @@ export default function ProjectInquiryModal({
           />
 
           {/* Modal */}
-          <motion.div
+          <m.div
             key="inquiry-modal"
             ref={modalRef}
             tabIndex={-1}
@@ -385,7 +385,7 @@ export default function ProjectInquiryModal({
                   <Welcome onClose={handleClose} />
                 ) : (
                   <AnimatePresence mode="wait" custom={direction}>
-                    <motion.div
+                    <m.div
                       key={step}
                       variants={currentStepVariants}
                       initial="enter"
@@ -425,7 +425,7 @@ export default function ProjectInquiryModal({
                           errors={errors}
                         />
                       )}
-                    </motion.div>
+                    </m.div>
                   </AnimatePresence>
                 )}
               </div>
@@ -507,7 +507,7 @@ export default function ProjectInquiryModal({
                 </div>
               )}
             </div>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>

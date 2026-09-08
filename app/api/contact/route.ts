@@ -164,10 +164,10 @@ export async function POST(request: Request) {
     dataRow("Name", sName) +
       dataRow(
         "Email",
-        `<a href="mailto:${sEmail}" style="color:#ea580c;text-decoration:none;font-weight:600;">${sEmail}</a>`,
+        `<a href="mailto:${sEmail}" style="color:#6055F0;text-decoration:none;font-weight:600;">${sEmail}</a>`,
       ) +
-      dataRow("Subject", sSubject || `<span style="color:#64748b;font-style:italic;">No subject</span>`) +
-      dataRow("Received", `<span style="color:#475569;">${escapeHtml(receivedAt)}</span>`),
+      dataRow("Subject", sSubject || `<span style="color:#94A3B8;font-style:italic;">No subject</span>`) +
+      dataRow("Received", `<span style="color:#94A3B8;">${escapeHtml(receivedAt)}</span>`),
   );
 
   const bodyHtml = `

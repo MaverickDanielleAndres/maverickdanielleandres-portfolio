@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
+import { AnimatePresence, m, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import { X, Menu } from 'lucide-react';
 import { FaWhatsapp, FaFacebookMessenger } from 'react-icons/fa';
@@ -154,7 +154,7 @@ export function Offcanvas() {
         {isOpen && (
           <>
             {/* Backdrop — GPU composited */}
-            <motion.div
+            <m.div
               key="backdrop"
               className="fixed inset-0 z-40 bg-black/40"
               variants={backdropVariants}
@@ -165,7 +165,7 @@ export function Offcanvas() {
             />
 
             {/* Panel — GPU-composited slide via translateX */}
-            <motion.div
+            <m.div
               key="panel"
               className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm flex flex-col justify-start gap-8 overflow-y-auto"
               style={{
@@ -186,7 +186,7 @@ export function Offcanvas() {
                 <p className="mb-4 sm:mb-8 text-xs uppercase tracking-[0.12em] opacity-40">Navigation</p>
                 <ul className="flex flex-col gap-1" onMouseLeave={() => setActiveHref(pathname)}>
                   {NAV_LINKS.map(({ href, label }, i) => (
-                    <motion.li
+                    <m.li
                       key={href}
                       className="relative flex items-center"
                       initial={{ y: 60, opacity: 0 }}
@@ -196,7 +196,7 @@ export function Offcanvas() {
                       onMouseEnter={() => setActiveHref(href)}
                     >
                       {/* Active dot */}
-                      <motion.span
+                      <m.span
                         className="absolute -left-5 h-1.5 w-1.5 rounded-full bg-current"
                         animate={{ scale: activeHref === href ? 1 : 0, opacity: activeHref === href ? 1 : 0 }}
                         transition={{ duration: 0.2 }}
@@ -209,7 +209,7 @@ export function Offcanvas() {
                       >
                         {label}
                       </Link>
-                    </motion.li>
+                    </m.li>
                   ))}
                 </ul>
               </div>
@@ -231,7 +231,7 @@ export function Offcanvas() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>

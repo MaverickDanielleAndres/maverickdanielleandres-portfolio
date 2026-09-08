@@ -64,12 +64,12 @@ async function main() {
     dataRow("Name", sName) +
       dataRow(
         "Email",
-        `<a href="mailto:${sEmail}" style="color:#ea580c;text-decoration:none;font-weight:600;">${sEmail}</a>`,
+        `<a href="mailto:${sEmail}" style="color:#6055F0;text-decoration:none;font-weight:600;">${sEmail}</a>`,
       ) +
       dataRow("Subject", sSubject) +
       dataRow(
         "Received",
-        `<span style="color:#475569;">${escapeHtml(receivedAt)}</span>`,
+        `<span style="color:#94A3B8;">${escapeHtml(receivedAt)}</span>`,
       ),
   );
 

@@ -148,6 +148,12 @@ export default function Hero() {
                 scale={true}
                 textColor="var(--fg)"
                 minFontSize={20}
+                /* Thin, like the original. Even at peak cursor proximity
+                   the weight axis never crosses 150 — the bold display
+                   look the previous default (200 / 400 / 900) produced is
+                   gone. The proximity effect now only nudges width + italic. */
+                minWeight={100}
+                maxWeight={150}
                 className="w-full h-full overflow-visible"
               />
             </div>
@@ -163,6 +169,8 @@ export default function Hero() {
                 scale={true}
                 textColor="var(--fg)"
                 minFontSize={20}
+                minWeight={100}
+                maxWeight={150}
                 className="w-full h-full overflow-visible"
               />
             </div>

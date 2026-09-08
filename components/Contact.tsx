@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { ArrowUpRight, Mail, MapPin, Send, Clock } from "lucide-react";
 import Magnet from "@/components/ui/Magnet";
 import { toast } from "sonner";
@@ -88,7 +88,7 @@ export default function Contact() {
           borderBottom: "1px solid var(--border-subtle)",
         }}
       >
-        <motion.p
+        <m.p
           className="text-xs uppercase tracking-[0.18em] mb-8"
           style={{ color: "var(--fg-muted)" }}
           initial={{ opacity: 0 }}
@@ -96,9 +96,9 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
         >
           Contact Me
-        </motion.p>
+        </m.p>
 
-        <motion.h2
+        <m.h2
           style={{
             fontSize: "clamp(3rem,8vw,8rem)",
             fontWeight: 300,
@@ -112,7 +112,7 @@ export default function Contact() {
           {`Let's work`}
           <br />
           together
-        </motion.h2>
+        </m.h2>
       </div>
 
       {/* Two-column: info left, form right */}
@@ -129,7 +129,7 @@ export default function Contact() {
         }}
       >
         {/* Left  contact info */}
-        <motion.div
+        <m.div
           className="flex flex-col gap-6"
           initial={{ opacity: 0, x: -20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -254,10 +254,10 @@ export default function Contact() {
               ))}
             </div>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Right  form */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: 20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -322,12 +322,12 @@ export default function Contact() {
               </Magnet>
             </div>
           </form>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Minimal Footer */}
       <div style={{ padding: "0 var(--container-px)" }}>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
@@ -355,7 +355,7 @@ export default function Contact() {
               </a>
             ))}
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

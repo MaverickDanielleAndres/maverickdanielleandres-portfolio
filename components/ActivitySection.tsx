@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import dynamic from "next/dynamic";
 
 const GitHubCalendar = dynamic(() => (import("react-github-calendar") as any).then((mod: any) => {
@@ -108,14 +108,14 @@ export default function ActivitySection() {
       className="relative pt-6 pb-20 px-[var(--container-px)] overflow-hidden"
       style={{ background: "var(--bg-about)" }}
     >
-      <motion.div
+      <m.div
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
         className="max-w-7xl mx-auto space-y-12"
       >
         {/* Work Experience - Responsive Grid Layout */}
-        <motion.div variants={itemVariants} className="w-full">
+        <m.div variants={itemVariants} className="w-full">
           <SpotlightCard className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" spotlightColor="rgba(96, 85, 240, 0.15)">
             <div className="mb-6 px-2">
               <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">Work Experience</h3>
@@ -157,10 +157,10 @@ export default function ActivitySection() {
               ))}
             </div>
           </SpotlightCard>
-        </motion.div>
- 
+        </m.div>
+
         {/* Bottom Row: GitHub Activity */}
-        <motion.div variants={itemVariants} className="w-full">
+        <m.div variants={itemVariants} className="w-full">
           <SpotlightCard className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" spotlightColor="rgba(96, 85, 240, 0.1)">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 px-2">
               <div>
@@ -193,8 +193,8 @@ export default function ActivitySection() {
               </div>
             </div>
           </SpotlightCard>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
 
       {/* Background Accents */}
       <div className="absolute top-1/4 right-0 w-[300px] h-[300px] bg-[var(--accent)] opacity-[0.03] blur-[100px] -z-10" />

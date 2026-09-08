@@ -89,15 +89,21 @@ html.light,
    font-display:swap keeps first paint unblocked — text shows the
    neue-montreal fallback until Roboto Flex loads. The variable axes
    (wght, wdth, ital) are preserved so the TextPressure mouse-proximity
-   effect works exactly as before. */
+   effect works exactly as before.
+
+   The ?v=2 query string busts the 1-year immutable cache set by
+   next.config.ts. The previous font at this URL was a non-variable
+   subset that ignored the 'wght' axis — browsers cached it for a
+   year, so even swapping the bytes on disk wasn't enough to make
+   weight changes land. New URL → fresh download. */
 @font-face {
   font-family: "Roboto Flex";
   font-style: normal;
   font-weight: 100 1000;
   font-stretch: 25% 151%;
   font-display: swap;
-  src: url("/fonts/RobotoFlex-Variable.woff2") format("woff2-variations"),
-       url("/fonts/RobotoFlex-Variable.woff2") format("woff2");
+  src: url("/fonts/RobotoFlex-Variable.woff2?v=2") format("woff2-variations"),
+       url("/fonts/RobotoFlex-Variable.woff2?v=2") format("woff2");
 }
 
 html {

@@ -3,6 +3,7 @@ import "./globals.css";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { LazyMotion, domAnimation } from "framer-motion";
 
 const neueMontrealFont = localFont({
   // preload the actual font file so the browser doesn't wait for the CSS
@@ -261,7 +262,7 @@ export default function RootLayout({
         />
         <link
           rel="preload"
-          href="/fonts/RobotoFlex-Variable.woff2"
+          href="/fonts/RobotoFlex-Variable.woff2?v=2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
@@ -303,8 +304,16 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange={false}
         >
-          {children}
-          <Toaster />
+          {/* Single LazyMotion at the root so every `m.*` component below
+              shares the lightweight bundle (~6 KiB) instead of each
+              component pulling in framer-motion's full ~60 KiB bundle.
+              The default `motion.*` import still works for any stray
+              component that hasn't been migrated, but LazyMotion shadows
+              it for everything inside. */}
+          <LazyMotion features={domAnimation} strict>
+            {children}
+            <Toaster />
+          </LazyMotion>
         </ThemeProvider>
       </body>
     </html>

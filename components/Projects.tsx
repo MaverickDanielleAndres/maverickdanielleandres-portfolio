@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { m, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Github, ExternalLink } from "lucide-react";
 import Portal from "@/components/Portal";
@@ -476,7 +476,7 @@ function EnhancedLightbox({
 
   return (
     <Portal>
-      <motion.div
+      <m.div
         className="fixed inset-0 z-[999999] flex flex-col items-center justify-between"
         style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
         initial={{ opacity: 0 }}
@@ -500,7 +500,7 @@ function EnhancedLightbox({
         {/* Main Image Area */}
         <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden" onClick={(e) => e.stopPropagation()}>
           <AnimatePresence initial={false} custom={direction}>
-            <motion.div
+            <m.div
               key={activeImg}
               custom={direction}
               variants={{
@@ -547,7 +547,7 @@ function EnhancedLightbox({
                   }}
                 />
               </div>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
 
           {/* Navigation Arrows */}
@@ -575,7 +575,7 @@ function EnhancedLightbox({
                 const actualIndex = startIndex + idx;
                 const isActive = actualIndex === activeImg;
                 return (
-                  <motion.div
+                  <m.div
                     key={img}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -590,13 +590,13 @@ function EnhancedLightbox({
                     }}
                   >
                     <Image src={img} alt="thumbnail" fill className="object-cover" sizes="80px" />
-                  </motion.div>
+                  </m.div>
                 );
               })}
             </AnimatePresence>
           </div>
         </div>
-      </motion.div>
+      </m.div>
     </Portal>
   );
 }
@@ -621,7 +621,7 @@ function ProjectModal({
 
   return (
     <Portal>
-      <motion.div
+      <m.div
         className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-6"
         style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
         initial={{ opacity: 0 }}
@@ -629,7 +629,7 @@ function ProjectModal({
         exit={{ opacity: 0 }}
         onClick={onClose}
       >
-        <motion.div
+        <m.div
           className="relative w-full max-w-6xl rounded-3xl overflow-hidden flex flex-col shadow-[0_32px_64px_rgba(0,0,0,0.5)]"
           style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(94vh, 960px)" }}
           initial={{ y: 100, opacity: 0, scale: 0.95 }}
@@ -780,8 +780,8 @@ function ProjectModal({
               </div>
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
 
       <AnimatePresence>
         {lightboxOpen && (
@@ -1084,7 +1084,7 @@ export default function Projects() {
         }}
       >
         <div>
-          <motion.p
+          <m.p
             className="text-xs uppercase tracking-[0.18em] mb-4"
             style={{ color: "var(--fg-muted)" }}
             initial={{ opacity: 0 }}
@@ -1092,8 +1092,8 @@ export default function Projects() {
             transition={{ duration: 0.6 }}
           >
             Portfolio
-          </motion.p>
-          <motion.h2
+          </m.p>
+          <m.h2
             style={{
               fontSize:      "clamp(1.75rem,3vw,2.5rem)",
               fontWeight:    400,
@@ -1105,11 +1105,11 @@ export default function Projects() {
             transition={{ duration: 0.7, delay: 0.1 }}
           >
             Selected Projects &amp; Work
-          </motion.h2>
+          </m.h2>
         </div>
 
         {/* Nav buttons */}
-        <motion.div
+        <m.div
           className="flex items-center gap-2 flex-shrink-0"
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
@@ -1121,11 +1121,11 @@ export default function Projects() {
           <button onClick={handleNext} aria-label="Next projects" className="marquee-nav-btn">
             <ChevronRight size={18} strokeWidth={1.5} />
           </button>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* ── Infinite Marquee */}
-      <motion.div
+      <m.div
         ref={outerRef}
         className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`}
         initial={{ opacity: 0 }}
@@ -1149,7 +1149,7 @@ export default function Projects() {
             />
           ))}
         </div>
-      </motion.div>
+      </m.div>
 
       {/* ── Project Modal (unchanged) */}
       <AnimatePresence>

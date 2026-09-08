@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { ArrowUp, MessageCircle, RefreshCw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Portal from "@/components/Portal";
@@ -435,7 +435,7 @@ export default function PortfolioChat() {
       {/* ── Chat Window ───────────────────────────────────────────── */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             role="dialog"
             aria-label="Mavs AI — portfolio assistant"
             aria-modal="false"
@@ -651,7 +651,7 @@ export default function PortfolioChat() {
                 Powered by Gemini · Portfolio answers only 💬
               </p>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </Portal>
@@ -663,7 +663,7 @@ export default function PortfolioChat() {
 function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
@@ -692,7 +692,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
       >
         {message.content}
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -710,7 +710,7 @@ function TypingIndicator() {
         }}
       >
         {[0, 1, 2].map((i) => (
-          <motion.span
+          <m.span
             key={i}
             className="h-1.5 w-1.5 rounded-full"
             style={{ background: "var(--fg-muted)" }}

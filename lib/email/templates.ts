@@ -4,8 +4,10 @@
  *
  * Design goals:
  *   - Mobile-first, single column up to 600 px
- *   - High-contrast text on light backgrounds (works in Gmail, Apple Mail,
- *     Outlook web/desktop, mobile clients)
+ *   - Light, clean background with the portfolio's purple accent for
+ *     the header band, section headings, links, pills, and CTA buttons
+ *   - High-contrast dark text on white surfaces (works in Gmail,
+ *     Apple Mail, Outlook web/desktop, mobile clients)
  *   - Semantic structure (h1 → sections → data rows)
  *   - Accessible labels and large tap targets
  *   - No external CSS or JS — works in clients that strip them
@@ -15,17 +17,22 @@
  */
 
 const COLORS = {
-  // Match the portfolio's accent (CSS variable --accent) with a fallback
-  // that survives email-client CSS stripping.
-  accent: "#f97316", // orange-500
-  accentDark: "#ea580c", // orange-600
-  ink: "#0f172a", // slate-900
-  inkMuted: "#475569", // slate-600
-  inkSubtle: "#64748b", // slate-500
-  divider: "#e2e8f0", // slate-200
-  bgSubtle: "#f8fafc", // slate-50
-  bgPanel: "#ffffff",
-  bgShell: "#f1f5f9", // slate-100
+  // Match the portfolio's accent (CSS variable --accent) so the brand
+  // identity carries through to the inbox.
+  accent: "#6055F0", // --accent (dark mode purple)
+  accentDeep: "#4e43e0", // --accent-hover
+  accentGradient: "#3b32b8", // deeper stop for the header gradient
+  // Surfaces
+  bgShell: "#F1F1EF", // outer canvas — soft warm neutral
+  bgPanel: "#FFFFFF", // card surface
+  bgSubtle: "#F5F5F5", // footer + message block surface
+  // Ink
+  ink: "#0F172A", // primary body text
+  inkMuted: "#475569", // labels (column 1)
+  inkSubtle: "#94A3B8", // tertiary metadata (e.g. timestamp)
+  // Borders
+  border: "#E2E8F0", // row dividers + card border
+  borderStrong: "#CBD5E1",
   success: "#16a34a", // green-600
 } as const;
 
@@ -51,6 +58,8 @@ export function emailShell(opts: {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="x-apple-disable-message-reformatting" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
     <title>${escapeForHtml(opts.title)}</title>
   </head>
   <body style="margin:0;padding:0;background-color:${COLORS.bgShell};font-family:${FONT_STACK};color:${COLORS.ink};-webkit-font-smoothing:antialiased;">
@@ -60,11 +69,11 @@ export function emailShell(opts: {
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${COLORS.bgShell};">
       <tr>
         <td align="center" style="padding:32px 16px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:${COLORS.bgPanel};border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,0.06);">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:${COLORS.bgPanel};border-radius:16px;overflow:hidden;border:1px solid ${COLORS.border};box-shadow:0 8px 24px rgba(15,23,42,0.06);">
 
             <!-- Header band -->
             <tr>
-              <td style="background:linear-gradient(135deg,${COLORS.accent} 0%,${COLORS.accentDark} 100%);padding:28px 32px;color:#ffffff;">
+              <td style="background:linear-gradient(135deg,${COLORS.accent} 0%,${COLORS.accentGradient} 100%);padding:28px 32px;color:#ffffff;">
                 <p style="margin:0;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;opacity:0.85;">${escapeForHtml(opts.eyebrow)}</p>
                 <h1 style="margin:6px 0 0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-0.01em;">${escapeForHtml(opts.title)}</h1>
                 <p style="margin:8px 0 0;font-size:14px;line-height:1.5;opacity:0.92;">${escapeForHtml(opts.subtitle)}</p>
@@ -73,14 +82,14 @@ export function emailShell(opts: {
 
             <!-- Body -->
             <tr>
-              <td style="padding:28px 32px 8px;">
+              <td style="padding:28px 32px 8px;background-color:${COLORS.bgPanel};">
                 ${opts.bodyHtml}
               </td>
             </tr>
 
             ${opts.ctaHtml ? `
             <tr>
-              <td style="padding:8px 32px 28px;">
+              <td style="padding:8px 32px 28px;background-color:${COLORS.bgPanel};">
                 ${opts.ctaHtml}
               </td>
             </tr>
@@ -88,8 +97,8 @@ export function emailShell(opts: {
 
             <!-- Footer -->
             <tr>
-              <td style="padding:18px 32px 24px;border-top:1px solid ${COLORS.divider};background-color:${COLORS.bgSubtle};">
-                <p style="margin:0;font-size:12px;line-height:1.5;color:${COLORS.inkSubtle};">
+              <td style="padding:18px 32px 24px;border-top:1px solid ${COLORS.border};background-color:${COLORS.bgSubtle};">
+                <p style="margin:0;font-size:12px;line-height:1.5;color:${COLORS.inkMuted};">
                   Sent from your portfolio · Mavs Portfolio Assistant
                 </p>
                 <p style="margin:6px 0 0;font-size:11px;color:${COLORS.inkSubtle};">
@@ -109,10 +118,10 @@ export function emailShell(opts: {
 export function dataRow(label: string, valueHtml: string): string {
   return `
     <tr>
-      <td style="padding:10px 12px;border-bottom:1px solid ${COLORS.divider};color:${COLORS.inkSubtle};font-size:13px;width:36%;vertical-align:top;font-weight:600;letter-spacing:0.02em;">
+      <td style="padding:10px 12px;border-bottom:1px solid ${COLORS.border};color:${COLORS.inkMuted};font-size:13px;width:36%;vertical-align:top;font-weight:600;letter-spacing:0.02em;">
         ${escapeForHtml(label)}
       </td>
-      <td style="padding:10px 12px;border-bottom:1px solid ${COLORS.divider};color:${COLORS.ink};font-size:14px;line-height:1.55;vertical-align:top;">
+      <td style="padding:10px 12px;border-bottom:1px solid ${COLORS.border};color:${COLORS.ink};font-size:14px;line-height:1.55;vertical-align:top;">
         ${valueHtml}
       </td>
     </tr>`;
@@ -121,7 +130,7 @@ export function dataRow(label: string, valueHtml: string): string {
 /** Renders a small uppercase section heading used between data groups. */
 export function sectionHeading(label: string): string {
   return `
-    <h2 style="margin:24px 0 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:${COLORS.accentDark};">
+    <h2 style="margin:24px 0 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:${COLORS.accent};">
       ${escapeForHtml(label)}
     </h2>`;
 }
@@ -129,7 +138,7 @@ export function sectionHeading(label: string): string {
 /** Wraps a data table in a consistent <table> shell. */
 export function dataTable(rowsHtml: string): string {
   return `
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:${COLORS.bgPanel};border:1px solid ${COLORS.divider};border-radius:10px;overflow:hidden;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:${COLORS.bgPanel};border:1px solid ${COLORS.border};border-radius:10px;overflow:hidden;">
       ${rowsHtml}
     </table>`;
 }
@@ -159,7 +168,7 @@ export function ctaButton(label: string, href: string, color: string = COLORS.ac
  *  <pre> (which clients style inconsistently). */
 export function messageBlock(messageHtml: string): string {
   return `
-    <div style="background-color:${COLORS.bgSubtle};border:1px solid ${COLORS.divider};border-radius:10px;padding:18px 20px;margin-top:6px;color:${COLORS.ink};font-size:14px;line-height:1.65;white-space:normal;">
+    <div style="background-color:${COLORS.bgSubtle};border:1px solid ${COLORS.border};border-radius:10px;padding:18px 20px;margin-top:6px;color:${COLORS.ink};font-size:14px;line-height:1.65;white-space:normal;">
       ${messageHtml}
     </div>`;
 }

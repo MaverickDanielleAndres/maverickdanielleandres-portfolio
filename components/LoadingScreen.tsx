@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import CountUp from "@/components/ui/CountUp";
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
@@ -9,7 +9,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 1 }}
       exit={{
         y: "-100%",
@@ -35,17 +35,17 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 
         {/* Subtle progress indicator */}
         <div className="flex flex-col items-center gap-2">
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold"
           >
             Maverick Portfolio 2026
-          </motion.p>
+          </m.p>
 
           <div className="w-48 h-[1px] bg-white/10 relative overflow-hidden">
-            <motion.div
+            <m.div
               initial={{ x: "-100%" }}
               animate={{ x: "0%" }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
@@ -61,7 +61,6 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           Maverick Danielle Andres ©
         </p>
       </div>
-    </motion.div>
+    </m.div>
   );
 }
-

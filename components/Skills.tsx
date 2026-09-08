@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import SpotlightCard from "@/components/ui/SpotlightCard";
 import CursorDitherTrail from "@/components/ui/cursor-dither-trail";
 import { 
@@ -105,13 +105,13 @@ export default function Skills() {
         isActive={sectionHovered}
       />
 
-      <motion.div
+      <m.div
         variants={containerVariants}
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
         className="max-w-[90rem] mx-auto space-y-12"
       >
-        <motion.div variants={itemVariants} className="w-full">
+        <m.div variants={itemVariants} className="w-full">
           <SpotlightCard
             className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm"
             spotlightColor="rgba(96, 85, 240, 0.15)"
@@ -134,9 +134,9 @@ export default function Skills() {
               ))}
             </div>
           </SpotlightCard>
-        </motion.div>
+        </m.div>
 
-        <motion.div variants={itemVariants} className="w-full">
+        <m.div variants={itemVariants} className="w-full">
           <SpotlightCard
             className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm"
             spotlightColor="rgba(96, 85, 240, 0.15)"
@@ -169,8 +169,8 @@ export default function Skills() {
               </div>
             </div>
           </SpotlightCard>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
     </section>
   );
 }

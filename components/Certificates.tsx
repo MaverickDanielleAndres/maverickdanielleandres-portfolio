@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { m, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X, ZoomIn, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 import Portal from "@/components/Portal";
@@ -213,34 +213,34 @@ export default function Certificates() {
       {/* Section header */}
       <div style={{ paddingInline: "var(--container-px)", marginBottom: "clamp(2rem,4vh,3rem)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1rem" }}>
         <div>
-          <motion.p className="text-xs uppercase tracking-[0.18em] mb-4" style={{ color: "var(--fg-muted)" }} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.6 }}>
+          <m.p className="text-xs uppercase tracking-[0.18em] mb-4" style={{ color: "var(--fg-muted)" }} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.6 }}>
             Certifications
-          </motion.p>
-          <motion.h2 style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.01em" }} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.1 }}>
+          </m.p>
+          <m.h2 style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.01em" }} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.1 }}>
             Credentials &amp; Learning
-          </motion.h2>
+          </m.h2>
         </div>
-        <motion.div className="flex items-center gap-2 flex-shrink-0" initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.3 }}>
+        <m.div className="flex items-center gap-2 flex-shrink-0" initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.3 }}>
           <button onClick={handlePrev} aria-label="Previous certificates" className="marquee-nav-btn"><ChevronLeft size={18} strokeWidth={1.5} /></button>
           <button onClick={handleNext} aria-label="Next certificates" className="marquee-nav-btn"><ChevronRight size={18} strokeWidth={1.5} /></button>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Infinite Marquee */}
-      <motion.div ref={outerRef} className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.8, delay: 0.25 }} onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true; }} onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }} onPointerDown={onPointerDown} style={{ paddingBlock: "1.5rem", userSelect: "none" }} aria-label="Certificate showcase — drag or use arrows to browse, click any card to view details">
+      <m.div ref={outerRef} className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.8, delay: 0.25 }} onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true; }} onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }} onPointerDown={onPointerDown} style={{ paddingBlock: "1.5rem", userSelect: "none" }} aria-label="Certificate showcase — drag or use arrows to browse, click any card to view details">
         <div ref={trackRef} style={{ display: "flex", flexDirection: "row", alignItems: "stretch", width: "max-content", gap: "1.25rem", willChange: "transform" }}>
           {marqueeItems.map((cert, i) => (
             <CertCard key={`${cert.id}-${i}`} cert={cert} onClick={() => { if (!drag.current.hasMoved) setSelected(cert); }} />
           ))}
         </div>
-      </motion.div>
+      </m.div>
 
       {/* Certificate Detail Modal */}
       <AnimatePresence>
         {selected && (
           <Portal>
-            <motion.div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => { setSelected(null); setIsEnlarged(false); }}>
-              <motion.div className="relative w-full max-w-3xl md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col" style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 820px)" }} initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
+            <m.div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => { setSelected(null); setIsEnlarged(false); }}>
+              <m.div className="relative w-full max-w-3xl md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col" style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 820px)" }} initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
                 <div className="relative group/img cursor-zoom-in shrink-0" style={{ aspectRatio: "16/9", borderBottom: "1px solid var(--border-subtle)" }} onClick={() => setIsEnlarged(true)}>
                   <button onClick={() => setSelected(null)} className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95" style={{ background: "rgba(0,0,0,0.6)", color: "#fff", backdropFilter: "blur(4px)" }} aria-label="Close modal"><X size={18} /></button>
                   <Image src={selected.image} alt={selected.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 900px" />
@@ -282,8 +282,8 @@ export default function Certificates() {
                     </div>
                   )}
                 </div>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
           </Portal>
         )}
       </AnimatePresence>
@@ -292,14 +292,14 @@ export default function Certificates() {
       <AnimatePresence>
         {isEnlarged && selected && (
           <Portal>
-            <motion.div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 md:p-12" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsEnlarged(false)}>
-              <motion.button className="absolute top-6 right-6 z-[100001] h-12 w-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors" onClick={() => setIsEnlarged(false)}><X size={24} color="#fff" /></motion.button>
-              <motion.div className="relative w-full h-full flex items-center justify-center" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} transition={{ type: "spring", damping: 25, stiffness: 300 }}>
+            <m.div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 md:p-12" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsEnlarged(false)}>
+              <m.button className="absolute top-6 right-6 z-[100001] h-12 w-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors" onClick={() => setIsEnlarged(false)}><X size={24} color="#fff" /></m.button>
+              <m.div className="relative w-full h-full flex items-center justify-center" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} transition={{ type: "spring", damping: 25, stiffness: 300 }}>
                 <div className="relative w-full h-full max-w-6xl max-h-screen">
                   <Image src={selected.image} alt={selected.title} fill className="object-contain" priority sizes="100vw" />
                 </div>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
           </Portal>
         )}
       </AnimatePresence>

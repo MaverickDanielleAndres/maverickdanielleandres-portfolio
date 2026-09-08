@@ -245,7 +245,7 @@ export async function POST(request: Request) {
   });
 
   const projectTable = dataTable(
-    dataRow("Intent", pill(intentLabel, "#ea580c")) +
+    dataRow("Intent", pill(intentLabel, "#6055F0")) +
       dataRow("Type", typeLabel) +
       dataRow("Budget", budgetLabel) +
       dataRow("Timeline", timelineLabel),
@@ -258,16 +258,16 @@ export async function POST(request: Request) {
     (contactMethod === "email"
       ? dataRow(
           "Email",
-          `<a href="mailto:${sEmail}" style="color:#ea580c;text-decoration:none;font-weight:600;">${sEmail}</a>`,
+          `<a href="mailto:${sEmail}" style="color:#6055F0;text-decoration:none;font-weight:600;">${sEmail}</a>`,
         )
       : "") +
     (contactMethod === "phone"
       ? dataRow(
           "Phone",
-          `<a href="tel:${sPhone}" style="color:#ea580c;text-decoration:none;font-weight:600;">${sPhone}</a>`,
+          `<a href="tel:${sPhone}" style="color:#6055F0;text-decoration:none;font-weight:600;">${sPhone}</a>`,
         )
       : "") +
-    dataRow("Received", `<span style="color:#475569;">${escapeHtml(receivedAt)}</span>`);
+    dataRow("Received", `<span style="color:#94A3B8;">${escapeHtml(receivedAt)}</span>`);
   const contactTable = dataTable(contactParts);
 
   let bodyHtml = `

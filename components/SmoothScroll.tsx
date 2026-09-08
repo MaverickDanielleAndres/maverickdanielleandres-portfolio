@@ -2,10 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import Lenis from "@studio-freight/lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
@@ -27,30 +23,44 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     lenisRef.current = lenis;
 
-    // Connect Lenis to GSAP ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
-
-    // Store the ticker callback in a variable so cleanup can remove the exact same reference.
-    // Previously, the cleanup created a new anonymous function which never matched
-    // the original — causing a memory/animation leak.
-    const tickerCallback = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(tickerCallback);
-
-    // Leave lagSmoothing ENABLED with a generous threshold. The previous
-    // `gsap.ticker.lagSmoothing(0)` disabled the browser's frame-skip
-    // protection — when the page was busy, Lenis kept firing RAFs and the
-    // scroll felt glued to the wheel. Now: if a frame takes >200ms we skip
-    // the catch-up ticks, the next frame snaps to the current scrollY, and
-    // the user sees the page catch up instantly instead of stuttering.
-    gsap.ticker.lagSmoothing(500, 33);
+    // GSAP + ScrollTrigger are only needed because Lenis publishes a
+    // "scroll" event that we forward to ScrollTrigger.update. Defer their
+    // import until after first paint so they don't show up on the
+    // synchronous bootstrap path (this was the source of the 132ms
+    // long-task on the desktop report's chunk 10~x95jhs6ns3.js).
+    let cleanup: (() => void) | undefined;
+    const idle =
+      (window as unknown as { requestIdleCallback?: (cb: () => void) => void })
+        .requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 0));
+    const handle = idle(async () => {
+      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+      gsap.registerPlugin(ScrollTrigger);
+      lenis.on("scroll", ScrollTrigger.update);
+      const tickerCallback = (time: number) => {
+        lenis.raf(time * 1000);
+      };
+      gsap.ticker.add(tickerCallback);
+      // Leave lagSmoothing ENABLED with a generous threshold so a busy
+      // main thread doesn't pile up RAF callbacks and make scroll feel
+      // glued to the wheel.
+      gsap.ticker.lagSmoothing(500, 33);
+      cleanup = () => {
+        lenis.off("scroll", ScrollTrigger.update);
+        gsap.ticker.remove(tickerCallback);
+      };
+    });
 
     return () => {
+      if (typeof handle === "number" && (window as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback) {
+        (window as unknown as { cancelIdleCallback: (h: number) => void }).cancelIdleCallback(handle);
+      } else if (typeof handle === "number") {
+        clearTimeout(handle);
+      }
+      cleanup?.();
       lenis.destroy();
-      // Remove the exact same callback reference to properly deregister
-      gsap.ticker.remove(tickerCallback);
       lenisRef.current = null;
     };
   }, []);

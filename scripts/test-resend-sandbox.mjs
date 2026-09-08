@@ -18,7 +18,7 @@ for (const line of readFileSync(envPath, "utf8").split(/\r?\n/)) {
 }
 
 // Force the sandbox FROM so the email actually delivers.
-const fromAddress = "Portfolio <onboarding@resend.dev>";
+const fromAddress = "Maverick Portfolio <onboarding@resend.dev>";
 const toAddress = env.PROJECT_INQUIRY_EMAIL;
 
 console.log("From (sandbox):", fromAddress);
@@ -51,29 +51,29 @@ const receivedAt = new Date().toLocaleString("en-US", {
 });
 
 const senderTable = `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#ffffff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#ffffff;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden;">
     <tr>
-      <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px;width:36%;font-weight:600;letter-spacing:0.02em;">Name</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#0f172a;font-size:14px;">${visitor.name}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px;width:36%;font-weight:600;letter-spacing:0.02em;">Name</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #E2E8F0;color:#0F172A;font-size:14px;">${visitor.name}</td>
     </tr>
     <tr>
-      <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px;font-weight:600;letter-spacing:0.02em;">Email</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#0f172a;font-size:14px;">
-        <a href="mailto:${visitor.email}" style="color:#ea580c;text-decoration:none;font-weight:600;">${visitor.email}</a>
+      <td style="padding:10px 12px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px;font-weight:600;letter-spacing:0.02em;">Email</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #E2E8F0;color:#0F172A;font-size:14px;">
+        <a href="mailto:${visitor.email}" style="color:#6055F0;text-decoration:none;font-weight:600;">${visitor.email}</a>
       </td>
     </tr>
     <tr>
-      <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px;font-weight:600;letter-spacing:0.02em;">Subject</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#0f172a;font-size:14px;">${subject}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px;font-weight:600;letter-spacing:0.02em;">Subject</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #E2E8F0;color:#0F172A;font-size:14px;">${subject}</td>
     </tr>
     <tr>
-      <td style="padding:10px 12px;color:#64748b;font-size:13px;font-weight:600;letter-spacing:0.02em;">Received</td>
-      <td style="padding:10px 12px;color:#475569;font-size:14px;">${receivedAt}</td>
+      <td style="padding:10px 12px;color:#475569;font-size:13px;font-weight:600;letter-spacing:0.02em;">Received</td>
+      <td style="padding:10px 12px;color:#94A3B8;font-size:14px;">${receivedAt}</td>
     </tr>
   </table>`;
 
 const messageBlock = `
-  <div style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;color:#0f172a;font-size:14px;line-height:1.65;">
+  <div style="background-color:#F5F5F5;border:1px solid #E2E8F0;border-radius:10px;padding:18px 20px;color:#0F172A;font-size:14px;line-height:1.65;">
     ${messageHtml}
   </div>`;
 
@@ -82,7 +82,7 @@ const cta = `
     <tr>
       <td>
         <a href="mailto:${visitor.email}?subject=${encodeURIComponent(`Re: ${subject}`)}" target="_blank" rel="noopener noreferrer"
-           style="display:inline-block;padding:12px 22px;background-color:#f97316;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;border-radius:10px;">
+           style="display:inline-block;padding:12px 22px;background-color:#6055F0;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;border-radius:10px;">
           Reply to ${visitor.firstName}
         </a>
       </td>
@@ -95,38 +95,40 @@ const html = `<!doctype html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
     <title>${subject}</title>
   </head>
-  <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0f172a;-webkit-font-smoothing:antialiased;">
-    <span style="display:none;visibility:hidden;mso-hide:all;font-size:1px;color:#f1f5f9;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${preheader}</span>
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f1f5f9;">
+  <body style="margin:0;padding:0;background-color:#F1F1EF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0F172A;-webkit-font-smoothing:antialiased;">
+    <span style="display:none;visibility:hidden;mso-hide:all;font-size:1px;color:#F1F1EF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${preheader}</span>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F1F1EF;">
       <tr>
         <td align="center" style="padding:32px 16px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,0.06);">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #E2E8F0;box-shadow:0 8px 24px rgba(15,23,42,0.06);">
             <tr>
-              <td style="background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);padding:28px 32px;color:#ffffff;">
+              <td style="background:linear-gradient(135deg,#6055F0 0%,#3b32b8 100%);padding:28px 32px;color:#ffffff;">
                 <p style="margin:0;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;opacity:0.85;">Portfolio · Contact form</p>
                 <h1 style="margin:6px 0 0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-0.01em;">New contact message</h1>
                 <p style="margin:8px 0 0;font-size:14px;line-height:1.5;opacity:0.92;">From ${visitor.name} — ${subject}</p>
               </td>
             </tr>
             <tr>
-              <td style="padding:28px 32px 8px;">
-                <h2 style="margin:0 0 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:#ea580c;">Sender</h2>
+              <td style="padding:28px 32px 8px;background-color:#ffffff;">
+                <h2 style="margin:0 0 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:#6055F0;">Sender</h2>
                 ${senderTable}
-                <h2 style="margin:24px 0 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:#ea580c;">Message</h2>
+                <h2 style="margin:24px 0 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:#6055F0;">Message</h2>
                 ${messageBlock}
               </td>
             </tr>
             <tr>
-              <td style="padding:8px 32px 28px;">
+              <td style="padding:8px 32px 28px;background-color:#ffffff;">
                 ${cta}
               </td>
             </tr>
             <tr>
-              <td style="padding:18px 32px 24px;border-top:1px solid #e2e8f0;background-color:#f8fafc;">
-                <p style="margin:0;font-size:12px;line-height:1.5;color:#64748b;">Sent from your portfolio · Mavs Portfolio Assistant</p>
-                <p style="margin:6px 0 0;font-size:11px;color:#64748b;">Reply directly to this email to respond to the visitor.</p>
+              <td style="padding:18px 32px 24px;border-top:1px solid #E2E8F0;background-color:#F5F5F5;">
+                <p style="margin:0;font-size:12px;line-height:1.5;color:#475569;">Sent from your portfolio · Mavs Portfolio Assistant</p>
+                <p style="margin:6px 0 0;font-size:11px;color:#94A3B8;">Reply directly to this email to respond to the visitor.</p>
               </td>
             </tr>
           </table>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { ImageSwiper } from "@/components/ui/image-swiper";
 import { ArrowUpRight, Download, Github, Linkedin, Facebook, Instagram } from "lucide-react";
 import SpotlightCard from "@/components/ui/SpotlightCard";
@@ -64,13 +64,13 @@ export default function About({ onStartProject }: AboutProps) {
       className="relative pt-8 pb-6 px-[var(--container-px)] overflow-hidden"
       style={{ background: "var(--bg-about)", color: "var(--fg)" }}
     >
-      <motion.div
+      <m.div
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
         className="max-w-[90rem] mx-auto space-y-12"
       >
-        <motion.div variants={itemVariants} className="w-full">
+        <m.div variants={itemVariants} className="w-full">
           <SpotlightCard 
             className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-6 sm:p-8 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" 
             spotlightColor="rgba(96, 85, 240, 0.15)"
@@ -155,8 +155,8 @@ export default function About({ onStartProject }: AboutProps) {
               </div>
             </div>
           </SpotlightCard>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
 
     </section>
   );
