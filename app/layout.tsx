@@ -267,18 +267,14 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
 
-        {/* Preload the LCP image so the browser fetches it in parallel with
-            the CSS instead of waiting for the React tree to render. This
-            removes the 3.8s "Element render delay" on mobile. */}
-        <link
-          rel="preload"
-          as="image"
-          href="/updatedprofile_pic.webp"
-          type="image/webp"
-          fetchPriority="high"
-          imageSrcSet="/_next/image?url=%2Fupdatedprofile_pic.webp&w=384&q=75 384w, /_next/image?url=%2Fupdatedprofile_pic.webp&w=640&q=75 640w, /_next/image?url=%2Fupdatedprofile_pic.webp&w=750&q=75 750w, /_next/image?url=%2Fupdatedprofile_pic.webp&w=828&q=75 828w"
-          imageSizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
-        />
+        {/* The hero <Image> in components/Hero.tsx uses `priority`, which
+            causes Next.js to emit its own <link rel="preload" imagesrcset
+            imagesizes> with the *correct* srcset for the actual rendered
+            size. A hand-written preload here would (a) be redundant, and
+            (b) pick the wrong width — the browser would fetch a size it
+            then never uses, triggering the
+              "preloaded but not used within a few seconds"
+            console warning. So we let Next.js handle it. */}
 
         {/* Theme color for browser chrome */}
         <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
