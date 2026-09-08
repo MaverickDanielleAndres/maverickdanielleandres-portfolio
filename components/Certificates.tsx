@@ -57,45 +57,33 @@ const CertCard = React.memo(function CertCard({ cert, onClick }: { cert: Cert; o
       tabIndex={0}
       aria-label={`View ${cert.title} certificate`}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
-      className="group cursor-pointer flex-shrink-0 flex flex-col overflow-hidden bg-[var(--bg)] rounded-[1.25rem] border border-[var(--border-subtle)] transition-all duration-300 hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--accent)_35%,transparent)]"
-      style={{
-        width: "clamp(220px, 18vw, 300px)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.2)",
-      }}
+      className="cert-card"
     >
       {/* Certificate image */}
-      <div
-        className="relative w-full overflow-hidden bg-white/5"
-        style={{ aspectRatio: "4/3" }}
-      >
+      <div className="cert-card__image-wrap" style={{ aspectRatio: "4/3" }}>
         <Image
           src={cert.image}
           alt={cert.title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover cert-card__image"
           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 280px"
           draggable={false}
+          loading="lazy"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
               "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23111'/%3E%3Ctext x='50%25' y='50%25' font-size='13' text-anchor='middle' dominant-baseline='middle' fill='%23555'%3ECertificate%3C/text%3E%3C/svg%3E";
           }}
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="cert-card__zoom-overlay">
           <ZoomIn size={18} strokeWidth={1.5} color="#fff" />
         </div>
       </div>
 
       {/* Meta */}
-      <div className="flex flex-1 flex-col gap-1 p-3.5 px-4">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
-          {cert.issuer}
-        </p>
-        <h3 className="line-clamp-2 text-xs font-medium leading-relaxed text-[var(--fg)]">
-          {cert.title}
-        </h3>
-        <p className="mt-auto pt-1.5 text-[10px] text-[var(--fg-muted)]">
-          {cert.date}
-        </p>
+      <div className="cert-card__body">
+        <p className="cert-card__issuer">{cert.issuer}</p>
+        <h3 className="cert-card__title">{cert.title}</h3>
+        <p className="cert-card__date">{cert.date}</p>
       </div>
     </article>
   );
@@ -134,18 +122,40 @@ export default function Certificates() {
     reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (outerRef.current) outerRef.current.dataset.reducedMotion = reducedRef.current ? "1" : "";
 
-    let rafId = 0, lastTime = 0;
+    let rafId = 0;
+    let lastTime = 0;
+    // Cache the half-width once the track has rendered. Reading
+    // `el.scrollWidth` per frame is a layout query — at 60 fps it forces
+    // a layout pass on every tick of the marquee, which is what makes
+    // the section feel heavy when the cards are on screen.
+    let halfWidth = 0;
+
+    const measure = () => {
+      const el = trackRef.current;
+      if (!el) return;
+      halfWidth = el.scrollWidth / 2;
+      if (halfWidth > 0) {
+        speedRef.current = reducedRef.current ? 0 : halfWidth / CERT_LOOP_DURATION_S;
+      }
+    };
+
+    // Initial measure, plus a re-measure once web fonts settle (font
+    // swap changes card widths and breaks the cached halfWidth otherwise).
+    measure();
+    if (typeof document !== "undefined" && document.fonts) {
+      document.fonts.ready.then(measure);
+    }
 
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
-      const el = trackRef.current;
-      if (!el) return;
-      if (!speedRef.current && el.scrollWidth > 0) {
-        const hw = el.scrollWidth / 2;
-        speedRef.current = reducedRef.current ? 0 : hw / CERT_LOOP_DURATION_S;
+      if (!halfWidth) {
+        // First frame after fonts/images swap — measure once and bail.
+        const el = trackRef.current;
+        if (!el || !el.scrollWidth) return;
+        halfWidth = el.scrollWidth / 2;
+        speedRef.current = reducedRef.current ? 0 : halfWidth / CERT_LOOP_DURATION_S;
+        return;
       }
-      const hw = el.scrollWidth / 2;
-      if (!hw) return;
       const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.1) : 0;
       lastTime = time;
       if (!dt) return;
@@ -162,7 +172,13 @@ export default function Certificates() {
           xRef.current -= speedRef.current * dt;
         }
       }
-      el.style.transform = `translate3d(${((xRef.current % hw) + hw) % hw - hw}px, 0, 0)`;
+      const displayX = ((xRef.current % halfWidth) + halfWidth) % halfWidth - halfWidth;
+      // Only write when the value actually changed — skips style
+      // invalidation when the marquee is paused / at rest.
+      const el = trackRef.current;
+      if (!el) return;
+      const next = `translate3d(${displayX}px, 0, 0)`;
+      if (el.style.transform !== next) el.style.transform = next;
     }
 
     rafId = requestAnimationFrame(tick);

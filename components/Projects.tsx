@@ -938,19 +938,38 @@ export default function Projects() {
 
     let rafId = 0;
     let lastTime = 0;
+    // Cached half-width. Reading `el.scrollWidth` per frame forces a
+    // layout pass on every tick — at 60 fps that's a layout query 60x/s,
+    // which is the dominant cause of the laggy marquee feel.
+    let halfWidth = 0;
+
+    const measure = () => {
+      const el = trackRef.current;
+      if (!el) return;
+      halfWidth = el.scrollWidth / 2;
+      if (halfWidth > 0) {
+        speedRef.current = reducedRef.current ? 0 : halfWidth / LOOP_DURATION_S;
+      }
+    };
+
+    // Initial measure + re-measure once web fonts settle (font swap
+    // changes card widths and would otherwise leave the cache stale).
+    measure();
+    if (typeof document !== "undefined" && document.fonts) {
+      document.fonts.ready.then(measure);
+    }
 
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
-      const el = trackRef.current;
-      if (!el) return;
 
-      // Measure half-width once (after first paint)
-      if (!speedRef.current && el.scrollWidth > 0) {
-        const hw = el.scrollWidth / 2;
-        speedRef.current = reducedRef.current ? 0 : hw / LOOP_DURATION_S;
+      if (!halfWidth) {
+        // First frame after the track rendered — measure once and bail.
+        const el = trackRef.current;
+        if (!el || !el.scrollWidth) return;
+        halfWidth = el.scrollWidth / 2;
+        speedRef.current = reducedRef.current ? 0 : halfWidth / LOOP_DURATION_S;
+        return;
       }
-      const hw = el.scrollWidth / 2;
-      if (!hw) return;
 
       const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.1) : 0;
       lastTime = time;
@@ -979,8 +998,12 @@ export default function Projects() {
       // (during drag, xRef is written by window listeners — nothing to do here)
 
       // Wrap visually: map unbounded x into [-hw, 0]
-      const displayX = ((xRef.current % hw) + hw) % hw - hw;
-      el.style.transform = `translate3d(${displayX}px, 0, 0)`;
+      const displayX = ((xRef.current % halfWidth) + halfWidth) % halfWidth - halfWidth;
+      const el = trackRef.current;
+      if (!el) return;
+      // Skip the style write when the value didn't change (paused / at rest)
+      const next = `translate3d(${displayX}px, 0, 0)`;
+      if (el.style.transform !== next) el.style.transform = next;
     }
 
     rafId = requestAnimationFrame(tick);
