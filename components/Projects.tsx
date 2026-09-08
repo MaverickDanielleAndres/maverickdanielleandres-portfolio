@@ -782,13 +782,18 @@ function ProjectModal({
 // ─── Project Card ────────────────────────────────────────────────────────────
 function ProjectCard({
   project,
+  index,
   onClick,
 }: {
   project: Project;
+  index: number;
   onClick: () => void;
 }) {
   // Show at most 3 tech tags to keep card scannable
   const visibleTech = project.tech.slice(0, 3);
+
+  // Editorial-style display number: zero-padded based on display order
+  const displayNumber = String(index + 1).padStart(2, "0");
 
   return (
     <div
@@ -847,6 +852,11 @@ function ProjectCard({
         {/* CTA */}
         <span className="project-card__cta" aria-hidden="true">
           View Project&nbsp;<ArrowUpRight size={11} strokeWidth={2} />
+        </span>
+
+        {/* Subtle editorial numbering — pinned to the bottom-right corner */}
+        <span className="project-card__number" aria-hidden="true">
+          {displayNumber}
         </span>
       </div>
     </div>
@@ -1115,6 +1125,7 @@ export default function Projects() {
             <ProjectCard
               key={`${project.id}-${i}`}
               project={project}
+              index={i % PROJECTS.length}
               onClick={() => {
                 if (!drag.current.hasMoved) setActiveProject(project);
               }}

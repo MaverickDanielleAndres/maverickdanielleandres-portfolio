@@ -210,10 +210,15 @@ export default function PortfolioChat() {
             "fixed bottom-4 right-4 sm:bottom-5 sm:right-6",
             "flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full",
             "transition-all duration-300 hover:scale-105 active:scale-95",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]",
-            "bg-black/10 dark:bg-black/40 backdrop-blur-xl border border-white/10 dark:border-white/10 shadow-lg",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]",
+            "backdrop-blur-xl border shadow-lg",
           )}
-          style={{ color: "var(--fg)", zIndex: 2147483646 }}
+          style={{
+            background: "color-mix(in srgb, var(--bg) 70%, transparent)",
+            color: "var(--fg)",
+            borderColor: "var(--border-subtle)",
+            zIndex: 2147483646,
+          }}
         >
           <MessageCircle size={18} strokeWidth={1.8} />
           {hasUnread && (
@@ -224,6 +229,7 @@ export default function PortfolioChat() {
                 top: "calc(50% - 14px)",
                 right: "calc(50% - 14px)",
                 background: "var(--accent)",
+                boxShadow: "0 0 0 2px var(--bg)",
               }}
             />
           )}
@@ -240,14 +246,19 @@ export default function PortfolioChat() {
             className={cn(
               "fixed",
               "bottom-0 right-0 sm:bottom-5 sm:right-6",
-              "w-full sm:w-[360px] md:w-[400px]",
-              "h-[calc(100vh-80px)] sm:h-[550px] md:h-[650px] max-h-[calc(100vh-80px)]",
+              "w-full sm:w-[380px] md:w-[420px]",
+              "h-[min(100dvh-3rem,720px)] sm:h-[600px]",
               "flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl",
-              "border border-black/10 dark:border-white/10",
-              "shadow-[0_24px_64px_rgba(0,0,0,0.12)] dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]",
-              "bg-white/95 dark:bg-[#141414]/90 backdrop-blur-2xl text-[var(--fg)]",
+              "border backdrop-blur-2xl",
             )}
-            style={{ zIndex: 2147483647 }}
+            style={{
+              background: "color-mix(in srgb, var(--bg) 96%, transparent)",
+              color: "var(--fg)",
+              borderColor: "var(--border-subtle)",
+              boxShadow:
+                "0 24px 64px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.04)",
+              zIndex: 2147483647,
+            }}
             initial={{ opacity: 0, y: 20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
@@ -255,7 +266,7 @@ export default function PortfolioChat() {
           >
             {/* ── Header ──────────────────────────────────────────── */}
             <header
-              className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5"
+              className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5 shrink-0"
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -263,7 +274,7 @@ export default function PortfolioChat() {
                   aria-hidden="true"
                   className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full overflow-hidden"
                   style={{
-                    background: "var(--bg)",
+                    background: "var(--muted)",
                     border: "1px solid var(--border-subtle)",
                   }}
                 >
@@ -276,12 +287,20 @@ export default function PortfolioChat() {
                   />
                 </span>
                 <div className="min-w-0">
-                  <p
-                    className="text-sm font-semibold tracking-tight truncate"
-                    style={{ color: "var(--fg)" }}
-                  >
-                    Mavs AI
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p
+                      className="text-sm font-semibold tracking-tight truncate"
+                      style={{ color: "var(--fg)" }}
+                    >
+                      Mavs AI
+                    </p>
+                    {/* Online indicator — small pulsing dot */}
+                    <span
+                      aria-hidden="true"
+                      className="h-1.5 w-1.5 rounded-full"
+                      style={{ background: "#22c55e" }}
+                    />
+                  </div>
                   <p
                     className="text-[10px] font-medium uppercase tracking-[0.18em] truncate"
                     style={{ color: "var(--fg-muted)" }}
@@ -295,8 +314,18 @@ export default function PortfolioChat() {
                   type="button"
                   onClick={handleReset}
                   aria-label="Reset conversation"
-                  className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[var(--fg)]/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
-                  style={{ color: "var(--fg-muted)" }}
+                  className="flex h-8 w-8 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                  style={{
+                    color: "var(--fg-muted)",
+                    background: "transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      "color-mix(in srgb, var(--fg) 8%, transparent)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
                 >
                   <RefreshCw size={14} strokeWidth={1.75} />
                 </button>
@@ -304,8 +333,18 @@ export default function PortfolioChat() {
                   type="button"
                   onClick={handleClose}
                   aria-label="Close chat"
-                  className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[var(--fg)]/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
-                  style={{ color: "var(--fg-muted)" }}
+                  className="flex h-8 w-8 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                  style={{
+                    color: "var(--fg-muted)",
+                    background: "transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      "color-mix(in srgb, var(--fg) 8%, transparent)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
                 >
                   <X size={16} strokeWidth={1.75} />
                 </button>
@@ -314,8 +353,11 @@ export default function PortfolioChat() {
 
             {/* ── Sub-header status ───────────────────────────────── */}
             <div
-              className="px-4 sm:px-5 py-2 text-[11px] leading-snug"
-              style={{ color: "var(--fg-muted)" }}
+              className="px-4 sm:px-5 py-2.5 text-[11.5px] leading-snug shrink-0"
+              style={{
+                color: "var(--fg-muted)",
+                borderBottom: "1px solid var(--border-subtle)",
+              }}
             >
               Ask me anything about Maverick&apos;s work — I&apos;ll keep it friendly and on-topic. ✨
             </div>
@@ -323,7 +365,7 @@ export default function PortfolioChat() {
             {/* ── Messages ────────────────────────────────────────── */}
             <div
               ref={scrollRef}
-              className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 sm:px-5 pb-3 space-y-3 scrollbar-hide"
+              className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 sm:px-5 py-4 space-y-3 scrollbar-hide"
               aria-live="polite"
               aria-relevant="additions"
               data-lenis-prevent="true"
@@ -346,7 +388,7 @@ export default function PortfolioChat() {
             {/* ── Input ───────────────────────────────────────────── */}
             <div
               ref={inputAreaRef}
-              className="px-3 sm:px-4 pt-3 pb-3 sm:pb-4"
+              className="px-3 sm:px-4 pt-3 pb-3 sm:pb-4 shrink-0"
               style={{ borderTop: "1px solid var(--border-subtle)" }}
             >
               <div
@@ -356,7 +398,8 @@ export default function PortfolioChat() {
                 )}
                 style={{
                   borderColor: "var(--border-subtle)",
-                  backgroundColor: "color-mix(in srgb, var(--fg) 4%, transparent)",
+                  backgroundColor:
+                    "color-mix(in srgb, var(--fg) 5%, transparent)",
                 }}
               >
                 <textarea
@@ -372,7 +415,6 @@ export default function PortfolioChat() {
                     "block w-full min-w-0 flex-1 resize-none border-0 bg-transparent",
                     "py-1 outline-none focus:outline-none focus:ring-0",
                     "text-sm leading-relaxed",
-                    "placeholder:text-[var(--fg-muted)] placeholder:opacity-70",
                     "disabled:opacity-50",
                     "scrollbar-hide",
                   )}
@@ -396,8 +438,8 @@ export default function PortfolioChat() {
                       : "opacity-40 cursor-not-allowed",
                   )}
                   style={{
-                    background: canSend ? "var(--accent)" : "var(--fg-muted)",
-                    color: canSend ? "#fff" : "var(--bg)",
+                    background: canSend ? "var(--accent)" : "var(--muted)",
+                    color: canSend ? "#fff" : "var(--fg-muted)",
                   }}
                 >
                   <ArrowUp size={14} strokeWidth={2.25} />
@@ -405,7 +447,7 @@ export default function PortfolioChat() {
               </div>
               <p
                 className="mt-1.5 px-1 text-[10px] tracking-wide"
-                style={{ color: "var(--fg-muted)", opacity: 0.7 }}
+                style={{ color: "var(--fg-muted)", opacity: 0.85 }}
               >
                 Powered by Gemini · Portfolio answers only 💬
               </p>
@@ -430,7 +472,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
     >
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
+          "max-w-[88%] rounded-2xl px-3.5 py-2.5 text-[13.5px] leading-relaxed",
           "whitespace-pre-wrap break-words",
         )}
         style={
@@ -439,12 +481,13 @@ function MessageBubble({ message }: { message: ChatMessage }) {
                 background: "var(--accent)",
                 color: "#fff",
                 borderBottomRightRadius: "0.4rem",
+                boxShadow: "0 6px 20px -8px var(--accent)",
               }
             : {
-                background: "transparent",
+                background: "color-mix(in srgb, var(--fg) 6%, transparent)",
                 color: "var(--fg)",
                 borderBottomLeftRadius: "0.4rem",
-                borderLeft: "1px solid rgba(255,255,255,0.08)",
+                border: "1px solid var(--border-subtle)",
               }
         }
       >
@@ -460,8 +503,12 @@ function TypingIndicator() {
   return (
     <div className="flex justify-start" aria-label="Mavs AI is typing">
       <div
-        className="flex items-center gap-1 rounded-2xl px-3.5 py-2.5"
-        style={{ background: "transparent", borderLeft: "1px solid rgba(255,255,255,0.08)" }}
+        className="flex items-center gap-1.5 rounded-2xl px-3.5 py-3 border"
+        style={{
+          background: "color-mix(in srgb, var(--fg) 6%, transparent)",
+          borderColor: "var(--border-subtle)",
+          borderBottomLeftRadius: "0.4rem",
+        }}
       >
         {[0, 1, 2].map((i) => (
           <motion.span
@@ -490,9 +537,9 @@ function SuggestedQuestions({
   onSelect: (label: string) => void;
 }) {
   return (
-    <div className="pt-1.5 pb-1">
+    <div className="pt-2 pb-1">
       <p
-        className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-2"
+        className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-2.5"
         style={{ color: "var(--fg-muted)" }}
       >
         Try asking
@@ -504,7 +551,7 @@ function SuggestedQuestions({
             type="button"
             onClick={() => onSelect(q.label)}
             className={cn(
-              "text-xs font-medium rounded-full px-3 py-1.5",
+              "text-xs font-medium rounded-full px-3.5 py-1.5",
               "border transition-all duration-200",
               "hover:scale-[1.02] active:scale-[0.98]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]",
@@ -512,7 +559,18 @@ function SuggestedQuestions({
             style={{
               borderColor: "var(--border-subtle)",
               color: "var(--fg)",
-              background: "transparent",
+              background:
+                "color-mix(in srgb, var(--fg) 4%, transparent)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "var(--accent)";
+              e.currentTarget.style.background =
+                "color-mix(in srgb, var(--accent) 12%, transparent)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "var(--border-subtle)";
+              e.currentTarget.style.background =
+                "color-mix(in srgb, var(--fg) 4%, transparent)";
             }}
           >
             {q.label}
