@@ -125,7 +125,7 @@ export default function Hero() {
       <div className="relative z-[2] flex flex-col md:flex-row w-full h-full px-[var(--container-px)]">
 
         {/* Left Column: Text & CTA */}
-        <div className="hero-text-col relative z-20 flex-none flex flex-col justify-start items-center lg:items-start h-full pt-14 sm:pt-16 lg:pt-0 pb-4 w-full">
+        <div className="hero-text-col relative z-20 flex-none flex flex-col justify-start lg:justify-center items-center lg:items-start h-full pt-20 sm:pt-22 lg:pt-0 pb-4 lg:pb-0 w-full lg:w-auto">
 
           {/* Name block */}
           <m.div
@@ -134,7 +134,7 @@ export default function Hero() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.05}
-            className="hero-name-block w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-1.5 sm:gap-2.5 lg:gap-4 overflow-visible"
+            className="hero-name-block w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:w-[360px] lg:max-w-[360px] flex flex-col gap-2.5 sm:gap-3 lg:gap-4 overflow-visible"
           >
             <div className="hero-name-row w-full overflow-visible text-center lg:text-left" style={{ height: "clamp(2.2rem, 6vh, 5.5rem)" }}>
               <TextPressure
@@ -175,7 +175,7 @@ export default function Hero() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.22}
-            className="hero-subtitle mt-2.5 sm:mt-3.5 lg:mt-10 text-[0.82rem] sm:text-[0.95rem] lg:text-[1.05rem] font-medium leading-snug sm:leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md text-center lg:text-left"
+            className="hero-subtitle mt-5 sm:mt-6 lg:mt-10 text-[0.82rem] sm:text-[0.95rem] lg:text-[1.05rem] font-medium leading-relaxed sm:leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md text-center lg:text-left lg:w-[360px]"
           >
             Full-Stack Web & App Developer
             <br />
@@ -183,7 +183,7 @@ export default function Hero() {
           </m.p>
 
           {/* Availability and Buttons Wrapper */}
-          <div className="hero-buttons-wrapper flex flex-col w-full max-w-[280px] sm:max-w-[340px] lg:max-w-none items-center lg:items-start">
+          <div className="hero-buttons-wrapper flex flex-col w-full max-w-[320px] sm:max-w-[340px] lg:w-[360px] lg:max-w-[360px] items-center lg:items-start">
             {/* Availability and Get Started */}
             <m.div
               variants={slideUp}
@@ -191,9 +191,9 @@ export default function Hero() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={0.34}
-              className="hero-availability-row mt-2.5 sm:mt-3.5 lg:mt-8 flex flex-row items-center justify-between lg:justify-start w-full gap-2 sm:gap-3 text-left"
+              className="hero-availability-row mt-5 sm:mt-6 lg:mt-8 flex flex-row items-center justify-center lg:justify-between w-full gap-3 lg:gap-0 text-left"
             >
-              <div className="hero-availability-block flex flex-col gap-0.5 sm:gap-1 text-left min-w-0 flex-1">
+              <div className="hero-availability-block flex flex-col gap-0.5 sm:gap-1 text-left min-w-0">
                 <p className="hero-availability-label text-[9.5px] sm:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md leading-tight whitespace-nowrap">
                   Available for work
                 </p>
@@ -212,7 +212,7 @@ export default function Hero() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={0.46}
-              className="hero-buttons-row mt-2.5 sm:mt-3.5 lg:mt-8 flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start"
+              className="hero-buttons-row mt-4 sm:mt-5 lg:mt-8 flex flex-wrap gap-2.5 sm:gap-3 justify-center lg:justify-between w-full"
             >
             {[
               { label: "Resume", href: null, onClick: true },
@@ -225,7 +225,7 @@ export default function Hero() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-pill-btn !px-3 !py-1 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
+                  className="hero-pill-btn !px-3.5 !py-1.5 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
                 >
                   {label} <ArrowUpRight size={14} className="inline-block" />
                 </a>
@@ -234,7 +234,7 @@ export default function Hero() {
                   suppressHydrationWarning
                   key={label}
                   onClick={handleDownloadResume}
-                  className="hero-pill-btn !px-3 !py-1 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
+                  className="hero-pill-btn !px-3.5 !py-1.5 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
                 >
                   {label}
                 </button>

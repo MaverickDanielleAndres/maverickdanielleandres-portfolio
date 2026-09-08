@@ -106,7 +106,7 @@ export function Offcanvas() {
   return (
     <>
       {/* ── Fixed top action buttons (centered on mobile, right on desktop) ── */}
-      <div className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-6 lg:top-5 z-50 flex items-center justify-center lg:justify-end gap-2 sm:gap-3">
+      <div className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-6 lg:top-5 z-50 flex items-center justify-center lg:justify-end gap-2.5 sm:gap-3">
         <ThemeToggle />
 
         {/* Messenger */}
