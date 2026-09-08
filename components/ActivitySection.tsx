@@ -122,10 +122,13 @@ export default function ActivitySection() {
               <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">A timeline of my professional growth and technical leadership</p>
             </div>
             
-            <div className="block md:grid md:grid-cols-2 lg:flex lg:flex-row items-stretch gap-1 md:gap-4 lg:gap-0 relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 relative items-stretch">
               {EXPERIENCE.map((exp, i) => (
-                <React.Fragment key={i}>
-                  <div className="md:col-span-1 lg:flex-1 relative group p-2 md:p-4 rounded-2xl transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
+                <div
+                  key={i}
+                  className="relative h-full"
+                >
+                  <div className="h-full group p-2 md:p-4 rounded-2xl transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
                     <div className="flex flex-col h-full">
                       <div className="flex justify-between items-start mb-2 md:mb-3">
                         <div className="flex-1 pr-2">
@@ -140,10 +143,17 @@ export default function ActivitySection() {
                     </div>
                   </div>
 
-                  {/* Decorative Separator between items (only on large desktop) */}
+                  {/* Decorative Separator between items (only on large desktop).
+                      Positioned absolutely on the right edge of each card except
+                      the last one — works for any grid layout without affecting
+                      the row height. */}
                   {i < EXPERIENCE.length - 1 && (
-                    <div className="hidden lg:flex items-center justify-center w-16 shrink-0">
-                      <div className="w-px h-12 bg-gradient-to-b from-transparent via-border/60 to-transparent relative">
+                    <div
+                      className="hidden lg:flex items-center justify-center pointer-events-none absolute top-1/2 -translate-y-1/2 -right-2 h-12"
+                      aria-hidden="true"
+                    >
+                      <div className="relative h-full">
+                        <div className="w-px h-full bg-gradient-to-b from-transparent via-[var(--border-subtle)] to-transparent" />
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[var(--accent)] shadow-[0_0_6px_var(--accent)]" />
                       </div>
                     </div>
@@ -151,9 +161,9 @@ export default function ActivitySection() {
 
                   {/* Horizontal Separator for Mobile and Tablet */}
                   {i < EXPERIENCE.length - 1 && (
-                    <div className="md:hidden w-full h-px bg-gradient-to-r from-transparent via-border/60 to-transparent my-1" />
+                    <div className="md:hidden w-full h-px bg-gradient-to-r from-transparent via-[var(--border-subtle)] to-transparent my-1" />
                   )}
-                </React.Fragment>
+                </div>
               ))}
             </div>
           </SpotlightCard>
