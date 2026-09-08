@@ -19,8 +19,12 @@ const neueMontrealFont = localFont({
 // hero layout primitives, the @font-face for Roboto Flex, and the entry
 // animation. Everything else (project cards, marquees, etc.) loads with
 // the deferred full stylesheet below.
+//
+// No @import of Google Fonts — the file is fully self-hosted from
+// /fonts/* and declared via @font-face in globals.css. The previous
+// @import was the dominant render-blocker (192 KiB font file from
+// fonts.gstatic.com).
 const criticalCss = `
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap');
 :root, html.dark, .dark {
   --bg: #111111;
   --bg-hero: #252523;
@@ -242,12 +246,26 @@ export default function RootLayout({
             stylesheet has downloaded. Keeps Lighthouse's render-blocker
             count at zero while we still deliver the full design system. */}
         <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
-        {/* Self-hosted Roboto Flex (subsetted to "Maverick Danielle") is
-            declared in globals.css via @font-face. Preload the woff2
-            directly so the browser fetches it in parallel with the CSS
-            — text still renders in the neue-montreal fallback until
-            swap. Eliminates the 192 KiB Google Fonts CDN request. */}
 
+        {/* Preload the local fonts so they fetch in parallel with the
+            CSS. The @font-face declarations live in globals.css, but the
+            browser only discovers those once the stylesheet is parsed —
+            explicit <link rel=preload> removes a round-trip and lets
+            text paint with the correct face from the very first frame. */}
+        <link
+          rel="preload"
+          href="/fonts/neue-montreal/index.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/RobotoFlex-Variable.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
 
         {/* Preload the LCP image so the browser fetches it in parallel with
             the CSS instead of waiting for the React tree to render. This

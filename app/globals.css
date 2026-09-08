@@ -85,19 +85,19 @@ html.light,
 *, *::before, *::after { box-sizing: border-box; }
 
 /* ===== Self-hosted Roboto Flex =====
-   Subsetted to just "Maverick Danielle" (11 glyphs). ~24 KB on the wire
-   instead of Google Fonts' 192 KB. font-display:swap keeps first paint
-   unblocked — text shows the neue-montreal fallback until Roboto Flex
-   loads. The variable axes (wght, wdth, ital) are preserved so the
-   TextPressure mouse-proximity effect works exactly as before. */
+   Variable woff2 hosted locally (no Google Fonts CDN request).
+   font-display:swap keeps first paint unblocked — text shows the
+   neue-montreal fallback until Roboto Flex loads. The variable axes
+   (wght, wdth, ital) are preserved so the TextPressure mouse-proximity
+   effect works exactly as before. */
 @font-face {
   font-family: "Roboto Flex";
   font-style: normal;
   font-weight: 100 1000;
   font-stretch: 25% 151%;
   font-display: swap;
-  src: url("/fonts/roboto-flex-subset.woff2") format("woff2-variations"),
-       url("/fonts/roboto-flex-subset.woff2") format("woff2");
+  src: url("/fonts/RobotoFlex-Variable.woff2") format("woff2-variations"),
+       url("/fonts/RobotoFlex-Variable.woff2") format("woff2");
 }
 
 html {
