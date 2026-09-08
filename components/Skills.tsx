@@ -112,22 +112,22 @@ export default function Skills() {
         className="max-w-[90rem] mx-auto space-y-12"
       >
         <motion.div variants={itemVariants} className="w-full">
-          <SpotlightCard 
-            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" 
+          <SpotlightCard
+            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm"
             spotlightColor="rgba(96, 85, 240, 0.15)"
           >
-            <div className="mb-6 px-2 text-left">
+            <div className="mb-6 px-2 text-center sm:text-left">
               <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">Core Competencies</h3>
               <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">What I Bring</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-5">
               {COMPETENCIES_CARDS.map((item) => (
-                <div key={item.id} className="flex items-center gap-3.5 group p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200">
-                  <div className="h-10 w-10 shrink-0 rounded-[10px] bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
-                    <div className="scale-90">{item.icon}</div>
+                <div key={item.id} className="flex items-center gap-2 sm:gap-3.5 group p-1.5 sm:p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200">
+                  <div className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-[10px] bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                    <div className="scale-75 sm:scale-90">{item.icon}</div>
                   </div>
-                  <h4 className="text-[13px] sm:text-sm font-bold text-[var(--fg)] leading-tight">
+                  <h4 className="text-[10px] sm:text-sm font-bold text-[var(--fg)] leading-tight">
                     {item.title}
                   </h4>
                 </div>
@@ -137,12 +137,12 @@ export default function Skills() {
         </motion.div>
 
         <motion.div variants={itemVariants} className="w-full">
-          <SpotlightCard 
-            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" 
+          <SpotlightCard
+            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm"
             spotlightColor="rgba(96, 85, 240, 0.15)"
           >
-            <div className="w-full flex flex-col justify-start text-left">
-              <div className="mb-6 px-2 text-left">
+            <div className="w-full flex flex-col justify-start text-center sm:text-left">
+              <div className="mb-6 px-2 text-center sm:text-left">
                 <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">Tech Stack</h3>
                 <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">Technologies I used</p>
               </div>

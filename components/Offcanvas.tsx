@@ -83,34 +83,36 @@ export function Offcanvas() {
 
   return (
     <>
-      {/* ── Fixed top-right action buttons ── */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-2 sm:top-5 sm:right-6 sm:gap-3">
+      {/* ── Fixed top action buttons (centered on mobile, right on desktop) ── */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-6 lg:top-5 z-50 flex items-center justify-center lg:justify-end gap-1.5 sm:gap-3">
         <ThemeToggle />
         <a
           href="https://m.me/maverickdanielle.andres"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
+          className="hidden min-[420px]:flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
           style={{ color: 'var(--fg)' }}
           aria-label="Messenger"
         >
-          <FaFacebookMessenger size={20} />
+          <FaFacebookMessenger size={18} className="sm:hidden md:block" />
+          <FaFacebookMessenger size={20} className="hidden sm:block md:hidden" />
         </a>
         <a
           href="https://wa.me/639632968188"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
+          className="hidden min-[420px]:flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
           style={{ color: 'var(--fg)' }}
           aria-label="WhatsApp"
         >
-          <FaWhatsapp size={20} />
+          <FaWhatsapp size={18} className="sm:hidden md:block" />
+          <FaWhatsapp size={20} className="hidden sm:block md:hidden" />
         </a>
         <button
           suppressHydrationWarning
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen(v => !v)}
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
+          className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full transition-all duration-300 bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-lg"
           style={{
             background: isOpen ? 'var(--accent)' : undefined,
             color: isOpen ? '#fff' : 'var(--fg)',

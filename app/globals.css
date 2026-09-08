@@ -164,7 +164,7 @@ html.lenis, html.lenis body { height: auto; }
 /* ===== Project Card ===== */
 .project-card {
   flex-shrink: 0;
-  width: clamp(280px, 25vw, 390px);
+  width: clamp(240px, 70vw, 390px);
   border-radius: 1.25rem;
   border: 1px solid var(--border-subtle);
   background: var(--bg);
@@ -177,6 +177,18 @@ html.lenis, html.lenis body { height: auto; }
   /* Subtle inner-edge refraction (taste-skill-v1 liquid glass rule) */
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.2);
   cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .project-card {
+    width: clamp(280px, 45vw, 390px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .project-card {
+    width: clamp(320px, 25vw, 390px);
+  }
 }
 
 .project-card:hover {
@@ -522,4 +534,74 @@ html.lenis, html.lenis body { height: auto; }
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* ===== Hero Desktop Layout Override =====
+   Custom CSS ensures the original desktop layout is preserved on screens
+   1024px and above, regardless of Tailwind utility class generation. */
+@media (min-width: 1024px) {
+  .hero-text-col {
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 6rem !important;
+    width: auto !important;
+  }
+
+  .hero-text-col > .hero-name-block {
+    margin-top: 3rem !important;
+  }
+
+  .hero-text-col .hero-name-row {
+    text-align: left !important;
+  }
+
+  .hero-text-col .hero-subtitle {
+    text-align: left !important;
+    margin-top: 3rem !important;
+    font-size: 1.05rem !important;
+  }
+
+  .hero-text-col .hero-availability-row {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    text-align: left !important;
+  }
+
+  .hero-text-col .hero-availability-block {
+    align-items: flex-start !important;
+  }
+
+  .hero-text-col .hero-availability-label {
+    font-size: 0.75rem !important; /* text-xs */
+  }
+
+  .hero-text-col .hero-availability-status {
+    font-size: 0.75rem !important;
+  }
+
+  .hero-text-col .hero-buttons-row {
+    justify-content: flex-start !important;
+  }
+
+  .hero-text-col .hero-buttons-wrapper {
+    align-items: flex-start !important;
+  }
+
+  /* Image container: full size on desktop, beside text */
+  .hero-image-col {
+    position: relative !important;
+    inset: auto !important;
+    height: 100% !important;
+    flex: 1 1 0% !important;
+    overflow: visible !important;
+  }
+
+  .hero-image-col > .hero-image-wrap {
+    width: 100% !important;
+    min-width: 480px !important;
+    margin-right: 0 !important;
+    height: 100% !important;
+  }
 }

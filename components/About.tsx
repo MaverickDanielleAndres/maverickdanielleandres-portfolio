@@ -94,14 +94,14 @@ export default function About({ onStartProject }: AboutProps) {
               <div className="flex flex-col flex-1 w-full relative">
                 
                 {/* Header, Socials & Actions */}
-                <div className="flex flex-col md:flex-row flex-wrap justify-between items-start md:items-center gap-4 sm:gap-6 mb-6">
-                  <div>
-                    <h3 className="text-3xl font-bold tracking-tight text-[var(--fg)] mb-1">About Me</h3>
+                <div className="flex flex-col md:flex-row flex-wrap justify-between items-center md:items-center gap-4 sm:gap-6 mb-6 text-center md:text-left">
+                  <div className="w-full md:w-auto">
+                    <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)] mb-1">About Me</h3>
                     <p className="text-sm font-bold text-[var(--accent)] uppercase tracking-widest">
                       Full-Stack Developer
                     </p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 w-full md:w-auto">
                     <div className="flex gap-2">
                       {SOCIAL_LINKS.map(({ icon, label, href }) => (
                         <a
@@ -120,7 +120,7 @@ export default function About({ onStartProject }: AboutProps) {
                       ))}
                     </div>
                     <div className="w-px h-6 bg-border/40 hidden sm:block mx-1" />
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                       <a
                         href="/Files/Resume.pdf"
                         target="_blank"
@@ -143,7 +143,7 @@ export default function About({ onStartProject }: AboutProps) {
                 </div>
 
                 {/* Bio */}
-                <div className="space-y-4">
+                <div className="space-y-4 text-center md:text-left">
                   <p className="text-base sm:text-lg leading-relaxed text-[var(--fg)] font-medium">
                     I'm Maverick, a Full-Stack Developer and Project Lead who loves building scalable apps that actually work. Whether it's crafting a smooth React and Next.js frontend or architecting a solid Node.js and Supabase backend, I enjoy making code clean and useful. From integrating AI features to developing enterprise-grade systems, I'm all about creating digital tools that solve real problems.
                   </p>

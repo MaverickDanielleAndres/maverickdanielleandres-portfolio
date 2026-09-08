@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, MessageCircle, RefreshCw, X } from "lucide-react";
@@ -8,22 +14,35 @@ import { cn } from "@/lib/utils";
 import Portal from "@/components/Portal";
 import {
   SUGGESTED_QUESTIONS,
+  clearPersistedConversation,
   makeId,
+  readPersistedConversation,
+  writePersistedConversation,
   type ChatMessage,
   type SuggestedQuestion,
 } from "./chat-utils";
 
 /* ── API contract ─────────────────────────────────────────────────── */
 
-type ApiResponse = {
-  reply?: string;
-  unavailable?: boolean;
+type ApiError = {
   error?: string;
+  retryAfterMs?: number;
 };
 
 /* ── Component ────────────────────────────────────────────────────── */
 
 type Status = "idle" | "loading" | "error" | "unavailable";
+
+const WELCOME_MESSAGE: ChatMessage = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "Hey! 👋 I'm Mavs' portfolio assistant. Happy to help — ask me anything about his projects, skills, experience, or how to start a project together.",
+};
+
+function isWelcomeMessage(m: ChatMessage): boolean {
+  return m.id === WELCOME_MESSAGE.id;
+}
 
 export default function PortfolioChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,23 +50,57 @@ export default function PortfolioChat() {
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [hasUnread, setHasUnread] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const inputAreaRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const messagesRef = useRef<ChatMessage[]>([]);
 
-  // ── Auto-scroll: only auto-scroll when the visitor is near the bottom
-  //    so manually scrolling up to read history isn't interrupted.
+  // Keep a ref of the latest messages so async callbacks can read the
+  // current conversation without re-creating them on every render.
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  // ── Hydrate from localStorage on mount (client-only) ──────────────
+  useEffect(() => {
+    const persisted = readPersistedConversation();
+    if (persisted && persisted.length > 0) {
+      // Preserve the welcome message at the top only when the visitor
+      // has never chatted before. Once they have a real conversation,
+      // we restore exactly what they had — including any partial stream.
+      setMessages(persisted);
+    }
+    setHydrated(true);
+  }, []);
+
+  // ── Persist on change (debounced 250 ms) ──────────────────────────
+  useEffect(() => {
+    if (!hydrated) return;
+    const handle = window.setTimeout(() => {
+      if (messages.length === 0) {
+        clearPersistedConversation();
+        return;
+      }
+      writePersistedConversation(messages);
+    }, 250);
+    return () => window.clearTimeout(handle);
+  }, [messages, hydrated]);
+
+  // ── Auto-scroll: only when the visitor is near the bottom so manual
+  //    scrolling up to read history isn't interrupted.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    const distanceFromBottom =
+      el.scrollHeight - el.scrollTop - el.clientHeight;
     if (distanceFromBottom < 120) {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
     }
   }, [messages, status]);
 
-  // ── Auto-resize the textarea
+  // ── Auto-resize the textarea ──────────────────────────────────────
   useEffect(() => {
     const ta = textareaRef.current;
     if (!ta) return;
@@ -55,27 +108,31 @@ export default function PortfolioChat() {
     ta.style.height = `${Math.min(ta.scrollHeight, 140)}px`;
   }, [input]);
 
-  // ── Initial welcome message once when the chat opens for the first time
+  // ── Seed welcome message on first open if the conversation is empty
   useEffect(() => {
+    if (!hydrated) return;
     if (isOpen && messages.length === 0) {
-      setMessages([
-        {
-          id: makeId("assistant"),
-          role: "assistant",
-          content:
-            "Hey! 👋 I'm Mavs' portfolio assistant. Happy to help — ask me anything about his projects, skills, experience, or how to start a project together.",
-        },
-      ]);
+      setMessages([WELCOME_MESSAGE]);
       setHasUnread(false);
     }
-  }, [isOpen, messages.length]);
+  }, [hydrated, isOpen, messages.length]);
 
-  // ── Mark unread when a new assistant message arrives while closed
+  // ── Mark unread when a new assistant message arrives while closed ──
   useEffect(() => {
-    if (!isOpen && messages.some((m) => m.role === "assistant" && m.id !== "welcome")) {
-      setHasUnread(true);
+    if (!isOpen) {
+      const hasAssistantMessage = messages.some(
+        (m) => m.role === "assistant" && !isWelcomeMessage(m),
+      );
+      if (hasAssistantMessage) setHasUnread(true);
     }
   }, [isOpen, messages]);
+
+  // ── Abort any in-flight stream when the component unmounts ────────
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
 
   // ── Send a message (works for both typed input and suggested chips)
   const sendMessage = useCallback(
@@ -89,75 +146,178 @@ export default function PortfolioChat() {
         content: trimmed,
       };
 
-      setMessages((prev) => [...prev, userMessage]);
+      const baseMessages = messagesRef.current;
+      const historyPayload = [...baseMessages, userMessage]
+        .slice(-12) // keep last 12 turns for the server context window
+        .map((m) => ({ role: m.role, content: m.content }));
+
+      // Optimistically append the user message and an empty assistant
+      // placeholder that we will fill as chunks stream in.
+      const assistantPlaceholder: ChatMessage = {
+        id: makeId("assistant"),
+        role: "assistant",
+        content: "",
+      };
+
+      setMessages((prev) => [...prev, userMessage, assistantPlaceholder]);
       setInput("");
       setStatus("loading");
 
-      // Build history payload (exclude the message we just added — Gemini gets it as the latest user turn)
-      const historyPayload = [...messages, userMessage]
-        .slice(-12) // keep last 12 for context window sanity
-        .slice(0, -1) // exclude the latest (server gets it via `message`)
-        .map((m) => ({ role: m.role, content: m.content }));
+      // Cancel any previous in-flight request before starting a new one.
+      abortRef.current?.abort();
+      const abortController = new AbortController();
+      abortRef.current = abortController;
 
       try {
         const res = await fetch("/api/portfolio-chat", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Accept: "text/plain" },
           body: JSON.stringify({
             message: trimmed,
             history: historyPayload,
           }),
+          signal: abortController.signal,
         });
 
-        const data: ApiResponse = await res.json().catch(() => ({}));
-
         if (!res.ok) {
+          const errBody = (await res
+            .json()
+            .catch(() => ({}))) as ApiError;
+          const errorText =
+            errBody.error ||
+            "I couldn't answer that right now. Please try again in a moment.";
           setStatus("error");
-          setMessages((prev) => [
-            ...prev,
+          setMessages((prev) => {
+            const withoutPlaceholder = prev.filter(
+              (m) => m.id !== assistantPlaceholder.id,
+            );
+            return [
+              ...withoutPlaceholder,
+              {
+                id: makeId("assistant"),
+                role: "assistant",
+                content: errorText,
+              },
+            ];
+          });
+          return;
+        }
+
+        if (!res.body) {
+          setStatus("error");
+          setMessages((prev) => {
+            const withoutPlaceholder = prev.filter(
+              (m) => m.id !== assistantPlaceholder.id,
+            );
+            return [
+              ...withoutPlaceholder,
+              {
+                id: makeId("assistant"),
+                role: "assistant",
+                content:
+                  "I couldn't answer that right now. Please try again in a moment.",
+              },
+            ];
+          });
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let assembled = "";
+        let aborted = false;
+
+        // Read chunks as they arrive and append them to the placeholder
+        // assistant message.
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          if (!value) continue;
+          const chunk = decoder.decode(value, { stream: true });
+          assembled += chunk;
+          setMessages((prev) => {
+            const idx = prev.findIndex((m) => m.id === assistantPlaceholder.id);
+            if (idx === -1) {
+              // Placeholder was replaced by a previous error path —
+              // start a fresh assistant message with the accumulated text.
+              return [
+                ...prev,
+                {
+                  id: makeId("assistant"),
+                  role: "assistant",
+                  content: assembled,
+                },
+              ];
+            }
+            const next = prev.slice();
+            next[idx] = {
+              ...next[idx],
+              content: assembled,
+            };
+            return next;
+          });
+        }
+
+        // Stream completed cleanly.
+        if (abortController.signal.aborted) {
+          aborted = true;
+        }
+        if (!aborted) {
+          if (assembled.trim().length === 0) {
+            setStatus("error");
+            setMessages((prev) => {
+              const idx = prev.findIndex(
+                (m) => m.id === assistantPlaceholder.id,
+              );
+              if (idx === -1) return prev;
+              const next = prev.slice();
+              next[idx] = {
+                ...next[idx],
+                content:
+                  "I couldn't answer that right now. Please try again in a moment.",
+              };
+              return next;
+            });
+          } else {
+            setStatus("idle");
+          }
+        }
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          // Visitor aborted — remove the empty placeholder if no text
+          // streamed yet.
+          setMessages((prev) => {
+            const idx = prev.findIndex(
+              (m) => m.id === assistantPlaceholder.id,
+            );
+            if (idx === -1) return prev;
+            const placeholder = prev[idx];
+            if (placeholder.content.length === 0) {
+              return prev.filter((_, i) => i !== idx);
+            }
+            return prev;
+          });
+          setStatus("idle");
+          return;
+        }
+        setStatus("error");
+        setMessages((prev) => {
+          const withoutPlaceholder = prev.filter(
+            (m) => m.id !== assistantPlaceholder.id,
+          );
+          return [
+            ...withoutPlaceholder,
             {
               id: makeId("assistant"),
               role: "assistant",
               content:
                 "I couldn't answer that right now. Please try again in a moment.",
             },
-          ]);
-          return;
-        }
-
-        if (data.unavailable) {
-          setStatus("unavailable");
-        } else {
-          setStatus("idle");
-        }
-
-        const reply =
-          typeof data.reply === "string" && data.reply.trim().length > 0
-            ? data.reply.trim()
-            : "I couldn't answer that right now. Please try again in a moment.";
-
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: makeId("assistant"),
-            role: "assistant",
-            content: reply,
-          },
-        ]);
-      } catch {
-        setStatus("error");
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: makeId("assistant"),
-            role: "assistant",
-            content:
-              "I couldn't answer that right now. Please try again in a moment.",
-          },
-        ]);
+          ];
+        });
       }
     },
-    [messages, status],
+    [status],
   );
 
   const handleSubmit = useCallback(() => {
@@ -166,7 +326,11 @@ export default function PortfolioChat() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+      if (
+        e.key === "Enter" &&
+        !e.shiftKey &&
+        !e.nativeEvent.isComposing
+      ) {
         e.preventDefault();
         handleSubmit();
       }
@@ -175,10 +339,12 @@ export default function PortfolioChat() {
   );
 
   const handleReset = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
     setMessages([]);
     setInput("");
     setStatus("idle");
-    // Re-seed welcome message on next render
+    clearPersistedConversation();
   }, []);
 
   const handleOpen = useCallback(() => {
@@ -187,6 +353,8 @@ export default function PortfolioChat() {
   }, []);
 
   const handleClose = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
     setIsOpen(false);
   }, []);
 
@@ -199,6 +367,34 @@ export default function PortfolioChat() {
 
   return (
     <Portal>
+      {/* ── Noscript fallback (SEO + accessibility for JS-disabled) */}
+      <noscript>
+        <div
+          style={{
+            position: "fixed",
+            bottom: "1rem",
+            right: "1rem",
+            padding: "0.75rem 1rem",
+            borderRadius: "0.75rem",
+            background: "var(--bg)",
+            color: "var(--fg)",
+            border: "1px solid var(--border-subtle)",
+            zIndex: 2147483646,
+            fontSize: "0.875rem",
+            maxWidth: "320px",
+          }}
+        >
+          The portfolio chat assistant needs JavaScript. Reach Maverick at{" "}
+          <a
+            href="mailto:maverickdanielle@gmail.com"
+            style={{ color: "var(--accent)", textDecoration: "underline" }}
+          >
+            maverickdanielle@gmail.com
+          </a>{" "}
+          or use the contact form.
+        </div>
+      </noscript>
+
       {/* ── Floating Trigger ──────────────────────────────────────── */}
       {!isOpen && (
         <button
@@ -360,7 +556,8 @@ export default function PortfolioChat() {
                 borderBottom: "1px solid var(--border-subtle)",
               }}
             >
-              Ask me anything about Maverick&apos;s work — I&apos;ll keep it friendly and on-topic. ✨
+              Ask me anything about Maverick&apos;s work — I&apos;ll keep it
+              friendly and on-topic. ✨
             </div>
 
             {/* ── Messages ────────────────────────────────────────── */}
@@ -375,7 +572,9 @@ export default function PortfolioChat() {
                 <MessageBubble key={m.id} message={m} />
               ))}
 
-              {status === "loading" && <TypingIndicator />}
+              {status === "loading" && messages[messages.length - 1]?.content === "" && (
+                <TypingIndicator />
+              )}
 
               {showSuggestions && (
                 <SuggestedQuestions
@@ -388,7 +587,6 @@ export default function PortfolioChat() {
 
             {/* ── Input ───────────────────────────────────────────── */}
             <div
-              ref={inputAreaRef}
               className="px-3 sm:px-4 pt-3 pb-3 sm:pb-4 shrink-0"
               style={{ borderTop: "1px solid var(--border-subtle)" }}
             >

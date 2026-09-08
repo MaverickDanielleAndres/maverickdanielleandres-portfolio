@@ -122,10 +122,10 @@ export default function ActivitySection() {
               <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">A timeline of my professional growth and technical leadership</p>
             </div>
             
-            <div className="flex flex-col md:flex-row items-stretch justify-between gap-1 md:gap-0 relative">
+            <div className="block md:grid md:grid-cols-2 lg:flex lg:flex-row items-stretch gap-1 md:gap-4 lg:gap-0 relative">
               {EXPERIENCE.map((exp, i) => (
                 <React.Fragment key={i}>
-                  <div className="flex-1 relative group p-2 md:p-4 rounded-2xl transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
+                  <div className="md:col-span-1 lg:flex-1 relative group p-2 md:p-4 rounded-2xl transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
                     <div className="flex flex-col h-full">
                       <div className="flex justify-between items-start mb-2 md:mb-3">
                         <div className="flex-1 pr-2">
@@ -139,17 +139,17 @@ export default function ActivitySection() {
                       </p>
                     </div>
                   </div>
-                  
-                  {/* Decorative Separator between items (only on desktop) */}
+
+                  {/* Decorative Separator between items (only on large desktop) */}
                   {i < EXPERIENCE.length - 1 && (
-                    <div className="hidden md:flex items-center justify-center w-16 shrink-0">
+                    <div className="hidden lg:flex items-center justify-center w-16 shrink-0">
                       <div className="w-px h-12 bg-gradient-to-b from-transparent via-border/60 to-transparent relative">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[var(--accent)] shadow-[0_0_6px_var(--accent)]" />
                       </div>
                     </div>
                   )}
- 
-                  {/* Horizontal Separator for Mobile */}
+
+                  {/* Horizontal Separator for Mobile and Tablet */}
                   {i < EXPERIENCE.length - 1 && (
                     <div className="md:hidden w-full h-px bg-gradient-to-r from-transparent via-border/60 to-transparent my-1" />
                   )}

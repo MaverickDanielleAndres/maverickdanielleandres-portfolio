@@ -1,19 +1,41 @@
 /**
  * POST /api/portfolio-chat
  *
- * Server endpoint that forwards the visitor's message to Google Gemini
+ * Server endpoint that streams the visitor's message to Google Gemini
  * together with the strict portfolio assistant instructions and the
  * contents of `knowledge/portfolio-knowledge.md`. The API key never
  * leaves the server.
+ *
+ * Defence in depth:
+ *   - Same-origin POST enforcement (`lib/security/origin-check.ts`)
+ *   - Sliding-window rate limit (`lib/chat/rate-limit.ts`)
+ *   - Input sanitization (max content length, capped history)
+ *   - Prompt-injection delimiters around visitor messages
+ *   - First-byte timeout + fallback model
+ *
+ * Response shape:
+ *   - Success: `text/plain; charset=utf-8` chunked stream. Each chunk is
+ *     appended verbatim to the client's assistant bubble.
+ *   - Validation failure: `application/json` with `{ error }` and a 4xx
+ *     status — no streaming is started.
+ *   - Rate limit: `application/json` with `{ error, retryAfterMs }` and
+ *     a 429 status plus a `Retry-After` header.
  */
 
 import { NextResponse } from "next/server";
-import { runPortfolioChat, type ChatMessage } from "@/lib/ai/gemini";
+import {
+  sanitizeMessages,
+  streamPortfolioChat,
+} from "@/lib/ai/gemini";
+import { assertSameOrigin } from "@/lib/security/origin-check";
+import { checkRateLimit, getRequestIp } from "@/lib/chat/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const maxDuration = 60;
 
-const MAX_BODY_BYTES = 32_000;
+const MAX_BODY_BYTES = 64_000;
 
 type RequestBody = {
   message?: unknown;
@@ -21,10 +43,106 @@ type RequestBody = {
 };
 
 function badRequest(message: string) {
-  return NextResponse.json({ error: message }, { status: 400 });
+  return NextResponse.json(
+    { error: message },
+    {
+      status: 400,
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    },
+  );
+}
+
+function methodNotAllowed() {
+  return NextResponse.json(
+    { error: "Method not allowed. Use POST." },
+    {
+      status: 405,
+      headers: {
+        "Cache-Control": "no-store",
+        Allow: "POST",
+      },
+    },
+  );
+}
+
+/**
+ * ReadableStream writer with a small surface so we don't leak the
+ * ReadableStreamDefaultController into the streaming callback.
+ */
+class StreamWriter {
+  private encoder = new TextEncoder();
+  private controller: ReadableStreamDefaultController<Uint8Array> | null = null;
+  public readonly stream: ReadableStream<Uint8Array>;
+
+  constructor() {
+    this.stream = new ReadableStream<Uint8Array>({
+      start: (controller) => {
+        this.controller = controller;
+      },
+    });
+  }
+
+  write(text: string): void {
+    if (this.controller) {
+      try {
+        this.controller.enqueue(this.encoder.encode(text));
+      } catch {
+        // Controller was closed/aborted underneath us — safe to ignore.
+      }
+    }
+  }
+
+  close(): void {
+    if (!this.controller) return;
+    try {
+      this.controller.close();
+    } catch {
+      // already closed
+    }
+    this.controller = null;
+  }
+
+  abort(): void {
+    if (!this.controller) return;
+    try {
+      this.controller.error(new Error("aborted"));
+    } catch {
+      // already errored
+    }
+    this.controller = null;
+  }
 }
 
 export async function POST(request: Request) {
+  // ── Same-origin POST enforcement ──────────────────────────────────
+  const originGuard = assertSameOrigin(request);
+  if (originGuard) return originGuard;
+
+  // ── Rate limit (per visitor IP) ──────────────────────────────────
+  const ip = getRequestIp(request) ?? "unknown";
+  const limit = checkRateLimit(ip);
+  if (!limit.allowed) {
+    const retryAfterSec = Math.max(1, Math.ceil(limit.retryAfterMs / 1000));
+    return NextResponse.json(
+      {
+        error:
+          limit.reason === "hour"
+            ? "You've reached the hourly chat limit. Please try again later or use the contact form."
+            : "You're sending messages too quickly. Please wait a moment and try again.",
+        retryAfterMs: limit.retryAfterMs,
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(retryAfterSec),
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
+
   // ── Body validation ──────────────────────────────────────────────
   let body: RequestBody;
   try {
@@ -46,49 +164,73 @@ export async function POST(request: Request) {
     return badRequest("Message is required.");
   }
 
-  // history is optional, but if present must be an array of messages
-  let history: ChatMessage[] = [];
-  if (Array.isArray(body.history)) {
-    history = body.history
-      .map((m): ChatMessage | null => {
-        if (!m || typeof m !== "object") return null;
-        const obj = m as Record<string, unknown>;
-        const role =
-          obj.role === "assistant" || obj.role === "model"
-            ? "assistant"
-            : "user";
-        const content =
-          typeof obj.content === "string" ? obj.content.trim() : "";
-        if (!content) return null;
-        return { role, content };
-      })
-      .filter((m): m is ChatMessage => m !== null);
-  }
-
-  // ── Call Gemini server-side ──────────────────────────────────────
-  try {
-    const { reply, unavailable } = await runPortfolioChat({ message, history });
-    return NextResponse.json({ reply, unavailable });
-  } catch (err) {
-    // Avoid leaking internal error details to the client.
-    if (process.env.NODE_ENV !== "production") {
-      console.error("[portfolio-chat] Gemini error:", err);
-    } else {
-      console.error("[portfolio-chat] Gemini error");
-    }
-    return NextResponse.json(
-      {
-        error:
-          "I couldn't answer that right now. Please try again in a moment.",
-      },
-      { status: 502 },
+  const sanitized = sanitizeMessages(body.history);
+  if (sanitized.messages.length > 0 && !sanitized.lastIsUser) {
+    return badRequest(
+      "Conversation history must end with a user message — the last turn belongs to the visitor.",
     );
   }
+
+  // ── Streaming response ───────────────────────────────────────────
+  const writer = new StreamWriter();
+  const abortController = new AbortController();
+
+  // If the client disconnects, abort the upstream Gemini call so we
+  // don't keep paying for it.
+  request.signal.addEventListener("abort", () => {
+    abortController.abort();
+    writer.abort();
+  });
+
+  // Kick off the chat work in the background — the response object is
+  // already a valid ReadableStream that the client will read from.
+  void streamPortfolioChat(
+    {
+      message,
+      history: sanitized.messages,
+      signal: abortController.signal,
+    },
+    {
+      onChunk: (chunk) => writer.write(chunk),
+    },
+  )
+    .then((outcome) => {
+      if (!outcome.ok) {
+        // Pre-stream validation failures (missing config, etc.) can't
+        // be turned into JSON after we've already committed to a stream
+        // — emit the error message as text so the client UI can show it.
+        writer.write(outcome.error.message);
+      }
+    })
+    .catch((err) => {
+      console.error("[portfolio-chat] stream error:", err);
+      try {
+        writer.write("I couldn't answer that right now. Please try again in a moment.");
+      } finally {
+        writer.close();
+      }
+    })
+    .finally(() => {
+      writer.close();
+    });
+
+  return new Response(writer.stream, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      // Disable nginx response buffering so chunks reach the browser
+      // as soon as Gemini emits them.
+      "X-Accel-Buffering": "no",
+      // Conservative security headers — chat responses are text only
+      // and never embedded inside another origin's iframe.
+      "Referrer-Policy": "no-referrer",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+    },
+  });
 }
 
 export async function GET() {
-  return NextResponse.json(
-    { error: "Method not allowed. Use POST." },
-    { status: 405 },
-  );
+  return methodNotAllowed();
 }

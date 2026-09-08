@@ -125,7 +125,7 @@ export default function Hero() {
       <div className="relative z-[2] flex flex-col md:flex-row w-full h-full px-[var(--container-px)]">
 
         {/* Left Column: Text & CTA */}
-        <div className="w-full md:w-auto flex-none flex flex-col justify-start md:justify-center items-start h-full pt-[10vh] md:pt-0 pb-16 md:pb-24 z-20">
+        <div className="hero-text-col relative z-20 flex-none flex flex-col justify-start items-center h-full pt-[8vh] pb-4 w-full">
 
           {/* Name block */}
           <m.div
@@ -134,9 +134,9 @@ export default function Hero() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.05}
-            className="w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-4 md:gap-6 lg:mt-12"
+            className="hero-name-block w-[85vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[360px] flex flex-col gap-4 md:gap-6 overflow-hidden"
           >
-            <div className="w-full" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
+            <div className="hero-name-row w-full overflow-hidden text-center" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
               <TextPressure
                 text="Maverick"
                 flex={true}
@@ -151,7 +151,7 @@ export default function Hero() {
                 className="w-full h-full"
               />
             </div>
-            <div className="w-full" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
+            <div className="hero-name-row w-full overflow-hidden text-center" style={{ height: "clamp(2.5rem, 10vh, 5.5rem)" }}>
               <TextPressure
                 text="Danielle"
                 flex={true}
@@ -175,7 +175,7 @@ export default function Hero() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.22}
-            className="mt-8 md:mt-12 text-[0.95rem] md:text-[1.05rem] font-medium leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md"
+            className="hero-subtitle mt-6 text-[0.95rem] font-medium leading-[1.5] tracking-wide text-[var(--fg)] drop-shadow-md text-center"
           >
             Full-Stack Web & App Developer
             <br />
@@ -183,21 +183,21 @@ export default function Hero() {
           </m.p>
 
           {/* Availability and Buttons Wrapper */}
-          <div className="flex flex-col w-fit max-w-full">
-            {/* Availability and Get Started */}
+          <div className="hero-buttons-wrapper flex flex-col w-full max-w-full items-center">
+            {/* Availability and Get Started - side-by-side from sm+ (640px+), stacked on xs */}
             <m.div
               variants={slideUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               custom={0.34}
-              className="mt-6 flex items-center justify-between w-full gap-6 text-left"
+              className="hero-availability-row mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-4 sm:gap-6 text-left"
             >
-              <div className="flex flex-col gap-1.5">
-                <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
+              <div className="hero-availability-block flex flex-col gap-1.5 text-left">
+                <p className="hero-availability-label text-[10px] tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md">
                   Available for work
                 </p>
-                <span className="inline-flex items-center gap-2 text-[11px] md:text-xs font-medium text-[var(--fg)] drop-shadow-md">
+                <span className="inline-flex items-center gap-2 text-[11px] font-medium text-[var(--fg)] drop-shadow-md hero-availability-status">
                   <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                   Open to opportunities
                 </span>
@@ -212,7 +212,7 @@ export default function Hero() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={0.46}
-              className="mt-8 flex flex-wrap gap-2.5 sm:gap-3"
+              className="hero-buttons-row mt-6 flex flex-wrap gap-2.5 sm:gap-3 justify-start"
             >
             {[
               { label: "Resume", href: null, onClick: true },
@@ -250,8 +250,8 @@ export default function Hero() {
             wait for hydration + a 4s element-render delay on mobile. The
             image now paints as soon as the bytes arrive; a CSS-only entry
             animation runs alongside (and after) the first paint. */}
-        <div className="absolute inset-0 md:relative md:flex-1 flex justify-end md:justify-center items-end h-full z-10 pointer-events-none overflow-visible">
-          <div className="hero-image-reveal relative w-full min-w-[400px] sm:min-w-[500px] md:w-[120%] lg:w-[100%] max-w-[800px] h-[75%] md:h-[95%] lg:h-[100%] flex justify-center items-end mr-[-25%] sm:mr-[-10%] md:mr-0 mb-[-18%] md:mb-0">
+        <div className="hero-image-col absolute bottom-0 left-0 right-0 flex justify-center items-end z-10 pointer-events-none overflow-hidden h-[55%] sm:h-[60%]">
+          <div className="hero-image-wrap hero-image-reveal relative w-full min-w-0 sm:min-w-[420px] max-w-[800px] h-full flex justify-center items-end">
             <Image
               src="/updatedprofile_pic.webp"
               alt="Maverick Danielle Andres"
