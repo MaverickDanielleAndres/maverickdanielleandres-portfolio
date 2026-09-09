@@ -440,6 +440,10 @@ html.lenis, html.lenis body { height: auto; }
   width: 100%;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.05);
+  /* Don't let the image-wrap shrink — the marquee track's `align-items:
+     stretch` matches cards on the tallest sibling, but only if this
+     wrap holds its aspect-ratio-driven height instead of yielding. */
+  flex-shrink: 0;
 }
 .cert-card__image {
   transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -467,6 +471,12 @@ html.lenis, html.lenis body { height: auto; }
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.875rem 1rem 1rem;
+  /* Push the date to the bottom so it always lines up across cards in
+     the marquee row, regardless of how many lines the title takes. */
+  justify-content: flex-start;
+}
+.cert-card__date {
+  margin-top: auto;
 }
 .cert-card__issuer {
   font-size: 10px;

@@ -719,23 +719,46 @@ function ProjectModal({
                 </div>
               </div>
 
-              {/* Two columns: Tech Stack (left) | Key Contributions (right).
-                  Below them: full-width Key Features so we never waste the
-                  wide modal. */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mb-10">
-                <div>
-                  <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
-                    Tech Stack
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--muted)] border border-[var(--border-subtle)]"
-                      >
-                        {t}
-                      </span>
-                    ))}
+              {/* Two columns: Tech Stack + Key Features (left, stacked) |
+                  Key Contributions (right). Key Features sits directly
+                  under Tech Stack on the left so the user reads them as
+                  a single column of project metadata. */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
+                <div className="flex flex-col gap-8">
+                  <div>
+                    <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
+                      Tech Stack
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tech.map((t) => (
+                        <span
+                          key={t}
+                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--muted)] border border-[var(--border-subtle)]"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
+                      Key Features
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.features.map((f) => (
+                        <span
+                          key={f}
+                          className="px-4 py-2 rounded-full text-xs font-medium border border-[var(--accent)] text-[var(--accent)]"
+                          style={{
+                            backgroundColor:
+                              "color-mix(in srgb, var(--accent) 10%, transparent)",
+                          }}
+                        >
+                          {f}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -754,28 +777,6 @@ function ProjectModal({
                       </li>
                     ))}
                   </ul>
-                </div>
-              </div>
-
-              {/* Full-width Key Features — uses the entire modal width
-                  so the bottom of the modal never lands on dead space. */}
-              <div className="pt-8" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-                <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
-                  Key Features
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.features.map((f) => (
-                    <span
-                      key={f}
-                      className="px-4 py-2 rounded-full text-xs font-medium border border-[var(--accent)] text-[var(--accent)]"
-                      style={{
-                        backgroundColor:
-                          "color-mix(in srgb, var(--accent) 10%, transparent)",
-                      }}
-                    >
-                      {f}
-                    </span>
-                  ))}
                 </div>
               </div>
             </div>
