@@ -112,7 +112,7 @@ export default function ActivitySection() {
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        className="max-w-7xl mx-auto space-y-12"
+        className="max-w-[90rem] mx-auto space-y-12"
       >
         {/* Work Experience - Responsive Grid Layout */}
         <m.div variants={itemVariants} className="w-full">
