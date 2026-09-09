@@ -630,7 +630,7 @@ function ProjectModal({
         onClick={onClose}
       >
         <m.div
-          className="relative w-full max-w-6xl rounded-3xl overflow-hidden flex flex-col shadow-[0_32px_64px_rgba(0,0,0,0.5)]"
+          className="relative w-full max-w-3xl rounded-3xl overflow-hidden flex flex-col shadow-[0_32px_64px_rgba(0,0,0,0.5)]"
           style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(94vh, 960px)" }}
           initial={{ y: 100, opacity: 0, scale: 0.95 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}

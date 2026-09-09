@@ -421,6 +421,10 @@ html.lenis, html.lenis body { height: auto; }
   background: var(--bg);
   border-radius: 1.25rem;
   border: 1px solid var(--border-subtle);
+  /* Fixed width so every card in the marquee is identical in size
+     (matching the Web Development Bootcamp reference). Without this,
+     cards expand to their content size and end up different heights. */
+  width: clamp(220px, 18vw, 300px);
   /* ONLY transition compositor-friendly properties. */
   transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
               border-color 220ms ease;
