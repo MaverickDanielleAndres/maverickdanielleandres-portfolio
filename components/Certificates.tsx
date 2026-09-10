@@ -308,7 +308,7 @@ export default function Certificates() {
                     </div>
                   </div>
                   {(selected.url || selected.verifyUrl) && (
-                    <div className="pt-6 border-t border-dashed border-border/50">
+                    <div>
                       <a href={selected.verifyUrl || `https://${selected.url}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--accent)" }}>
                         Verify Credential <ZoomIn size={14} />
                       </a>

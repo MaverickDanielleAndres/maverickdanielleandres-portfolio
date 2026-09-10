@@ -423,8 +423,9 @@ html.lenis, html.lenis body { height: auto; }
   border: 1px solid var(--border-subtle);
   /* Fixed width so every card in the marquee is identical in size
      (matching the Web Development Bootcamp reference). Without this,
-     cards expand to their content size and end up different heights. */
-  width: clamp(220px, 18vw, 300px);
+     cards expand to their content size and end up different heights.
+     Sized to match the project cards. */
+  width: clamp(240px, 70vw, 390px);
   /* ONLY transition compositor-friendly properties. */
   transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
               border-color 220ms ease;
@@ -434,6 +435,18 @@ html.lenis, html.lenis body { height: auto; }
   /* Contain the card's paint so the hover transform can't bleed into the
      marquee track or the page background. */
   contain: layout paint;
+}
+
+@media (min-width: 640px) {
+  .cert-card {
+    width: clamp(280px, 45vw, 390px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cert-card {
+    width: clamp(320px, 25vw, 390px);
+  }
 }
 .cert-card:hover {
   transform: translate3d(0, -4px, 0);

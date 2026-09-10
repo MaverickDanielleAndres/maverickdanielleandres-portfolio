@@ -622,7 +622,7 @@ function ProjectModal({
   return (
     <Portal>
       <m.div
-        className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-6"
+        className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
         style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -630,126 +630,113 @@ function ProjectModal({
         onClick={onClose}
       >
         <m.div
-          className="relative w-full max-w-3xl rounded-3xl overflow-hidden flex flex-col shadow-[0_32px_64px_rgba(0,0,0,0.5)]"
-          style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(94vh, 960px)" }}
-          initial={{ y: 100, opacity: 0, scale: 0.95 }}
-          animate={{ y: 0, opacity: 1, scale: 1 }}
-          exit={{ y: 100, opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-5xl md:max-w-6xl lg:max-w-7xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
+          style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 850px)" }}
+          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 20 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           onClick={(e) => e.stopPropagation()}
+          data-lenis-prevent="true"
         >
-          {/* Close Header */}
-          <div className="absolute top-4 right-4 z-20">
-            <button
-              onClick={onClose}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-black/20 backdrop-blur-md text-white transition-all hover:scale-110 active:scale-95"
-            >
-              <X size={20} />
-            </button>
-          </div>
+          {/* Close button — top right of modal */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
+            style={{
+              background: "var(--bg)",
+              color: "var(--fg-muted)",
+              border: "1px solid var(--border-subtle)",
+              backdropFilter: "blur(8px)",
+            }}
+            aria-label="Close modal"
+          >
+            <X size={15} strokeWidth={2} />
+          </button>
 
-          <div className="overflow-y-auto w-full h-full" data-lenis-prevent="true">
-            {/* Main Preview Image */}
-            <div
-              className="relative w-full group cursor-pointer overflow-hidden"
-              style={{ background: "var(--muted)", height: "clamp(250px, 40vh, 450px)" }}
-              onClick={() => setLightboxOpen(true)}
-            >
-              <Image
-                src={project.image}
-                alt={project.title}
-                fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                priority
-                unoptimized
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 60vw"
-                onError={(e: any) => {
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
-                <button
-                  className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-semibold text-sm shadow-xl transition-all hover:scale-105 active:scale-95"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLightboxOpen(true);
-                  }}
-                >
-                  <Maximize2 size={16} />
-                  View Gallery ({project.screenshots.length} Screenshots)
-                </button>
+          {/* Image pane — left on md+, top on mobile */}
+          <div
+            className="relative group/img cursor-zoom-in shrink-0 md:w-[50%] lg:w-[55%] self-stretch min-h-[240px] md:min-h-0"
+            style={{ aspectRatio: "16/11", borderRight: "1px solid var(--border-subtle)" }}
+            onClick={() => setLightboxOpen(true)}
+          >
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 800px"
+              onError={(e: any) => {
+                e.currentTarget.src =
+                  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
+              }}
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover/img:bg-black/40 transition-colors duration-300 flex items-center justify-center p-4 pointer-events-none">
+              <div className="bg-black/40 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/30 shadow-2xl transform transition-all duration-300 group-hover/img:scale-105 group-hover/img:bg-black/60 group-hover/img:border-white/50 flex items-center gap-2 text-white text-xs font-semibold tracking-wide">
+                <Maximize2 size={16} color="#fff" />
+                <span>View Gallery ({project.screenshots.length} Screenshots)</span>
               </div>
             </div>
+          </div>
 
-            {/* Content Body */}
-            <div className="p-6 sm:p-10 md:p-12">
-              {/* Title block — full width so the description / CTAs own the room */}
-              <div className="mb-10">
-                <p className="text-xs uppercase tracking-[0.2em] mb-3 font-semibold" style={{ color: "var(--accent)" }}>
-                  {project.category} &middot; {project.year}
-                </p>
-                <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-none mb-5">
-                  {project.title}
-                </h2>
-                <p className="text-lg leading-relaxed opacity-80 max-w-3xl">
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-3 pt-6">
-                  {project.live && (
-                    <a
-                      href={project.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--fg)] text-[var(--bg)] font-medium text-sm transition-transform hover:scale-105"
-                    >
-                      Visit Site <ExternalLink size={16} />
-                    </a>
-                  )}
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--border)] font-medium text-sm transition-all hover:bg-[var(--fg)] hover:text-[var(--bg)]"
-                    >
-                      GitHub <Github size={16} />
-                    </a>
-                  )}
+          {/* Text pane — right on md+, below on mobile. Dynamic scroll when content exceeds modal height. */}
+          <div className="overflow-y-auto overscroll-contain p-6 sm:p-8 md:p-10 grow md:w-[50%] lg:w-[45%] flex flex-col justify-between">
+            <div>
+              {/* Header */}
+              <div className="flex justify-between items-start gap-4 mb-3 pr-12">
+                <div>
+                  <p
+                    className="text-xs uppercase tracking-[0.2em] mb-1 font-semibold"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    {project.category} &middot; {project.year}
+                  </p>
+                  <h3 className="text-2xl md:text-3xl font-medium leading-tight">
+                    {project.title}
+                  </h3>
                 </div>
               </div>
 
-              {/* Two columns: Tech Stack + Key Features (left, stacked) |
-                  Key Contributions (right). Key Features sits directly
-                  under Tech Stack on the left so the user reads them as
-                  a single column of project metadata. */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
-                <div className="flex flex-col gap-8">
+              {/* Description */}
+              <p
+                className="text-xs sm:text-sm leading-relaxed mb-6"
+                style={{ color: "var(--fg-muted)" }}
+              >
+                {project.description}
+              </p>
+
+              {/* Tech Stack, Key Features & Key Contributions */}
+              <div className="space-y-4 mb-6">
+                {project.tech && project.tech.length > 0 && (
                   <div>
-                    <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                       Tech Stack
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
                       {project.tech.map((t) => (
                         <span
                           key={t}
-                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--muted)] border border-[var(--border-subtle)]"
+                          className="px-3 py-1 rounded-full text-[11px] font-medium transition-colors hover:bg-accent/10"
+                          style={{ border: "1.5px solid var(--border-subtle)" }}
                         >
                           {t}
                         </span>
                       ))}
                     </div>
                   </div>
+                )}
 
+                {project.features && project.features.length > 0 && (
                   <div>
-                    <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                       Key Features
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
                       {project.features.map((f) => (
                         <span
                           key={f}
-                          className="px-4 py-2 rounded-full text-xs font-medium border border-[var(--accent)] text-[var(--accent)]"
+                          className="px-3 py-1 rounded-full text-[11px] font-medium border border-[var(--accent)] text-[var(--accent)]"
                           style={{
                             backgroundColor:
                               "color-mix(in srgb, var(--accent) 10%, transparent)",
@@ -760,26 +747,60 @@ function ProjectModal({
                       ))}
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div>
-                  <h3 className="text-[11px] uppercase tracking-[0.22em] mb-5 font-bold opacity-50">
-                    Key Contributions
-                  </h3>
-                  <ul className="space-y-3.5">
-                    {project.contributions.map((c, i) => (
-                      <li
-                        key={i}
-                        className="flex gap-3 text-sm opacity-85 leading-relaxed"
-                      >
-                        <span className="text-[var(--accent)] font-bold shrink-0 mt-0.5">→</span>
-                        <span>{c}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {project.contributions && project.contributions.length > 0 && (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                      Key Contributions
+                    </p>
+                    <ul className="space-y-1.5">
+                      {project.contributions.map((c, i) => (
+                        <li
+                          key={i}
+                          className="flex gap-2 text-xs leading-relaxed opacity-85"
+                        >
+                          <span
+                            className="font-bold shrink-0 mt-0.5"
+                            style={{ color: "var(--accent)" }}
+                          >
+                            →
+                          </span>
+                          <span>{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Links / Action Buttons */}
+            {(project.live || project.github) && (
+              <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-[var(--border-subtle)] mt-2">
+                {project.live && (
+                  <a
+                    href={project.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    Visit Site <ExternalLink size={14} />
+                  </a>
+                )}
+                {project.github && (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity text-[var(--fg-muted)]"
+                  >
+                    GitHub <Github size={14} />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </m.div>
       </m.div>
