@@ -29,6 +29,7 @@ import {
 } from "@/lib/ai/gemini";
 import { assertSameOrigin } from "@/lib/security/origin-check";
 import { checkRateLimit, getRequestIp } from "@/lib/chat/rate-limit";
+import { classifyTopic } from "@/lib/chat/topic-classifier";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -162,6 +163,30 @@ export async function POST(request: Request) {
   const message = typeof body.message === "string" ? body.message.trim() : "";
   if (!message) {
     return badRequest("Message is required.");
+  }
+
+  // ── Pre-Gemini topic guard ────────────────────────────────────────
+  // Reject clearly off-topic questions without paying for a Gemini call.
+  // Conservative: only blocks when the message has an off-topic trigger
+  // AND no Mav/portfolio signal. Everything else still reaches Gemini,
+  // which has the full prompt-injection guard as the second line of
+  // defence. We return a text/plain single chunk (the same shape Gemini
+  // streams) and stamp an X-Chat-Intent header so the client knows the
+  // whole reply arrived in one piece.
+  const topic = classifyTopic(message);
+  if (topic.kind === "reject") {
+    return new Response(topic.reason, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Chat-Intent": "unrelated",
+        "X-Accel-Buffering": "no",
+        "Referrer-Policy": "no-referrer",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+      },
+    });
   }
 
   const sanitized = sanitizeMessages(body.history);

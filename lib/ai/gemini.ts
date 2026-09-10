@@ -22,10 +22,16 @@ import { wrapVisitorMessage } from "@/lib/chat/prompt-builder";
 
 /* ── Configuration ──────────────────────────────────────────────────── */
 
+/**
+ * Primary model. Defaults to `gemini-2.5-flash-lite` (fast, low cost). Set
+ * GEMINI_MODEL in `.env.local` to override — for example, with
+ * `gemini-3.5-flash-lite`.
+ */
 export const GEMINI_MODEL =
-  process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash";
+  process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash-lite";
+/** Fallback used when the primary fails to emit its first byte in 20s. */
 export const GEMINI_FALLBACK_MODEL =
-  process.env.GEMINI_FALLBACK_MODEL?.trim() || "gemini-2.5-flash-lite";
+  process.env.GEMINI_FALLBACK_MODEL?.trim() || "gemini-2.5-flash";
 
 const KNOWLEDGE_FILE = path.join(
   process.cwd(),
