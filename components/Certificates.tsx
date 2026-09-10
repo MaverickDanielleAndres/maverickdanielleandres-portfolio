@@ -105,11 +105,12 @@ export default function Certificates() {
   const inView     = useInView(sectionRef, { once: true, margin: "-5% 0px" });
   const isVisible  = useInView(sectionRef, { margin: "400px" });
 
-  const xRef        = useRef(0);
-  const targetXRef  = useRef<number | null>(null);
-  const speedRef    = useRef(0);
-  const isPausedRef = useRef(false);
-  const reducedRef  = useRef(false);
+  const xRef           = useRef(0);
+  const targetXRef     = useRef<number | null>(null);
+  const speedRef       = useRef(0);
+  const isPausedRef    = useRef(false);
+  const pauseFactorRef = useRef(1);
+  const reducedRef     = useRef(false);
 
   const drag = useRef({ active: false, startX: 0, frozenX: 0, lastX: 0, lastTime: 0, velocity: 0, hasMoved: false });
   const velocityRef         = useRef(0);
@@ -124,10 +125,6 @@ export default function Certificates() {
 
     let rafId = 0;
     let lastTime = 0;
-    // Cache the half-width once the track has rendered. Reading
-    // `el.scrollWidth` per frame is a layout query — at 60 fps it forces
-    // a layout pass on every tick of the marquee, which is what makes
-    // the section feel heavy when the cards are on screen.
     let halfWidth = 0;
 
     const measure = () => {
@@ -139,8 +136,6 @@ export default function Certificates() {
       }
     };
 
-    // Initial measure, plus a re-measure once web fonts settle (font
-    // swap changes card widths and breaks the cached halfWidth otherwise).
     measure();
     if (typeof document !== "undefined" && document.fonts) {
       document.fonts.ready.then(measure);
@@ -149,7 +144,6 @@ export default function Certificates() {
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
       if (!halfWidth) {
-        // First frame after fonts/images swap — measure once and bail.
         const el = trackRef.current;
         if (!el || !el.scrollWidth) return;
         halfWidth = el.scrollWidth / 2;
@@ -160,6 +154,9 @@ export default function Certificates() {
       lastTime = time;
       if (!dt) return;
       if (!drag.current.active) {
+        const targetFactor = isPausedRef.current ? 0 : 1;
+        pauseFactorRef.current += (targetFactor - pauseFactorRef.current) * (1 - Math.exp(-14 * dt));
+
         if (velocityRef.current !== 0) {
           xRef.current += velocityRef.current * dt;
           velocityRef.current *= Math.pow(0.88, dt * 60);
@@ -168,16 +165,15 @@ export default function Certificates() {
           const diff = targetXRef.current - xRef.current;
           xRef.current += diff * (1 - Math.exp(-12 * dt));
           if (Math.abs(diff) < 0.4) { xRef.current = targetXRef.current; targetXRef.current = null; }
-        } else if (!isPausedRef.current && speedRef.current > 0) {
-          xRef.current -= speedRef.current * dt;
+        } else if (pauseFactorRef.current > 0.001 && speedRef.current > 0) {
+          xRef.current -= speedRef.current * dt * pauseFactorRef.current;
         }
       }
       const displayX = ((xRef.current % halfWidth) + halfWidth) % halfWidth - halfWidth;
-      // Only write when the value actually changed — skips style
-      // invalidation when the marquee is paused / at rest.
       const el = trackRef.current;
       if (!el) return;
-      const next = `translate3d(${displayX}px, 0, 0)`;
+      const roundedX = Math.round(displayX * 100) / 100;
+      const next = `translate3d(${roundedX}px, 0, 0)`;
       if (el.style.transform !== next) el.style.transform = next;
     }
 
@@ -255,12 +251,12 @@ export default function Certificates() {
       <AnimatePresence>
         {selected && (
           <Portal>
-            <m.div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => { setSelected(null); setIsEnlarged(false); }}>
-              <m.div className="relative w-full max-w-5xl md:max-w-7xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row" style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 820px)" }} initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
+            <m.div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} onClick={() => { setSelected(null); setIsEnlarged(false); }}>
+              <m.div className="relative w-full max-w-5xl md:max-w-7xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row will-change-transform" style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 820px)" }} initial={{ scale: 0.97, opacity: 0, y: 8 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.97, opacity: 0, y: 8 }} transition={{ duration: 0.16, ease: [0.2, 0.8, 0.2, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
                 {/* Close button — top right of modal (like project modal) */}
                 <button
                   onClick={() => setSelected(null)}
-                  className="absolute top-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
+                  className="absolute top-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-150 hover:scale-110 active:scale-95"
                   style={{
                     background: "var(--bg)",
                     color: "var(--fg-muted)",
@@ -275,8 +271,8 @@ export default function Certificates() {
                 {/* Image pane — left on md+, top on mobile */}
                 <div className="relative group/img cursor-zoom-in shrink-0 md:w-[55%] md:h-auto" style={{ aspectRatio: "16/11", borderRight: "1px solid var(--border-subtle)" }} onClick={() => setIsEnlarged(true)}>
                   <Image src={selected.image} alt={selected.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 600px" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="bg-white/20 backdrop-blur-md p-4 rounded-full border border-white/30 transform scale-90 group-hover/img:scale-100 transition-transform duration-300"><Maximize2 size={24} color="#fff" /></div>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150 flex items-center justify-center">
+                    <div className="bg-white/20 backdrop-blur-md p-4 rounded-full border border-white/30 transform scale-90 group-hover/img:scale-100 transition-transform duration-150"><Maximize2 size={24} color="#fff" /></div>
                   </div>
                 </div>
 
@@ -325,9 +321,9 @@ export default function Certificates() {
       <AnimatePresence>
         {isEnlarged && selected && (
           <Portal>
-            <m.div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 md:p-12" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsEnlarged(false)}>
+            <m.div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 md:p-12" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} onClick={() => setIsEnlarged(false)}>
               <m.button className="absolute top-6 right-6 z-[100001] h-12 w-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors" onClick={() => setIsEnlarged(false)}><X size={24} color="#fff" /></m.button>
-              <m.div className="relative w-full h-full flex items-center justify-center" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} transition={{ type: "spring", damping: 25, stiffness: 300 }}>
+              <m.div className="relative w-full h-full flex items-center justify-center will-change-transform" initial={{ scale: 0.97, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.97, opacity: 0 }} transition={{ duration: 0.15, ease: [0.2, 0.8, 0.2, 1] }}>
                 <div className="relative w-full h-full max-w-6xl max-h-screen">
                   <Image src={selected.image} alt={selected.title} fill className="object-contain" priority sizes="100vw" />
                 </div>

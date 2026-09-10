@@ -165,6 +165,10 @@ html.lenis, html.lenis body { height: auto; }
   width: max-content;
   gap: 1.25rem;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 /* ===== Project Card ===== */
@@ -177,15 +181,12 @@ html.lenis, html.lenis body { height: auto; }
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  /* Compositor-only transitions. Dropping box-shadow from the transition
-     list removes the repaint that fired on every hover-state change —
-     the dominant cause of the laggy project marquee scroll. The resting
-     shadow stays as a static paint (no animation), so the look is unchanged. */
-  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 220ms ease;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 160ms ease;
   will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   contain: layout paint;
-  /* Static, non-animated shadow. */
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.2);
   cursor: pointer;
 }
@@ -203,8 +204,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 .project-card:hover {
-  /* Pure transform — no shadow paint, no layout reflow. */
-  transform: translate3d(0, -5px, 0) scale(1.015);
+  transform: translate3d(0, -4px, 0) scale(1.015);
   border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
@@ -218,14 +218,18 @@ html.lenis, html.lenis body { height: auto; }
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: var(--muted, #1a1a1a);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .project-card__image-wrap img {
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .project-card:hover .project-card__image-wrap img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .project-card__body {
@@ -296,7 +300,7 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: 0.25rem;
   margin-top: 0.25rem;
-  transition: opacity 0.25s ease, gap 0.25s ease;
+  transition: opacity 140ms ease, gap 140ms ease;
 }
 
 .project-card:hover .project-card__cta {
@@ -320,8 +324,8 @@ html.lenis, html.lenis body { height: auto; }
   opacity: 0.22;
   pointer-events: none;
   user-select: none;
-  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 160ms ease,
+              transform 160ms ease;
   transform: translateY(0);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
@@ -421,19 +425,13 @@ html.lenis, html.lenis body { height: auto; }
   background: var(--bg);
   border-radius: 1.25rem;
   border: 1px solid var(--border-subtle);
-  /* Fixed width so every card in the marquee is identical in size
-     (matching the Web Development Bootcamp reference). Without this,
-     cards expand to their content size and end up different heights.
-     Sized to match the project cards. */
   width: clamp(240px, 70vw, 390px);
-  /* ONLY transition compositor-friendly properties. */
-  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 220ms ease;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 160ms ease;
   cursor: pointer;
-  /* Hint GPU so hover lift doesn't trigger layer creation mid-scroll. */
   will-change: transform;
-  /* Contain the card's paint so the hover transform can't bleed into the
-     marquee track or the page background. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
   contain: layout paint;
 }
 
@@ -449,7 +447,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 .cert-card:hover {
-  transform: translate3d(0, -4px, 0);
+  transform: translate3d(0, -4px, 0) scale(1.015);
   border-color: color-mix(in srgb, var(--accent) 35%, transparent);
 }
 .cert-card__image-wrap {
@@ -457,16 +455,17 @@ html.lenis, html.lenis body { height: auto; }
   width: 100%;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.05);
-  /* Don't let the image-wrap shrink — the marquee track's `align-items:
-     stretch` matches cards on the tallest sibling, but only if this
-     wrap holds its aspect-ratio-driven height instead of yielding. */
   flex-shrink: 0;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .cert-card__image {
-  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .cert-card:hover .cert-card__image {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 .cert-card__zoom-overlay {
   position: absolute;
@@ -476,7 +475,7 @@ html.lenis, html.lenis body { height: auto; }
   justify-content: center;
   background: rgba(0, 0, 0, 0.3);
   opacity: 0;
-  transition: opacity 220ms ease;
+  transition: opacity 120ms ease;
   pointer-events: none;
 }
 .cert-card:hover .cert-card__zoom-overlay {
@@ -641,11 +640,8 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ===== Performance: Content Visibility ===== */
-/* Skip rendering below-fold sections until near the viewport */
+/* Skip rendering below-fold static sections until near the viewport */
 .section-about,
-#skills,
-#projects,
-#certificates,
 #contact {
   content-visibility: auto;
   contain-intrinsic-size: auto 600px;

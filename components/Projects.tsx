@@ -505,9 +505,9 @@ function EnhancedLightbox({
               custom={direction}
               variants={{
                 enter: (direction: number) => ({
-                  x: direction > 0 ? 300 : -300,
+                  x: direction > 0 ? 180 : -180,
                   opacity: 0,
-                  scale: 0.9,
+                  scale: 0.97,
                 }),
                 center: {
                   zIndex: 1,
@@ -517,20 +517,20 @@ function EnhancedLightbox({
                 },
                 exit: (direction: number) => ({
                   zIndex: 0,
-                  x: direction < 0 ? 300 : -300,
+                  x: direction < 0 ? 180 : -180,
                   opacity: 0,
-                  scale: 0.9,
+                  scale: 0.97,
                 }),
               }}
               initial="enter"
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 },
-                scale: { duration: 0.3 },
+                x: { type: "spring", stiffness: 450, damping: 35 },
+                opacity: { duration: 0.12 },
+                scale: { duration: 0.12 },
               }}
-              className="absolute inset-0 flex items-center justify-center p-4 sm:p-12"
+              className="absolute inset-0 flex items-center justify-center p-4 sm:p-12 will-change-transform"
             >
               <div className="relative w-full h-full max-w-6xl">
                 <Image
@@ -580,7 +580,7 @@ function EnhancedLightbox({
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.12 }}
                     className={`relative w-20 aspect-video rounded-md overflow-hidden cursor-pointer border-2 transition-all ${
                       isActive ? "border-white scale-110 shadow-xl z-20" : "border-transparent opacity-40 hover:opacity-100"
                     }`}
@@ -623,26 +623,27 @@ function ProjectModal({
     <Portal>
       <m.div
         className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
-        style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.15 }}
         onClick={onClose}
       >
         <m.div
-          className="relative w-full max-w-5xl md:max-w-6xl lg:max-w-7xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
+          className="relative w-full max-w-5xl md:max-w-6xl lg:max-w-7xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row will-change-transform"
           style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 850px)" }}
-          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          initial={{ scale: 0.97, opacity: 0, y: 8 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.9, opacity: 0, y: 20 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          exit={{ scale: 0.97, opacity: 0, y: 8 }}
+          transition={{ duration: 0.16, ease: [0.2, 0.8, 0.2, 1] }}
           onClick={(e) => e.stopPropagation()}
           data-lenis-prevent="true"
         >
           {/* Close button — top right of modal */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
+            className="absolute top-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-150 hover:scale-110 active:scale-95"
             style={{
               background: "var(--bg)",
               color: "var(--fg-muted)",
@@ -921,11 +922,12 @@ export default function Projects() {
   const isVisible  = useInView(sectionRef, { margin: "400px" });
 
   // ── rAF engine state (all refs → zero React re-renders per frame)
-  const xRef        = useRef(0);          // current rendered position px (unbounded, negative)
-  const targetXRef  = useRef<number | null>(null); // null = auto-scroll, number = spring target
-  const speedRef    = useRef(0);          // px/s, computed once from DOM
-  const isPausedRef = useRef(false);      // hover pause
-  const reducedRef  = useRef(false);      // prefers-reduced-motion
+  const xRef           = useRef(0);          // current rendered position px (unbounded, negative)
+  const targetXRef     = useRef<number | null>(null); // null = auto-scroll, number = spring target
+  const speedRef       = useRef(0);          // px/s, computed once from DOM
+  const isPausedRef    = useRef(false);      // hover pause
+  const pauseFactorRef = useRef(1);          // smooth deceleration/acceleration factor 0..1
+  const reducedRef     = useRef(false);      // prefers-reduced-motion
 
   // ── Drag state
   const drag = useRef({
@@ -960,9 +962,6 @@ export default function Projects() {
 
     let rafId = 0;
     let lastTime = 0;
-    // Cached half-width. Reading `el.scrollWidth` per frame forces a
-    // layout pass on every tick — at 60 fps that's a layout query 60x/s,
-    // which is the dominant cause of the laggy marquee feel.
     let halfWidth = 0;
 
     const measure = () => {
@@ -974,8 +973,6 @@ export default function Projects() {
       }
     };
 
-    // Initial measure + re-measure once web fonts settle (font swap
-    // changes card widths and would otherwise leave the cache stale).
     measure();
     if (typeof document !== "undefined" && document.fonts) {
       document.fonts.ready.then(measure);
@@ -985,7 +982,6 @@ export default function Projects() {
       rafId = requestAnimationFrame(tick);
 
       if (!halfWidth) {
-        // First frame after the track rendered — measure once and bail.
         const el = trackRef.current;
         if (!el || !el.scrollWidth) return;
         halfWidth = el.scrollWidth / 2;
@@ -998,6 +994,9 @@ export default function Projects() {
       if (!dt) return;
 
       if (!drag.current.active) {
+        const targetFactor = isPausedRef.current ? 0 : 1;
+        pauseFactorRef.current += (targetFactor - pauseFactorRef.current) * (1 - Math.exp(-14 * dt));
+
         // Post-drag inertia (frame-rate independent exponential decay)
         if (velocityRef.current !== 0) {
           xRef.current += velocityRef.current * dt;
@@ -1012,19 +1011,18 @@ export default function Projects() {
             xRef.current    = targetXRef.current;
             targetXRef.current = null; // spring done → resume auto-scroll
           }
-        } else if (!isPausedRef.current && speedRef.current > 0) {
-          // Auto-scroll
-          xRef.current -= speedRef.current * dt;
+        } else if (pauseFactorRef.current > 0.001 && speedRef.current > 0) {
+          // Auto-scroll with smooth deceleration
+          xRef.current -= speedRef.current * dt * pauseFactorRef.current;
         }
       }
-      // (during drag, xRef is written by window listeners — nothing to do here)
 
       // Wrap visually: map unbounded x into [-hw, 0]
       const displayX = ((xRef.current % halfWidth) + halfWidth) % halfWidth - halfWidth;
       const el = trackRef.current;
       if (!el) return;
-      // Skip the style write when the value didn't change (paused / at rest)
-      const next = `translate3d(${displayX}px, 0, 0)`;
+      const roundedX = Math.round(displayX * 100) / 100;
+      const next = `translate3d(${roundedX}px, 0, 0)`;
       if (el.style.transform !== next) el.style.transform = next;
     }
 
