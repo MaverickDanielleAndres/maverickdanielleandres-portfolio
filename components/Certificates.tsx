@@ -221,7 +221,7 @@ export default function Certificates() {
   };
 
   return (
-    <section id="certificates" ref={sectionRef} style={{ background: "var(--bg-projects)", color: "var(--fg)", paddingTop: "clamp(4rem,10vh,7rem)", paddingBottom: "clamp(4rem,10vh,7rem)", position: "relative", overflow: "hidden", borderTop: "1px solid var(--border-subtle)" }}>
+    <section id="certificates" ref={sectionRef} style={{ background: "var(--bg-projects)", color: "var(--fg)", paddingTop: "clamp(2rem, 5vh, 4rem)", paddingBottom: "clamp(1.5rem, 3.5vh, 2.5rem)", position: "relative", overflow: "hidden", borderTop: "1px solid var(--border-subtle)" }}>
       {/* Section header */}
       <div style={{ paddingInline: "var(--container-px)", marginBottom: "clamp(2rem,4vh,3rem)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1rem" }}>
         <div>
@@ -280,7 +280,7 @@ export default function Certificates() {
                 <div className="overflow-y-auto md:overflow-hidden p-8 md:p-10 grow md:w-[45%]">
                   <div className="flex justify-between items-start gap-4 mb-4 pr-12">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] mb-1 font-semibold" style={{ color: "var(--accent)" }}>{selected.issuer}</p>
+                      <p className="text-[10px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] mb-1 font-semibold" style={{ color: "var(--accent)" }}>{selected.issuer}</p>
                       <h3 className="text-2xl font-medium leading-tight">{selected.title}</h3>
                     </div>
                   </div>

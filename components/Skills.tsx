@@ -7,8 +7,9 @@ import CursorDitherTrail from "@/components/ui/cursor-dither-trail";
 import { 
   Palette, Activity, TrendingUp, Search, Bot, Blocks, Layout, 
   Cpu, Database as DbIcon, Settings2, Layers, TestTube, 
-  Sparkles, Globe, ShoppingCart, Cloud, Server, Link, Zap, ShieldCheck 
+  Sparkles, Globe, ShoppingCart, Cloud, Server, Link 
 } from "lucide-react";
+import type { Variants } from "framer-motion";
 
 const COMPETENCIES_CARDS = [
   { id: "1", title: "Graphics Designing", description: "Visual identity, digital assets, and high-fidelity mockups", icon: <Palette className="h-5 w-5 text-[var(--fg)]" /> },
@@ -76,7 +77,7 @@ export default function Skills() {
     },
   };
 
-  const itemVariants: any = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -121,13 +122,13 @@ export default function Skills() {
               <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">What I Bring</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-5">
+            <div className="competencies-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-[repeat(9,minmax(0,1fr))] gap-2.5 sm:gap-3 lg:gap-3.5">
               {COMPETENCIES_CARDS.map((item) => (
-                <div key={item.id} className="flex items-center gap-2 sm:gap-3.5 group p-1.5 sm:p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200">
-                  <div className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-[10px] bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
-                    <div className="scale-75 sm:scale-90">{item.icon}</div>
+                <div key={item.id} className="competency-card group p-2 md:p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200">
+                  <div className="competency-card__icon h-9 w-9 md:h-10 md:w-10 shrink-0 rounded-[10px] bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                    <div className="scale-85 md:scale-90">{item.icon}</div>
                   </div>
-                  <h4 className="text-[10px] sm:text-sm font-bold text-[var(--fg)] leading-tight">
+                  <h4 className="competency-card__title font-bold text-[var(--fg)] leading-tight">
                     {item.title}
                   </h4>
                 </div>

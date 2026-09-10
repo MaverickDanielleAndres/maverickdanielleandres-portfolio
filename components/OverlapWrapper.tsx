@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { m, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export default function OverlapWrapper({
@@ -35,7 +35,7 @@ export default function OverlapWrapper({
   const y = useTransform(scrollYProgress, [0, 1], ["0vh", "20vh"]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.6]);
 
-  // ── Parallax path: framer-motion `motion.div` driving `transform` & `opacity`.
+  // ── Parallax path: framer-motion `m.div` driving `transform` & `opacity`.
   // ── Non-parallax path: plain `<div>` so framer-motion's per-frame style
   //    pipeline never runs for these sections. With 7 wrappers on the page,
   //    the saved work per scroll tick is meaningful.
@@ -48,7 +48,7 @@ export default function OverlapWrapper({
           sticky ? "sticky top-0 h-screen overflow-hidden" : "relative"
         )}
       >
-        <motion.div
+        <m.div
           style={{
             y,
             opacity,
@@ -62,7 +62,7 @@ export default function OverlapWrapper({
           className={cn("w-full", sticky ? "h-screen" : "", shadowClassName)}
         >
           {children}
-        </motion.div>
+        </m.div>
       </div>
     );
   }

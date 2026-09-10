@@ -688,7 +688,7 @@ function ProjectModal({
               <div className="flex justify-between items-start gap-4 mb-3 pr-12">
                 <div>
                   <p
-                    className="text-xs uppercase tracking-[0.2em] mb-1 font-semibold"
+                    className="text-[10px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] mb-1 font-semibold"
                     style={{ color: "var(--accent)" }}
                   >
                     {project.category} &middot; {project.year}

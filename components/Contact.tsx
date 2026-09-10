@@ -84,7 +84,7 @@ export default function Contact() {
       {/* CTA headline */}
       <div
         style={{
-          padding: "clamp(4rem,12vh,9rem) var(--container-px) clamp(3rem,6vh,5rem)",
+          padding: "clamp(2.5rem, 5vh, 4.5rem) var(--container-px) clamp(2.5rem, 5vh, 4rem)",
           borderBottom: "1px solid var(--border-subtle)",
         }}
       >

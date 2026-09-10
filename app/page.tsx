@@ -52,7 +52,7 @@ export default function Home() {
                 <ActivitySection />
               </LazyLoad>
             </OverlapWrapper>
-            <OverlapWrapper zIndex={6} bg="var(--bg-projects)" sticky={true}>
+            <OverlapWrapper zIndex={6} bg="var(--bg-projects)">
               <LazyLoad height="100vh">
                 <Certificates />
               </LazyLoad>

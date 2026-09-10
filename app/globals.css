@@ -599,11 +599,44 @@ html.lenis, html.lenis body { height: auto; }
     will-change: auto;
   }
 }
+/* ===== Core Competencies Responsive Layout ===== */
+.competency-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+.competency-card__title {
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.25;
+}
+
+@media (min-width: 1024px) {
+  .competencies-grid {
+    display: grid !important;
+    grid-template-columns: repeat(9, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+  .competency-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem 0.25rem !important;
+  }
+  .competency-card__title {
+    font-size: 11px !important;
+    text-align: center !important;
+  }
+}
+
 /* ===== GitHub Calendar Responsive ===== */
-.react-activity-calendar svg {
-  width: 100% !important;
-  height: auto !important;
-  max-width: 100% !important;
+.react-activity-calendar {
+  margin: 0 auto;
+  color: var(--fg);
 }
 
 /* ===== Performance: Will Change ===== */

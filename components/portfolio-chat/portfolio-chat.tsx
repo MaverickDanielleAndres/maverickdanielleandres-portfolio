@@ -56,6 +56,7 @@ export default function PortfolioChat() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const messagesRef = useRef<ChatMessage[]>([]);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
 
   // Keep a ref of the latest messages so async callbacks can read the
   // current conversation without re-creating them on every render.
@@ -358,6 +359,28 @@ export default function PortfolioChat() {
     setIsOpen(false);
   }, []);
 
+  // Close when clicking or tapping outside the chat window
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handlePointerDown(e: MouseEvent | TouchEvent) {
+      if (
+        chatWindowRef.current &&
+        !chatWindowRef.current.contains(e.target as Node)
+      ) {
+        handleClose();
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+    };
+  }, [isOpen, handleClose]);
+
   const canSend = input.trim().length > 0 && status !== "loading";
 
   const showSuggestions = useMemo(
@@ -435,32 +458,46 @@ export default function PortfolioChat() {
       {/* ── Chat Window ───────────────────────────────────────────── */}
       <AnimatePresence>
         {isOpen && (
-          <m.div
-            role="dialog"
-            aria-label="Mavs AI — portfolio assistant"
-            aria-modal="false"
-            className={cn(
-              "fixed",
-              "bottom-0 right-0 sm:bottom-5 sm:right-5 md:bottom-6 md:right-6",
-              "w-[calc(100vw-2rem)] sm:w-[320px] md:w-[360px] lg:w-[380px]",
-              "max-w-[380px]",
-              "h-[min(100dvh-3rem,720px)] sm:h-[540px] md:h-[600px] lg:h-[640px]",
-              "flex flex-col overflow-hidden rounded-2xl",
-              "border backdrop-blur-2xl",
-            )}
-            style={{
-              background: "color-mix(in srgb, var(--bg) 96%, transparent)",
-              color: "var(--fg)",
-              borderColor: "var(--border-subtle)",
-              boxShadow:
-                "0 24px 64px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.04)",
-              zIndex: 2147483647,
-            }}
-            initial={{ opacity: 0, y: 20, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.97 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <>
+            {/* Backdrop: clicking outside closes the chat immediately */}
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              className="fixed inset-0 bg-black/25 backdrop-blur-[2px] sm:bg-transparent sm:backdrop-blur-none"
+              style={{ zIndex: 2147483646 }}
+              onClick={handleClose}
+              aria-hidden="true"
+            />
+
+            <m.div
+              ref={chatWindowRef}
+              role="dialog"
+              aria-label="Mavs AI — portfolio assistant"
+              aria-modal="false"
+              className={cn(
+                "fixed",
+                "bottom-5 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 md:bottom-6 md:right-6",
+                "w-auto sm:w-[340px] md:w-[360px] lg:w-[380px]",
+                "max-w-[calc(100vw-2rem)] sm:max-w-[380px]",
+                "h-[min(76dvh,560px)] sm:h-[540px] md:h-[580px] lg:h-[620px]",
+                "flex flex-col overflow-hidden rounded-2xl",
+                "border backdrop-blur-2xl shadow-2xl",
+              )}
+              style={{
+                background: "color-mix(in srgb, var(--bg) 96%, transparent)",
+                color: "var(--fg)",
+                borderColor: "var(--border-subtle)",
+                boxShadow:
+                  "0 24px 64px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06)",
+                zIndex: 2147483647,
+              }}
+              initial={{ opacity: 0, y: 20, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.97 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            >
             {/* ── Header ──────────────────────────────────────────── */}
             <header
               className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5 shrink-0"
@@ -547,18 +584,6 @@ export default function PortfolioChat() {
                 </button>
               </div>
             </header>
-
-            {/* ── Sub-header status ───────────────────────────────── */}
-            <div
-              className="px-4 sm:px-5 py-2.5 text-[11.5px] leading-snug shrink-0"
-              style={{
-                color: "var(--fg-muted)",
-                borderBottom: "1px solid var(--border-subtle)",
-              }}
-            >
-              Ask me anything about Maverick&apos;s work — I&apos;ll keep it
-              friendly and on-topic. ✨
-            </div>
 
             {/* ── Messages ────────────────────────────────────────── */}
             <div
@@ -652,7 +677,8 @@ export default function PortfolioChat() {
               </p>
             </div>
           </m.div>
-        )}
+        </>
+      )}
       </AnimatePresence>
     </Portal>
   );

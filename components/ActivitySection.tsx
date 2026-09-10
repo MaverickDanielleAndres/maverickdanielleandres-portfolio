@@ -1,35 +1,18 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import { m, useInView } from "framer-motion";
+import React, { useRef, useEffect } from "react";
+import { m, useInView, type Variants } from "framer-motion";
 import dynamic from "next/dynamic";
 
-const GitHubCalendar = dynamic(() => (import("react-github-calendar") as any).then((mod: any) => {
-  return mod.GitHubCalendar || mod.default || mod;
+const GitHubCalendar = dynamic(() => import("react-github-calendar").then((mod) => {
+  return mod.GitHubCalendar || (mod as any).default || mod;
 }), {
   ssr: false,
   loading: () => <div className="w-full h-[200px] animate-pulse bg-white/5 rounded-lg" />
 }) as React.ComponentType<any>;
 
-import {
-  SiReact, SiNextdotjs, SiTypescript, SiTailwindcss,
-  SiNodedotjs, SiPostgresql, SiSupabase, SiGit
-} from "react-icons/si";
 import SpotlightCard from "@/components/ui/SpotlightCard";
-import PixelCard from "@/components/ui/PixelCard";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
-
-const TECH_STACK = [
-  { name: "React", icon: SiReact, color: "#61DAFB" },
-  { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", color: "#ffffff", isCustom: true },
-  { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
-  { name: "Tailwind", icon: SiTailwindcss, color: "#06B6D4" },
-  { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
-  { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" },
-  { name: "Supabase", icon: SiSupabase, color: "#3ECF8E" },
-  { name: "Git", icon: SiGit, color: "#F05032" },
-];
 
 const EXPERIENCE = [
   {
@@ -79,7 +62,7 @@ export default function ActivitySection() {
     },
   };
 
-  const itemVariants: any = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -91,14 +74,44 @@ export default function ActivitySection() {
   const calendarScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (calendarScrollRef.current) {
-      const timer = setTimeout(() => {
-        if (calendarScrollRef.current) {
-          calendarScrollRef.current.scrollLeft = calendarScrollRef.current.scrollWidth;
-        }
-      }, 500);
-      return () => clearTimeout(timer);
-    }
+    const el = calendarScrollRef.current;
+    if (!el) return;
+
+    const scrollToLatest = () => {
+      if (el) {
+        el.scrollLeft = el.scrollWidth;
+      }
+    };
+
+    // Scroll immediately
+    scrollToLatest();
+
+    // Use ResizeObserver to detect when the calendar SVG renders or window resizes
+    const ro = new ResizeObserver(() => {
+      scrollToLatest();
+    });
+    ro.observe(el);
+
+    // Observe DOM mutations (e.g. when react-github-calendar inserts elements asynchronously)
+    const mo = new MutationObserver(() => {
+      scrollToLatest();
+    });
+    mo.observe(el, { childList: true, subtree: true });
+
+    // Multi-stage timers for network latency variations
+    const t1 = setTimeout(scrollToLatest, 100);
+    const t2 = setTimeout(scrollToLatest, 400);
+    const t3 = setTimeout(scrollToLatest, 1000);
+    const t4 = setTimeout(scrollToLatest, 2000);
+
+    return () => {
+      ro.disconnect();
+      mo.disconnect();
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+    };
   }, []);
 
   return (
@@ -187,14 +200,14 @@ export default function ActivitySection() {
               </a>
             </div>
  
-            <div className="w-full bg-black/[0.02] dark:bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden">
-              <div ref={calendarScrollRef} className="w-full overflow-x-auto p-4 sm:p-6 scrollbar-hide">
-                <div className="w-max mx-auto">
+            <div className="w-full bg-black/[0.02] dark:bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden p-4 sm:p-6">
+              <div ref={calendarScrollRef} className="w-full overflow-x-auto scrollbar-hide">
+                <div className="w-max mx-auto min-w-[720px] sm:min-w-0">
                   <GitHubCalendar
                     username="MaverickDanielleAndres"
                     fontSize={12}
-                    blockSize={16}
-                    blockMargin={5}
+                    blockSize={15}
+                    blockMargin={4}
                     blockRadius={3}
                     theme={calendarTheme}
                     colorScheme={theme === "light" ? "light" : "dark"}

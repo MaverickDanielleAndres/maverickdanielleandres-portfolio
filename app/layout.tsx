@@ -248,18 +248,8 @@ export default function RootLayout({
             count at zero while we still deliver the full design system. */}
         <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
 
-        {/* Preload the local fonts so they fetch in parallel with the
-            CSS. The @font-face declarations live in globals.css, but the
-            browser only discovers those once the stylesheet is parsed —
-            explicit <link rel=preload> removes a round-trip and lets
-            text paint with the correct face from the very first frame. */}
-        <link
-          rel="preload"
-          href="/fonts/neue-montreal/index.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        {/* Preload Roboto Flex variable font file so it fetches in parallel with the CSS.
+            Neue Montreal is already automatically preloaded by next/font/local. */}
         <link
           rel="preload"
           href="/fonts/RobotoFlex-Variable.woff2?v=2"
@@ -306,11 +296,8 @@ export default function RootLayout({
         >
           {/* Single LazyMotion at the root so every `m.*` component below
               shares the lightweight bundle (~6 KiB) instead of each
-              component pulling in framer-motion's full ~60 KiB bundle.
-              The default `motion.*` import still works for any stray
-              component that hasn't been migrated, but LazyMotion shadows
-              it for everything inside. */}
-          <LazyMotion features={domAnimation} strict>
+              component pulling in framer-motion's full ~60 KiB bundle. */}
+          <LazyMotion features={domAnimation}>
             {children}
             <Toaster />
           </LazyMotion>
