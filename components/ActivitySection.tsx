@@ -200,9 +200,9 @@ export default function ActivitySection() {
               </a>
             </div>
  
-            <div className="w-full bg-black/[0.02] dark:bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden p-4 sm:p-6">
+            <div className="w-full bg-black/[0.02] dark:bg-white/5 backdrop-blur-md border border-[var(--border-subtle)] rounded-xl overflow-hidden p-4 sm:p-6 md:p-8">
               <div ref={calendarScrollRef} className="w-full overflow-x-auto scrollbar-hide">
-                <div className="w-max mx-auto min-w-[720px] sm:min-w-0">
+                <div className="w-full min-w-[720px] sm:min-w-0">
                   <GitHubCalendar
                     username="MaverickDanielleAndres"
                     fontSize={12}
