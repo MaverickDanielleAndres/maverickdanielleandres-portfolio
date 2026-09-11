@@ -59,6 +59,9 @@ const MAV_SIGNALS = [
   "monitoring", "jjz", "superfit", "photosnap",
   "shimmeur", "zentari", "optrizo",
   "wedding", "allen", "vea", "mojde",
+  "available", "availability", "open to opportunities",
+  "open to work", "looking for work",
+  "contact", "reach out",
 ];
 
 function normalize(text: string): string {

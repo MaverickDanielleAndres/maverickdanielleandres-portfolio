@@ -23,15 +23,37 @@ import { wrapVisitorMessage } from "@/lib/chat/prompt-builder";
 /* ── Configuration ──────────────────────────────────────────────────── */
 
 /**
- * Primary model. Defaults to `gemini-2.5-flash-lite` (fast, low cost). Set
- * GEMINI_MODEL in `.env.local` to override — for example, with
- * `gemini-3.5-flash-lite`.
+ * Primary model. The exact model name varies by account and time —
+ * Google's been retiring the 2.x line for new accounts and the
+ * v1beta endpoint doesn't always have every advertised "3.x" name.
+ *
+ * We accept either `GEMINI_MODEL` (preferred) or `GEMINI_FALLBACK_MODEL`
+ * from the environment. If neither works, `streamPortfolioChat` will
+ * fall through to the auto-discovery list and try each candidate.
+ *
+ * Recommended names by era:
+ *   - 2025:  gemini-2.5-flash
+ *   - 2026+: gemini-3.6-flash, gemini-3-flash, gemini-3.5-flash-lite
+ *            (Google's Interactions API / new SDKs)
  */
 export const GEMINI_MODEL =
-  process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash-lite";
-/** Fallback used when the primary fails to emit its first byte in 20s. */
-export const GEMINI_FALLBACK_MODEL =
-  process.env.GEMINI_FALLBACK_MODEL?.trim() || "gemini-2.5-flash";
+  process.env.GEMINI_MODEL?.trim() ||
+  process.env.GEMINI_FALLBACK_MODEL?.trim() ||
+  "gemini-2.5-flash";
+
+/**
+ * Auto-discovery list used when the configured model isn't available
+ * on the v1beta endpoint. Ordered newest-first so the best-supported
+ * model wins.
+ */
+export const MODEL_FALLBACK_CHAIN: string[] = [
+  "gemini-3-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-3.6-flash",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+];
 
 const KNOWLEDGE_FILE = path.join(
   process.cwd(),
@@ -288,10 +310,16 @@ export async function streamPortfolioChat(
   const systemInstruction =
     `${PORTFOLIO_SYSTEM_INSTRUCTION}\n\n--- MAVERICK PORTFOLIO KNOWLEDGE BASE (source of truth) ---\n\n${knowledge}`;
 
-  const tryModels: Array<{ name: string; isFallback: boolean }> = [
-    { name: GEMINI_MODEL, isFallback: false },
-    { name: GEMINI_FALLBACK_MODEL, isFallback: true },
-  ];
+  const tryModels: Array<{ name: string; isFallback: boolean }> = [];
+  const seenModels = new Set<string>();
+  const push = (name: string, isFallback: boolean) => {
+    if (!name || seenModels.has(name)) return;
+    seenModels.add(name);
+    tryModels.push({ name, isFallback });
+  };
+  push(GEMINI_MODEL, false);
+  // Then the auto-discovery chain so we always have a backup.
+  for (const name of MODEL_FALLBACK_CHAIN) push(name, true);
 
   let lastError: unknown = null;
   let partial = "";

@@ -139,10 +139,8 @@ const KEYWORDS: Record<string, string[]> = {
     "payment",
   ],
   availability: [
-    "available", "availability", "open to", "open to opportunities",
-    "open to work", "open for", "free to", "free for", "when can",
-    "when are", "when could", "can you start", "start now", "asap",
-    "right now", "currently", "looking for work",
+    "available", "availability", "open to opportunities",
+    "open to work", "looking for work", "hire mav", "hire maverick",
   ],
   resume: [
     "resume", "cv", "curriculum vitae", "download cv", "download resume",
