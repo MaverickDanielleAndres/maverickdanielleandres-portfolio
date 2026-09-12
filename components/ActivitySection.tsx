@@ -77,41 +77,14 @@ export default function ActivitySection() {
     const el = calendarScrollRef.current;
     if (!el) return;
 
-    const scrollToLatest = () => {
+    // Scroll to the right edge once after mount without continuous reflow thrashing
+    const timer = setTimeout(() => {
       if (el) {
         el.scrollLeft = el.scrollWidth;
       }
-    };
+    }, 200);
 
-    // Scroll immediately
-    scrollToLatest();
-
-    // Use ResizeObserver to detect when the calendar SVG renders or window resizes
-    const ro = new ResizeObserver(() => {
-      scrollToLatest();
-    });
-    ro.observe(el);
-
-    // Observe DOM mutations (e.g. when react-github-calendar inserts elements asynchronously)
-    const mo = new MutationObserver(() => {
-      scrollToLatest();
-    });
-    mo.observe(el, { childList: true, subtree: true });
-
-    // Multi-stage timers for network latency variations
-    const t1 = setTimeout(scrollToLatest, 100);
-    const t2 = setTimeout(scrollToLatest, 400);
-    const t3 = setTimeout(scrollToLatest, 1000);
-    const t4 = setTimeout(scrollToLatest, 2000);
-
-    return () => {
-      ro.disconnect();
-      mo.disconnect();
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -129,7 +102,7 @@ export default function ActivitySection() {
       >
         {/* Work Experience - Responsive Grid Layout */}
         <m.div variants={itemVariants} className="w-full">
-          <SpotlightCard className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" spotlightColor="rgba(96, 85, 240, 0.15)">
+          <SpotlightCard className="w-full border border-black/10 dark:border-white/10 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-black/[0.02] dark:bg-white/[0.02]">
             <div className="mb-6 px-2">
               <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">Work Experience</h3>
               <p className="text-sm sm:text-base text-[var(--fg-muted)] mt-1">A timeline of my professional growth and technical leadership</p>
@@ -156,10 +129,7 @@ export default function ActivitySection() {
                     </div>
                   </div>
 
-                  {/* Decorative Separator between items (only on large desktop).
-                      Positioned absolutely on the right edge of each card except
-                      the last one — works for any grid layout without affecting
-                      the row height. */}
+                  {/* Decorative Separator between items (only on large desktop). */}
                   {i < EXPERIENCE.length - 1 && (
                     <div
                       className="hidden lg:flex items-center justify-center pointer-events-none absolute top-1/2 -translate-y-1/2 -right-2 h-12"
@@ -184,7 +154,7 @@ export default function ActivitySection() {
 
         {/* Bottom Row: GitHub Activity */}
         <m.div variants={itemVariants} className="w-full">
-          <SpotlightCard className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" spotlightColor="rgba(96, 85, 240, 0.1)">
+          <SpotlightCard className="w-full border border-black/10 dark:border-white/10 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-black/[0.02] dark:bg-white/[0.02]">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 px-2">
               <div>
                 <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">GitHub Activity</h3>
@@ -194,7 +164,7 @@ export default function ActivitySection() {
                 href="https://github.com/MaverickDanielleAndres"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-medium px-4 py-2 rounded-full border border-[var(--border-subtle)] text-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-all duration-300"
+                className="text-xs font-medium px-4 py-2 rounded-full border border-[var(--border-subtle)] text-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-colors duration-150"
               >
                 View Profile
               </a>

@@ -8,7 +8,7 @@ export default function OverlapWrapper({
   children,
   zIndex,
   bg = "var(--bg)",
-  shadowClassName = "shadow-2xl",
+  shadowClassName = "",
   parallax = false,
   sticky = false,
 }: {
@@ -74,7 +74,7 @@ export default function OverlapWrapper({
         "w-full",
         sticky ? "sticky top-0 h-screen overflow-hidden" : "relative"
       )}
-      style={{ zIndex, contain: "layout paint" }}
+      style={{ zIndex }}
     >
       <div
         className={cn("w-full", sticky ? "h-screen" : "", shadowClassName)}

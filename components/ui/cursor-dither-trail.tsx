@@ -26,6 +26,15 @@ export function Component({
   }, []);
 
   useEffect(() => {
+    // Skip the whole effect on touch devices — there is no mouse cursor to
+    // follow, but the canvas + rAF + global listener were eating main-thread
+    // time on phones for no visual gain.
+    const coarse =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(pointer: coarse)").matches;
+    if (coarse) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -40,7 +49,7 @@ export function Component({
     canvas.style.height = `${height}px`;
     ctx.scale(dpr, dpr);
 
-    const resizeObserver = new ResizeObserver(() => {
+    const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width * dpr;
@@ -48,56 +57,82 @@ export function Component({
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.scale(dpr, dpr);
-    });
-    resizeObserver.observe(document.body);
-
-    const dots = { current: [] as { x: number; y: number; createdAt: number }[] };
-
-    const paintDot = (x: number, y: number) => {
-      dots.current.push({ x, y, createdAt: performance.now() });
     };
+    window.addEventListener("resize", handleResize);
 
+    const dots: { x: number; y: number; createdAt: number }[] = [];
+    const MAX_DOTS = 24; // hard cap — high-frequency moves would otherwise queue an unbounded array
+    let isLooping = false;
     let animationFrameId: number;
 
     const fadeStep = (now: number) => {
       ctx.clearRect(0, 0, width, height);
-      
-      dots.current = dots.current.filter(dot => now - dot.createdAt < fadeDuration);
 
-      for (const dot of dots.current) {
+      // Prune expired dots
+      for (let i = dots.length - 1; i >= 0; i--) {
+        if (now - dots[i].createdAt >= fadeDuration) {
+          dots.splice(i, 1);
+        }
+      }
+
+      for (const dot of dots) {
         const age = now - dot.createdAt;
-        const opacity = 1 - age / fadeDuration;
+        const opacity = Math.max(0, 1 - age / fadeDuration);
         ctx.fillStyle = trailColor;
         ctx.globalAlpha = opacity;
         ctx.fillRect(dot.x - dotSize / 2, dot.y - dotSize / 2, dotSize, dotSize);
       }
-      
+
       ctx.globalAlpha = 1;
-      animationFrameId = requestAnimationFrame(fadeStep);
+
+      if (dots.length > 0) {
+        animationFrameId = requestAnimationFrame(fadeStep);
+      } else {
+        isLooping = false;
+        ctx.clearRect(0, 0, width, height);
+      }
     };
-    animationFrameId = requestAnimationFrame(fadeStep);
+
+    const paintDot = (x: number, y: number) => {
+      dots.push({ x, y, createdAt: performance.now() });
+      // Drop oldest dots to keep the array bounded
+      while (dots.length > MAX_DOTS) dots.shift();
+      if (!isLooping) {
+        isLooping = true;
+        animationFrameId = requestAnimationFrame(fadeStep);
+      }
+    };
+
+    // The global mousemove listener is ONLY attached while the trail is
+    // active. When isActive=false the listener is removed, so the rest of
+    // the page never competes with a background canvas paint loop.
+    if (!isActive) {
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        if (isLooping) cancelAnimationFrame(animationFrameId);
+      };
+    }
 
     const onMove = (e: MouseEvent) => {
-      if (!isActive) return;
-      const x = e.clientX;
-      const y = e.clientY;
-      paintDot(x, y);
+      paintDot(e.clientX, e.clientY);
     };
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", onMove);
-      resizeObserver.disconnect();
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
+      if (isLooping) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [trailColor, dotSize, fadeDuration, isActive]);
 
   if (!mounted) return null;
 
   return createPortal(
-    <canvas 
-      ref={canvasRef} 
-      className={`fixed inset-0 pointer-events-none w-screen h-screen z-0 ${className}`} 
+    <canvas
+      ref={canvasRef}
+      className={`fixed inset-0 pointer-events-none w-screen h-screen z-0 ${className}`}
     />,
     document.body
   );

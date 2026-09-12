@@ -98,12 +98,26 @@ export default function Certificates() {
   const [selected, setSelected]     = useState<Cert | null>(null);
   const [isEnlarged, setIsEnlarged] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isCoarseMobile, setIsCoarseMobile] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef   = useRef<HTMLDivElement>(null);
   const outerRef   = useRef<HTMLDivElement>(null);
   const inView     = useInView(sectionRef, { once: true, margin: "-5% 0px" });
-  const isVisible  = useInView(sectionRef, { margin: "400px" });
+  const isVisible  = useInView(sectionRef, { margin: "300px" });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(pointer: coarse) and (max-width: 1024px)");
+    setIsCoarseMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsCoarseMobile(e.matches);
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+    else mq.addListener(onChange);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", onChange);
+      else mq.removeListener(onChange);
+    };
+  }, []);
 
   const xRef           = useRef(0);
   const targetXRef     = useRef<number | null>(null);
@@ -123,6 +137,11 @@ export default function Certificates() {
     reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (outerRef.current) outerRef.current.dataset.reducedMotion = reducedRef.current ? "1" : "";
 
+    const isCoarse =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches;
+    if (isCoarse) return;
+
     let rafId = 0;
     let lastTime = 0;
     let halfWidth = 0;
@@ -130,8 +149,14 @@ export default function Certificates() {
     const measure = () => {
       const el = trackRef.current;
       if (!el) return;
-      halfWidth = el.scrollWidth / 2;
-      if (halfWidth > 0) {
+      const newHalfWidth = el.scrollWidth / 2;
+      if (newHalfWidth > 0) {
+        if (halfWidth > 0 && halfWidth !== newHalfWidth) {
+          const ratio = newHalfWidth / halfWidth;
+          xRef.current *= ratio;
+          if (targetXRef.current !== null) targetXRef.current *= ratio;
+        }
+        halfWidth = newHalfWidth;
         speedRef.current = reducedRef.current ? 0 : halfWidth / CERT_LOOP_DURATION_S;
       }
     };
@@ -143,6 +168,7 @@ export default function Certificates() {
 
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
+
       if (!halfWidth) {
         const el = trackRef.current;
         if (!el || !el.scrollWidth) return;
@@ -153,6 +179,7 @@ export default function Certificates() {
       const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.1) : 0;
       lastTime = time;
       if (!dt) return;
+
       if (!drag.current.active) {
         const targetFactor = isPausedRef.current ? 0 : 1;
         pauseFactorRef.current += (targetFactor - pauseFactorRef.current) * (1 - Math.exp(-14 * dt));
@@ -164,15 +191,29 @@ export default function Certificates() {
         } else if (targetXRef.current !== null) {
           const diff = targetXRef.current - xRef.current;
           xRef.current += diff * (1 - Math.exp(-12 * dt));
-          if (Math.abs(diff) < 0.4) { xRef.current = targetXRef.current; targetXRef.current = null; }
+          if (Math.abs(diff) < 0.4) {
+            xRef.current = targetXRef.current;
+            targetXRef.current = null;
+          }
         } else if (pauseFactorRef.current > 0.001 && speedRef.current > 0) {
           xRef.current -= speedRef.current * dt * pauseFactorRef.current;
         }
       }
-      const displayX = ((xRef.current % halfWidth) + halfWidth) % halfWidth - halfWidth;
+
+      if (halfWidth > 0) {
+        while (xRef.current <= -halfWidth) {
+          xRef.current += halfWidth;
+          if (targetXRef.current !== null) targetXRef.current += halfWidth;
+        }
+        while (xRef.current > 0) {
+          xRef.current -= halfWidth;
+          if (targetXRef.current !== null) targetXRef.current -= halfWidth;
+        }
+      }
+
       const el = trackRef.current;
       if (!el) return;
-      const roundedX = Math.round(displayX * 100) / 100;
+      const roundedX = Math.round(xRef.current * 100) / 100;
       const next = `translate3d(${roundedX}px, 0, 0)`;
       if (el.style.transform !== next) el.style.transform = next;
     }
@@ -183,6 +224,7 @@ export default function Certificates() {
       if (activeDragListeners.current) {
         window.removeEventListener("pointermove", activeDragListeners.current.move);
         window.removeEventListener("pointerup",   activeDragListeners.current.up);
+        window.removeEventListener("pointercancel", activeDragListeners.current.up);
         activeDragListeners.current = null;
       }
     };
@@ -194,34 +236,45 @@ export default function Certificates() {
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     targetXRef.current = null; velocityRef.current = 0;
+    drag.current.hasMoved = false;
     drag.current = { active: true, startX: e.clientX, frozenX: xRef.current, lastX: e.clientX, lastTime: performance.now(), velocity: 0, hasMoved: false };
     isPausedRef.current = true; setIsDragging(true);
+
     const onMove = (ev: PointerEvent) => {
       if (!drag.current.active) return;
       const now = performance.now(), dtMs = now - drag.current.lastTime;
-      if (dtMs > 0) drag.current.velocity = (ev.clientX - drag.current.lastX) / (dtMs / 1000);
+      const deltaX = ev.clientX - drag.current.lastX;
+      if (dtMs > 0) drag.current.velocity = deltaX / (dtMs / 1000);
       drag.current.lastX = ev.clientX; drag.current.lastTime = now;
-      const d = ev.clientX - drag.current.startX;
-      if (Math.abs(d) > 5) drag.current.hasMoved = true;
-      xRef.current = drag.current.frozenX + d;
+      if (Math.abs(ev.clientX - drag.current.startX) > 8) drag.current.hasMoved = true;
+      xRef.current += deltaX;
+      const hw = trackRef.current ? trackRef.current.scrollWidth / 2 : 0;
+      if (hw > 0) {
+        while (xRef.current <= -hw) xRef.current += hw;
+        while (xRef.current > 0) xRef.current -= hw;
+      }
     };
-    const onUp = (ev: PointerEvent) => {
+
+    const onUp = () => {
       if (!drag.current.active) return;
-      xRef.current = drag.current.frozenX + (ev.clientX - drag.current.startX);
       velocityRef.current = drag.current.velocity * 0.45;
-      drag.current.active = false; isPausedRef.current = false; setIsDragging(false);
-      setTimeout(() => { drag.current.hasMoved = false; }, 50);
+      drag.current.active = false;
+      isPausedRef.current = false;
+      setIsDragging(false);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       activeDragListeners.current = null;
     };
+
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     activeDragListeners.current = { move: onMove, up: onUp };
   };
 
   return (
-    <section id="certificates" ref={sectionRef} style={{ background: "var(--bg-projects)", color: "var(--fg)", paddingTop: "clamp(2rem, 5vh, 4rem)", paddingBottom: "clamp(1.5rem, 3.5vh, 2.5rem)", position: "relative", overflow: "hidden", borderTop: "1px solid var(--border-subtle)" }}>
+    <section id="certificates" ref={sectionRef} style={{ background: "var(--bg-projects)", color: "var(--fg)", paddingTop: "clamp(2rem, 5vh, 4rem)", paddingBottom: "clamp(1.5rem, 3.5vh, 2.5rem)", position: "relative", borderTop: "1px solid var(--border-subtle)", overflow: "hidden" }}>
       {/* Section header */}
       <div style={{ paddingInline: "var(--container-px)", marginBottom: "clamp(2rem,4vh,3rem)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1rem" }}>
         <div>
@@ -232,20 +285,49 @@ export default function Certificates() {
             Credentials &amp; Learning
           </m.h2>
         </div>
-        <m.div className="flex items-center gap-2 flex-shrink-0" initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.3 }}>
-          <button onClick={handlePrev} aria-label="Previous certificates" className="marquee-nav-btn"><ChevronLeft size={18} strokeWidth={1.5} /></button>
-          <button onClick={handleNext} aria-label="Next certificates" className="marquee-nav-btn"><ChevronRight size={18} strokeWidth={1.5} /></button>
-        </m.div>
+
+        {/* Navigation Arrows (Desktop) */}
+        {!isCoarseMobile && (
+          <div className="flex items-center gap-2">
+            <button onClick={handlePrev} className="marquee-nav-btn" aria-label="Previous certificates">
+              <ChevronLeft size={16} />
+            </button>
+            <button onClick={handleNext} className="marquee-nav-btn" aria-label="Next certificates">
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Infinite Marquee */}
-      <m.div ref={outerRef} className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.8, delay: 0.25 }} onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true; }} onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }} onPointerDown={onPointerDown} style={{ paddingBlock: "1.5rem", userSelect: "none" }} aria-label="Certificate showcase — drag or use arrows to browse, click any card to view details">
-        <div ref={trackRef} style={{ display: "flex", flexDirection: "row", alignItems: "stretch", width: "max-content", gap: "1.25rem", willChange: "transform" }}>
-          {marqueeItems.map((cert, i) => (
-            <CertCard key={`${cert.id}-${i}`} cert={cert} onClick={() => { if (!drag.current.hasMoved) setSelected(cert); }} />
-          ))}
-        </div>
-      </m.div>
+      {/* Marquee */}
+      {isCoarseMobile ? (
+        <m.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.6 }} className="projects-marquee-outer projects-marquee-outer--snap" aria-label="Certificate showcase — swipe horizontally to browse">
+          <div className="projects-marquee-track projects-marquee-track--snap" ref={trackRef}>
+            {CERTS.map((cert) => (
+              <CertCard key={cert.id} cert={cert} onClick={() => setSelected(cert)} />
+            ))}
+          </div>
+        </m.div>
+      ) : (
+        <m.div
+          ref={outerRef}
+          className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`}
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true; }}
+          onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }}
+          onPointerDown={onPointerDown}
+          style={{ paddingBlock: "1.5rem", userSelect: "none" }}
+          aria-label="Certificate showcase — drag or use arrows to browse"
+        >
+          <div className="projects-marquee-track" ref={trackRef}>
+            {marqueeItems.map((cert, i) => (
+              <CertCard key={`${cert.id}-${i}`} cert={cert} onClick={() => { if (!drag.current.hasMoved) setSelected(cert); }} />
+            ))}
+          </div>
+        </m.div>
+      )}
 
       {/* Certificate Detail Modal */}
       <AnimatePresence>

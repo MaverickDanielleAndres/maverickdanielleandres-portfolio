@@ -858,6 +858,7 @@ function ProjectCard({
           className="object-cover"
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 28vw"
           draggable={false}
+          loading="lazy"
           onError={(e: any) => {
             e.currentTarget.src =
               "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800";
@@ -905,60 +906,69 @@ function ProjectCard({
 
 // ─── Projects Section ─────────────────────────────────────────────────────────
 const CARD_STEP_PX = 420;
-const LOOP_DURATION_S = 55; // seconds for one full loop
+const LOOP_DURATION_S = 60; // seconds for one full loop
 
 export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [isDragging, setIsDragging]       = useState(false);
+  const [isCoarseMobile, setIsCoarseMobile] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef   = useRef<HTMLDivElement>(null);
   const outerRef   = useRef<HTMLDivElement>(null);
-  
-  // Animation trigger (runs once)
-  const inView     = useInView(sectionRef, { once: true, margin: "-5% 0px" });
-  
-  // Visibility tracking for rAF performance (pauses when offscreen)
-  const isVisible  = useInView(sectionRef, { margin: "400px" });
 
-  // ── rAF engine state (all refs → zero React re-renders per frame)
-  const xRef           = useRef(0);          // current rendered position px (unbounded, negative)
-  const targetXRef     = useRef<number | null>(null); // null = auto-scroll, number = spring target
-  const speedRef       = useRef(0);          // px/s, computed once from DOM
-  const isPausedRef    = useRef(false);      // hover pause
-  const pauseFactorRef = useRef(1);          // smooth deceleration/acceleration factor 0..1
-  const reducedRef     = useRef(false);      // prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(pointer: coarse) and (max-width: 1024px)");
+    setIsCoarseMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsCoarseMobile(e.matches);
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+    else mq.addListener(onChange);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", onChange);
+      else mq.removeListener(onChange);
+    };
+  }, []);
 
-  // ── Drag state
+  const inView    = useInView(sectionRef, { once: true, margin: "-5% 0px" });
+  const isVisible = useInView(sectionRef, { margin: "300px" });
+
+  const xRef           = useRef(0);
+  const targetXRef     = useRef<number | null>(null);
+  const speedRef       = useRef(0);
+  const isPausedRef    = useRef(false);
+  const pauseFactorRef = useRef(1);
+  const reducedRef     = useRef(false);
+
   const drag = useRef({
     active:   false,
     startX:   0,
     frozenX:  0,
     lastX:    0,
     lastTime: 0,
-    velocity: 0, // px/s
+    velocity: 0,
     hasMoved: false,
   });
-  const velocityRef = useRef(0); // post-drag inertia px/s
-  // Ref to active window drag listeners so we can clean them up on unmount
+  const velocityRef = useRef(0);
   const activeDragListeners = useRef<{
     move: (e: PointerEvent) => void;
     up:   (e: PointerEvent) => void;
   } | null>(null);
 
-  // ── Duplicate for seamless visual loop
   const marqueeProjects = [...PROJECTS, ...PROJECTS];
 
-  // ── rAF loop — only one effect, cleans up on unmount
   useEffect(() => {
-    // If section is far offscreen, don't run the animation loop
     if (!isVisible) return;
 
-    // Respect prefers-reduced-motion
     reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (outerRef.current) {
       outerRef.current.dataset.reducedMotion = reducedRef.current ? "1" : "";
     }
+
+    const isCoarse =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches;
+    if (isCoarse) return;
 
     let rafId = 0;
     let lastTime = 0;
@@ -967,8 +977,14 @@ export default function Projects() {
     const measure = () => {
       const el = trackRef.current;
       if (!el) return;
-      halfWidth = el.scrollWidth / 2;
-      if (halfWidth > 0) {
+      const newHalfWidth = el.scrollWidth / 2;
+      if (newHalfWidth > 0) {
+        if (halfWidth > 0 && halfWidth !== newHalfWidth) {
+          const ratio = newHalfWidth / halfWidth;
+          xRef.current *= ratio;
+          if (targetXRef.current !== null) targetXRef.current *= ratio;
+        }
+        halfWidth = newHalfWidth;
         speedRef.current = reducedRef.current ? 0 : halfWidth / LOOP_DURATION_S;
       }
     };
@@ -997,31 +1013,37 @@ export default function Projects() {
         const targetFactor = isPausedRef.current ? 0 : 1;
         pauseFactorRef.current += (targetFactor - pauseFactorRef.current) * (1 - Math.exp(-14 * dt));
 
-        // Post-drag inertia (frame-rate independent exponential decay)
         if (velocityRef.current !== 0) {
           xRef.current += velocityRef.current * dt;
           velocityRef.current *= Math.pow(0.88, dt * 60);
           if (Math.abs(velocityRef.current) < 1.5) velocityRef.current = 0;
         } else if (targetXRef.current !== null) {
-          // Exponential spring toward button-click target
           const diff = targetXRef.current - xRef.current;
-          const t    = 1 - Math.exp(-12 * dt); // ~12 = snappy-but-smooth
+          const t    = 1 - Math.exp(-12 * dt);
           xRef.current += diff * t;
           if (Math.abs(diff) < 0.4) {
-            xRef.current    = targetXRef.current;
-            targetXRef.current = null; // spring done → resume auto-scroll
+            xRef.current       = targetXRef.current;
+            targetXRef.current = null;
           }
         } else if (pauseFactorRef.current > 0.001 && speedRef.current > 0) {
-          // Auto-scroll with smooth deceleration
           xRef.current -= speedRef.current * dt * pauseFactorRef.current;
         }
       }
 
-      // Wrap visually: map unbounded x into [-hw, 0]
-      const displayX = ((xRef.current % halfWidth) + halfWidth) % halfWidth - halfWidth;
+      if (halfWidth > 0) {
+        while (xRef.current <= -halfWidth) {
+          xRef.current += halfWidth;
+          if (targetXRef.current !== null) targetXRef.current += halfWidth;
+        }
+        while (xRef.current > 0) {
+          xRef.current -= halfWidth;
+          if (targetXRef.current !== null) targetXRef.current -= halfWidth;
+        }
+      }
+
       const el = trackRef.current;
       if (!el) return;
-      const roundedX = Math.round(displayX * 100) / 100;
+      const roundedX = Math.round(xRef.current * 100) / 100;
       const next = `translate3d(${roundedX}px, 0, 0)`;
       if (el.style.transform !== next) el.style.transform = next;
     }
@@ -1029,16 +1051,15 @@ export default function Projects() {
     rafId = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(rafId);
-      // Clean up any window drag listeners left from an interrupted drag
       if (activeDragListeners.current) {
         window.removeEventListener("pointermove", activeDragListeners.current.move);
         window.removeEventListener("pointerup",   activeDragListeners.current.up);
+        window.removeEventListener("pointercancel", activeDragListeners.current.up);
         activeDragListeners.current = null;
       }
     };
   }, [isVisible]);
 
-  // ── Button navigation — spring to target
   const handlePrev = () => {
     velocityRef.current = 0;
     targetXRef.current  = (targetXRef.current ?? xRef.current) + CARD_STEP_PX;
@@ -1051,11 +1072,11 @@ export default function Projects() {
     isPausedRef.current = false;
   };
 
-  // ── Pointer drag — window-level listeners so card onClick fires normally on simple clicks
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     targetXRef.current  = null;
     velocityRef.current = 0;
+    drag.current.hasMoved = false;
     drag.current = {
       active:   true,
       startX:   e.clientX,
@@ -1072,35 +1093,36 @@ export default function Projects() {
       if (!drag.current.active) return;
       const now  = performance.now();
       const dtMs = now - drag.current.lastTime;
-      if (dtMs > 0) drag.current.velocity = (ev.clientX - drag.current.lastX) / (dtMs / 1000);
+      const deltaX = ev.clientX - drag.current.lastX;
+      if (dtMs > 0) drag.current.velocity = deltaX / (dtMs / 1000);
       drag.current.lastX    = ev.clientX;
       drag.current.lastTime = now;
-      const totalDelta = ev.clientX - drag.current.startX;
-      if (Math.abs(totalDelta) > 5) drag.current.hasMoved = true;
-      xRef.current = drag.current.frozenX + totalDelta;
+      if (Math.abs(ev.clientX - drag.current.startX) > 8) drag.current.hasMoved = true;
+      xRef.current += deltaX;
+      const hw = trackRef.current ? trackRef.current.scrollWidth / 2 : 0;
+      if (hw > 0) {
+        while (xRef.current <= -hw) xRef.current += hw;
+        while (xRef.current > 0) xRef.current -= hw;
+      }
     };
 
-    const onUp = (ev: PointerEvent) => {
+    const onUp = () => {
       if (!drag.current.active) return;
-      const finalX = drag.current.frozenX + (ev.clientX - drag.current.startX);
-      xRef.current        = finalX;
       velocityRef.current = drag.current.velocity * 0.45;
       drag.current.active = false;
       isPausedRef.current = false;
       setIsDragging(false);
-      // hasMoved resets AFTER the synchronous click event fires
-      setTimeout(() => { drag.current.hasMoved = false; }, 50);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup",   onUp);
+      window.removeEventListener("pointercancel", onUp);
       activeDragListeners.current = null;
     };
 
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup",   onUp);
+    window.addEventListener("pointercancel", onUp);
     activeDragListeners.current = { move: onMove, up: onUp };
   };
-
-
 
   return (
     <section
@@ -1151,50 +1173,78 @@ export default function Projects() {
           </m.h2>
         </div>
 
-        {/* Nav buttons */}
-        <m.div
-          className="flex items-center gap-2 flex-shrink-0"
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <button onClick={handlePrev} aria-label="Previous projects" className="marquee-nav-btn">
-            <ChevronLeft size={18} strokeWidth={1.5} />
-          </button>
-          <button onClick={handleNext} aria-label="Next projects" className="marquee-nav-btn">
-            <ChevronRight size={18} strokeWidth={1.5} />
-          </button>
-        </m.div>
+        {/* Navigation Arrows (Desktop) */}
+        {!isCoarseMobile && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrev}
+              className="marquee-nav-btn"
+              aria-label="Previous projects"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={handleNext}
+              className="marquee-nav-btn"
+              aria-label="Next projects"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* ── Infinite Marquee */}
-      <m.div
-        ref={outerRef}
-        className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8, delay: 0.25 }}
-        onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true;  }}
-        onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }}
-        onPointerDown={onPointerDown}
-        style={{ paddingBlock: "1.5rem", userSelect: "none" }}
-        aria-label="Project showcase — drag or use arrows to browse, click any card to view details"
-      >
-        <div className="projects-marquee-track" ref={trackRef}>
-          {marqueeProjects.map((project, i) => (
-            <ProjectCard
-              key={`${project.id}-${i}`}
-              project={project}
-              index={i % PROJECTS.length}
-              onClick={() => {
-                if (!drag.current.hasMoved) setActiveProject(project);
-              }}
-            />
-          ))}
-        </div>
-      </m.div>
+      {/* ── Marquee: static scroll-snap on mobile, animated marquee on desktop */}
+      {isCoarseMobile ? (
+        <m.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6 }}
+          className="projects-marquee-outer projects-marquee-outer--snap"
+          aria-label="Project showcase — swipe horizontally to browse, tap any card to view details"
+        >
+          <div className="projects-marquee-track projects-marquee-track--snap" ref={trackRef}>
+            {PROJECTS.map((project, i) => (
+              <ProjectCard
+                key={`${project.id}-${i}`}
+                project={project}
+                index={i}
+                onClick={() => {
+                  setActiveProject(project);
+                }}
+              />
+            ))}
+          </div>
+        </m.div>
+      ) : (
+        <m.div
+          ref={outerRef}
+          className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`}
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true;  }}
+          onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }}
+          onPointerDown={onPointerDown}
+          style={{ paddingBlock: "1.5rem", userSelect: "none" }}
+          aria-label="Project showcase — drag or use arrows to browse, click any card to view details"
+        >
+          <div className="projects-marquee-track" ref={trackRef}>
+            {marqueeProjects.map((project, i) => (
+              <ProjectCard
+                key={`${project.id}-${i}`}
+                project={project}
+                index={i % PROJECTS.length}
+                onClick={() => {
+                  if (!drag.current.hasMoved) setActiveProject(project);
+                }}
+              />
+            ))}
+          </div>
+        </m.div>
+      )}
 
-      {/* ── Project Modal (unchanged) */}
+      {/* ── Project Modal */}
       <AnimatePresence>
         {activeProject && (
           <ProjectModal

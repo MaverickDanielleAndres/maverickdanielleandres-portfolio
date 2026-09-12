@@ -72,8 +72,7 @@ export default function About({ onStartProject }: AboutProps) {
       >
         <m.div variants={itemVariants} className="w-full">
           <SpotlightCard 
-            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-6 sm:p-8 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm" 
-            spotlightColor="rgba(96, 85, 240, 0.15)"
+            className="w-full border border-black/10 dark:border-white/10 rounded-[2rem] overflow-hidden p-6 sm:p-8 bg-black/[0.02] dark:bg-white/[0.02]"
           >
             <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start">
               
@@ -110,7 +109,7 @@ export default function About({ onStartProject }: AboutProps) {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={label}
-                          className="flex items-center justify-center w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[var(--fg)] hover:text-[var(--accent)] hover:border-[var(--accent)] hover:scale-105 active:scale-95 transition-all duration-300"
+                          className="flex items-center justify-center w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[var(--fg)] hover:text-[var(--accent)] hover:border-[var(--accent)] hover:scale-105 active:scale-95 transition-[transform,color,border-color,background-color] duration-150"
                         >
                           {icon === "github" && <Github size={18} strokeWidth={1.75} />}
                           {icon === "linkedin" && <Linkedin size={18} strokeWidth={1.75} />}

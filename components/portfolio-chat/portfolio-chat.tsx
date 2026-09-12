@@ -789,9 +789,11 @@ export default function PortfolioChat() {
                 />
               ))}
 
-              {status === "loading" && messages[messages.length - 1]?.content === "" && (
-                <TypingIndicator />
-              )}
+              {status === "loading" &&
+                messages.length > 0 &&
+                messages[messages.length - 1]?.role === "user" && (
+                  <TypingIndicator />
+                )}
 
               {showSuggestions && (
                 <SuggestedQuestions
@@ -925,8 +927,10 @@ function MessageBubble({
       >
         {isUser ? (
           message.content
-        ) : (
+        ) : message.content ? (
           <Markdown source={message.content} />
+        ) : (
+          <TypingDots />
         )}
 
         {!isUser && meta?.ctas && meta.ctas.length > 0 && meta.isFinal && isLast && (
@@ -941,7 +945,28 @@ function MessageBubble({
   );
 }
 
-/* ── Typing Indicator ─────────────────────────────────────────────── */
+/* ── Typing Dots & Indicator ───────────────────────────────────────── */
+
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-1.5 py-1 px-0.5" aria-label="Mavs AI is typing">
+      {[0, 1, 2].map((i) => (
+        <m.span
+          key={i}
+          className="h-1.5 w-1.5 rounded-full"
+          style={{ background: "var(--fg-muted)" }}
+          animate={{ opacity: [0.3, 1, 0.3], y: [0, -2, 0] }}
+          transition={{
+            duration: 0.9,
+            repeat: Infinity,
+            delay: i * 0.15,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 function TypingIndicator() {
   return (

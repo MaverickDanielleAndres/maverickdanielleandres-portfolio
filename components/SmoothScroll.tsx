@@ -1,83 +1,58 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Lenis from "@studio-freight/lenis";
+import Lenis from "lenis";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    // Detect mobile touch devices — mobile users should get native 120Hz hardware momentum scrolling
+    const isTouch =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0) &&
+      window.innerWidth < 1024;
+
+    if (isTouch) {
+      // On mobile screens, rely on native GPU-composited momentum scrolling
+      return;
+    }
+
     const lenis = new Lenis({
-      // Lighter duration: 0.8s feels responsive without the rubber-band delay
-      // of 1.2s, which was the main culprit behind wheel-input lag.
-      duration: 0.8,
-      // expo-out easing — fast initial acceleration, smooth settle.
+      duration: 0.35,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
+      gestureOrientation: "vertical",
       smoothWheel: true,
-      // wheelMultiplier scales the per-event scroll delta. 1 = native feel.
-      wheelMultiplier: 1,
-      // touchMultiplier same for trackpad/touch on mobile.
-      touchMultiplier: 1.4,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 0,
+      syncTouch: false,
     });
 
     lenisRef.current = lenis;
 
-    // GSAP + ScrollTrigger are only needed because Lenis publishes a
-    // "scroll" event that we forward to ScrollTrigger.update. Defer their
-    // import until after first paint so they don't show up on the
-    // synchronous bootstrap path (this was the source of the 132ms
-    // long-task on the desktop report's chunk 10~x95jhs6ns3.js).
-    let cleanup: (() => void) | undefined;
-    const idle =
-      (window as unknown as { requestIdleCallback?: (cb: () => void) => void })
-        .requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 0));
-    const handle = idle(async () => {
-      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
-        import("gsap"),
-        import("gsap/ScrollTrigger"),
-      ]);
-      gsap.registerPlugin(ScrollTrigger);
-      lenis.on("scroll", ScrollTrigger.update);
-      const tickerCallback = (time: number) => {
-        lenis.raf(time * 1000);
-      };
-      gsap.ticker.add(tickerCallback);
-      // Leave lagSmoothing ENABLED with a generous threshold so a busy
-      // main thread doesn't pile up RAF callbacks and make scroll feel
-      // glued to the wheel.
-      gsap.ticker.lagSmoothing(500, 33);
-      cleanup = () => {
-        lenis.off("scroll", ScrollTrigger.update);
-        gsap.ticker.remove(tickerCallback);
-      };
-    });
+    // Standard Lenis rAF loop. We tried an idle-pause optimization that
+    // would release the main thread when the user wasn't scrolling, but
+    // the resume-on-scroll logic raced with Lenis's own onMount "scroll"
+    // event and left the page frozen. The plain 60Hz loop is the safest
+    // baseline; idle-pause belongs in a future change after we've added
+    // page-level instrumentation to validate the resume path.
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
 
     return () => {
-      if (typeof handle === "number" && (window as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback) {
-        (window as unknown as { cancelIdleCallback: (h: number) => void }).cancelIdleCallback(handle);
-      } else if (typeof handle === "number") {
-        clearTimeout(handle);
-      }
-      cleanup?.();
+      cancelAnimationFrame(rafId);
       lenis.destroy();
       lenisRef.current = null;
     };
   }, []);
 
   return (
-    <div
-      className="relative overflow-x-clip"
-      style={{
-        // Promote the scroll root to its own compositor layer so Lenis's
-        // transform updates don't repaint the page background or trigger
-        // layout in descendant trees.
-        willChange: "transform",
-        // Contain layout + paint — descendant repaints can't bleed up into
-        // the scroll root.
-        contain: "layout paint",
-      }}
-    >
+    <div className="relative overflow-x-clip">
       {children}
     </div>
   );

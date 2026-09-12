@@ -1,13 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { m, useInView } from "framer-motion";
 import SpotlightCard from "@/components/ui/SpotlightCard";
-import CursorDitherTrail from "@/components/ui/cursor-dither-trail";
-import { 
-  Palette, Activity, TrendingUp, Search, Bot, Blocks, Layout, 
-  Cpu, Database as DbIcon, Settings2, Layers, TestTube, 
-  Sparkles, Globe, ShoppingCart, Cloud, Server, Link 
+import {
+  Palette, Activity, TrendingUp, Search, Bot, Blocks, Layout,
+  Cpu, Database as DbIcon, Settings2, Layers, TestTube,
+  Sparkles, Globe, ShoppingCart, Cloud, Server, Link
 } from "lucide-react";
 import type { Variants } from "framer-motion";
 
@@ -64,7 +63,6 @@ const CATEGORIES = [
 export default function Skills() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-5% 0px" });
-  const [sectionHovered, setSectionHovered] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -90,8 +88,6 @@ export default function Skills() {
     <section
       id="skills"
       ref={ref}
-      onMouseEnter={() => setSectionHovered(true)}
-      onMouseLeave={() => setSectionHovered(false)}
       style={{
         background: "var(--bg-about)",
         color: "var(--fg)",
@@ -99,13 +95,6 @@ export default function Skills() {
         position: "relative",
       }}
     >
-      <CursorDitherTrail
-        trailColor="#8b5cf6"
-        dotSize={6}
-        fadeDuration={200}
-        isActive={sectionHovered}
-      />
-
       <m.div
         variants={containerVariants}
         initial="hidden"
@@ -114,8 +103,7 @@ export default function Skills() {
       >
         <m.div variants={itemVariants} className="w-full">
           <SpotlightCard
-            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm"
-            spotlightColor="rgba(96, 85, 240, 0.15)"
+            className="w-full border border-black/10 dark:border-white/10 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-black/[0.02] dark:bg-white/[0.02]"
           >
             <div className="mb-6 px-2 text-center sm:text-left">
               <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--fg)]">Core Competencies</h3>
@@ -124,8 +112,8 @@ export default function Skills() {
 
             <div className="competencies-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-[repeat(9,minmax(0,1fr))] gap-2.5 sm:gap-3 lg:gap-3.5">
               {COMPETENCIES_CARDS.map((item) => (
-                <div key={item.id} className="competency-card group p-2 md:p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200">
-                  <div className="competency-card__icon h-9 w-9 md:h-10 md:w-10 shrink-0 rounded-[10px] bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                <div key={item.id} className="competency-card group p-2 md:p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-150">
+                  <div className="competency-card__icon h-9 w-9 md:h-10 md:w-10 shrink-0 rounded-[10px] bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center transition-transform duration-150 group-hover:scale-105 shadow-sm">
                     <div className="scale-85 md:scale-90">{item.icon}</div>
                   </div>
                   <h4 className="competency-card__title font-bold text-[var(--fg)] leading-tight">
@@ -139,8 +127,7 @@ export default function Skills() {
 
         <m.div variants={itemVariants} className="w-full">
           <SpotlightCard
-            className="w-full border-2 border-black/10 dark:border-white/15 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-white/80 dark:bg-transparent shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none backdrop-blur-sm"
-            spotlightColor="rgba(96, 85, 240, 0.15)"
+            className="w-full border border-black/10 dark:border-white/10 rounded-[2rem] overflow-hidden p-4 sm:p-6 bg-black/[0.02] dark:bg-white/[0.02]"
           >
             <div className="w-full flex flex-col justify-start text-center sm:text-left">
               <div className="mb-6 px-2 text-center sm:text-left">
@@ -158,7 +145,7 @@ export default function Skills() {
                       {category.skills.map((skill, sIdx) => (
                         <span
                           key={sIdx}
-                          className="flex-grow text-center px-3 py-1.5 text-[11px] sm:text-xs font-medium border rounded-full bg-black/[0.03] dark:bg-transparent hover:scale-105 transition-all duration-200 cursor-default shadow-sm"
+                          className="flex-grow text-center px-3 py-1.5 text-[11px] sm:text-xs font-medium border rounded-full bg-black/[0.03] dark:bg-transparent hover:scale-105 transition-transform duration-150 cursor-default shadow-sm"
                           style={{ borderColor: "var(--border-subtle)", color: "var(--fg)" }}
                         >
                           {skill}

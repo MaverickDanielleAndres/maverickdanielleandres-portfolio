@@ -73,6 +73,8 @@ const TextPressure: React.FC<TextPressureProps> = ({
   const mouseRef = useRef({ x: 0, y: 0 });
   const cursorRef = useRef({ x: 0, y: 0 });
   const spanCentersRef = useRef<{x: number, y: number}[]>([]);
+  const maxDistRef = useRef<number>(150);
+  const isInViewRef = useRef<boolean>(true);
 
   const [fontSize, setFontSize] = useState(minFontSize);
   const [scaleY, setScaleY] = useState(1);
@@ -80,18 +82,53 @@ const TextPressure: React.FC<TextPressureProps> = ({
 
   const chars = text.split('');
 
+  // Scroll and intersection tracking: completely pause when Hero is scrolled past
+  useEffect(() => {
+    const checkVisibility = () => {
+      if (typeof window === "undefined") return;
+      // When scrolled past hero height, disable to release main thread completely
+      const isHeroVisible = window.scrollY < window.innerHeight * 0.95;
+      isInViewRef.current = isHeroVisible;
+    };
+
+    window.addEventListener("scroll", checkVisibility, { passive: true });
+    checkVisibility();
+
+    const el = containerRef.current;
+    if (!el) return () => window.removeEventListener("scroll", checkVisibility);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (window.scrollY < window.innerHeight * 0.95) {
+          isInViewRef.current = entry.isIntersecting;
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+
+    return () => {
+      window.removeEventListener("scroll", checkVisibility);
+      observer.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      if (!isInViewRef.current) return;
       cursorRef.current.x = e.clientX;
       cursorRef.current.y = e.clientY;
     };
     const handleTouchMove = (e: TouchEvent) => {
+      if (!isInViewRef.current) return;
       const t = e.touches[0];
-      cursorRef.current.x = t.clientX;
-      cursorRef.current.y = t.clientY;
+      if (t) {
+        cursorRef.current.x = t.clientX;
+        cursorRef.current.y = t.clientY;
+      }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     if (containerRef.current) {
@@ -129,6 +166,9 @@ const TextPressure: React.FC<TextPressureProps> = ({
         setScaleY(yRatio);
       }
 
+      // Cache maxDist from geometry calculation so rAF loop never calls getBoundingClientRect
+      maxDistRef.current = textRect.width > 0 ? textRect.width / 2 : 150;
+
       // Cache span centers to prevent layout thrashing during rAF
       spanCentersRef.current = spansRef.current.map(span => {
         if (!span) return { x: 0, y: 0 };
@@ -160,22 +200,25 @@ const TextPressure: React.FC<TextPressureProps> = ({
     let rafId: number;
     let lastX = mouseRef.current.x;
     let lastY = mouseRef.current.y;
+    const lastWrittenFontVars: string[] = [];
     let initialRender = true;
 
     const animate = () => {
-      mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
-      mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
+      rafId = requestAnimationFrame(animate);
 
-      // Only perform heavy DOM writes if the mouse actually moved, OR if it's the very first render
-      const hasMoved = Math.abs(mouseRef.current.x - lastX) > 0.1 || Math.abs(mouseRef.current.y - lastY) > 0.1;
+      if (!isInViewRef.current) return;
+
+      mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) * 0.85;
+      mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) * 0.85;
+
+      const hasMoved = Math.abs(mouseRef.current.x - lastX) > 0.5 || Math.abs(mouseRef.current.y - lastY) > 0.5;
 
       if ((hasMoved || initialRender) && titleRef.current && spanCentersRef.current.length > 0) {
         initialRender = false;
         lastX = mouseRef.current.x;
         lastY = mouseRef.current.y;
 
-        const titleRect = titleRef.current.getBoundingClientRect();
-        const maxDist = titleRect.width / 2;
+        const maxDist = maxDistRef.current || 150;
 
         spansRef.current.forEach((span, i) => {
           if (!span) return;
@@ -186,29 +229,27 @@ const TextPressure: React.FC<TextPressureProps> = ({
           const d = dist(mouseRef.current, charCenter);
 
           const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 25;
-          // Weight ramps between minWeight (cursor far) and maxWeight
-          // (cursor near). The default maxWeight of 400 keeps the name
-          // thin like the original — previously this clamped to 900 and
-          // turned the hero into a heavy display face on first load.
           const wght = weight ? Math.floor(getAttr(d, maxDist, minWeight, maxWeight)) : minWeight;
           const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : '0';
-          const alphaVal = alpha ? getAttr(d, maxDist, 0, 1).toFixed(2) : '1';
 
           const newFontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
 
-          if (span.style.fontVariationSettings !== newFontVariationSettings) {
+          if (lastWrittenFontVars[i] !== newFontVariationSettings) {
+            lastWrittenFontVars[i] = newFontVariationSettings;
             span.style.fontVariationSettings = newFontVariationSettings;
           }
-          if (alpha && span.style.opacity !== alphaVal) {
-            span.style.opacity = alphaVal;
+
+          if (alpha) {
+            const alphaVal = getAttr(d, maxDist, 0, 1).toFixed(2);
+            if (span.style.opacity !== alphaVal) {
+              span.style.opacity = alphaVal;
+            }
           }
         });
       }
-
-      rafId = requestAnimationFrame(animate);
     };
 
-    animate();
+    rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
   }, [width, weight, italic, alpha, minWeight, maxWeight]);
 

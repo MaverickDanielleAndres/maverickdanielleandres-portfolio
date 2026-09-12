@@ -1,20 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { m } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import TextPressure from "@/components/ui/TextPressure";
 import ScrollVelocity from "@/components/ui/ScrollVelocity";
 import { GetStartedButton } from "@/components/ui/get-started-button";
 
 // ─── Animation variants ──────────────────────────────────────────────────────
-
-// Staggered slide-up for text/UI elements.
-// `filter: blur` was removed because Lighthouse flagged it as a
-// non-composited animation (it triggers paint on every frame and breaks
-// GPU compositing). We get the same reveal feel with translateY + opacity,
-// which are both compositor-only properties and animate on the GPU.
 const slideUp = {
   hidden: { opacity: 0, y: 48 },
   visible: (delay: number = 0) => ({
@@ -66,6 +60,17 @@ const lineReveal = {
 };
 
 export default function Hero() {
+  const [isCovered, setIsCovered] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const covered = window.scrollY >= window.innerHeight * 1.05;
+      setIsCovered(covered);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleDownloadResume = () => {
     const link = document.createElement("a");
     link.href = "/Files/Resume.pdf";
@@ -77,11 +82,14 @@ export default function Hero() {
   };
 
   return (
-    <LazyMotion features={domAnimation}>
     <section
       id="home"
       className="relative flex flex-col md:flex-row items-stretch justify-between h-screen min-h-[100svh] w-full overflow-hidden"
-      style={{ background: "var(--bg-hero)", color: "var(--fg)" }}
+      style={{
+        background: "var(--bg-hero)",
+        color: "var(--fg)",
+        visibility: isCovered ? "hidden" : "visible",
+      }}
       suppressHydrationWarning
     >
       {/* ── Sweeping reveal line (fires first) ─────────────────────────────── */}
@@ -294,6 +302,5 @@ export default function Hero() {
         <span className="w-px bg-[var(--fg)]/60" style={{ height: "clamp(2rem, 4vh, 3rem)" }} />
       </m.a>
     </section>
-    </LazyMotion>
   );
 }
