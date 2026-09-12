@@ -99,18 +99,17 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://mavs.is-a.dev"),
   title: {
-    default: "Maverick Danielle Andres | Full-Stack Developer & Designer",
+    default: "Maverick Danielle Andres | Full-Stack Developer",
     template: "%s | Maverick Danielle Andres",
   },
   description:
-    "Full-stack developer, designer, and networking specialist based in Pasig City, PH. Building scalable web apps with React, Next.js, Node.js, and Supabase. Available for freelance and full-time opportunities.",
+    "Full-Stack Developer building scalable, high-performance web applications with React, Next.js, TypeScript, and Supabase.",
   keywords: [
     "Maverick Danielle Andres",
     "Full-Stack Developer",
     "Web Developer Philippines",
     "Next.js Developer",
     "React Developer",
-    "UI UX Designer",
     "Pasig City Developer",
     "Freelance Developer",
     "Portfolio",
@@ -144,25 +143,24 @@ export const metadata: Metadata = {
     locale: "en_PH",
     url: "https://mavs.is-a.dev/",
     siteName: "Maverick Danielle Andres Portfolio",
-    title: "Maverick Danielle Andres | Full-Stack Developer & Designer",
+    title: "Maverick Danielle Andres | Full-Stack Developer",
     description:
-      "Full-stack developer, designer, and networking specialist. Building scalable web apps with React, Next.js, Node.js, and Supabase.",
+      "Full-Stack Developer building scalable, high-performance web applications with React, Next.js, TypeScript, and Supabase.",
     images: [
       {
-        url: "/updatedprofile_pic.webp",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Maverick Danielle Andres — Full-Stack Developer",
-        type: "image/webp",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Maverick Danielle Andres | Full-Stack Developer & Designer",
+    title: "Maverick Danielle Andres | Full-Stack Developer",
     description:
-      "Full-stack developer, designer, and networking specialist. Building scalable web apps with React, Next.js, Node.js, and Supabase.",
-    images: ["/updatedprofile_pic.webp"],
+      "Full-Stack Developer building scalable, high-performance web applications with React, Next.js, TypeScript, and Supabase.",
+    images: ["/opengraph-image"],
     creator: "@MaverickAndres",
   },
   icons: {
@@ -186,9 +184,9 @@ const jsonLd = {
       name: "Maverick Danielle Andres",
       url: "https://mavs.is-a.dev",
       image: "https://mavs.is-a.dev/updatedprofile_pic.webp",
-      jobTitle: "Full-Stack Developer & Designer",
+      jobTitle: "Full-Stack Developer",
       description:
-        "Full-stack developer, designer, and networking specialist based in Pasig City, PH.",
+        "Full-stack developer and software engineer based in Pasig City, PH.",
       address: {
         "@type": "PostalAddress",
         addressLocality: "Pasig City",
@@ -200,7 +198,6 @@ const jsonLd = {
         "TypeScript",
         "Node.js",
         "Supabase",
-        "UI/UX Design",
         "PostgreSQL",
         "Tailwind CSS",
       ],
@@ -223,7 +220,7 @@ const jsonLd = {
       "@type": "WebPage",
       "@id": "https://mavs.is-a.dev/#webpage",
       url: "https://mavs.is-a.dev/",
-      name: "Maverick Danielle Andres | Full-Stack Developer & Designer",
+      name: "Maverick Danielle Andres | Full-Stack Developer",
       isPartOf: { "@id": "https://mavs.is-a.dev/#website" },
       about: { "@id": "https://mavs.is-a.dev/#person" },
       inLanguage: "en",
