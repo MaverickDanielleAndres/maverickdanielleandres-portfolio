@@ -70,8 +70,8 @@ const TextPressure: React.FC<TextPressureProps> = ({
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const spansRef = useRef<(HTMLSpanElement | null)[]>([]);
 
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const cursorRef = useRef({ x: 0, y: 0 });
+  const mouseRef = useRef({ x: -9999, y: -9999 });
+  const cursorRef = useRef({ x: -9999, y: -9999 });
   const spanCentersRef = useRef<{x: number, y: number}[]>([]);
   const maxDistRef = useRef<number>(150);
   const isInViewRef = useRef<boolean>(true);
@@ -116,6 +116,10 @@ const TextPressure: React.FC<TextPressureProps> = ({
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isInViewRef.current) return;
+      if (cursorRef.current.x === -9999) {
+        mouseRef.current.x = e.clientX;
+        mouseRef.current.y = e.clientY;
+      }
       cursorRef.current.x = e.clientX;
       cursorRef.current.y = e.clientY;
     };
@@ -123,6 +127,10 @@ const TextPressure: React.FC<TextPressureProps> = ({
       if (!isInViewRef.current) return;
       const t = e.touches[0];
       if (t) {
+        if (cursorRef.current.x === -9999) {
+          mouseRef.current.x = t.clientX;
+          mouseRef.current.y = t.clientY;
+        }
         cursorRef.current.x = t.clientX;
         cursorRef.current.y = t.clientY;
       }
@@ -130,14 +138,6 @@ const TextPressure: React.FC<TextPressureProps> = ({
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
-
-    if (containerRef.current) {
-      const { left, top, width, height } = containerRef.current.getBoundingClientRect();
-      mouseRef.current.x = left + width / 2;
-      mouseRef.current.y = top + height / 2;
-      cursorRef.current.x = mouseRef.current.x;
-      cursorRef.current.y = mouseRef.current.y;
-    }
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
@@ -267,6 +267,10 @@ const TextPressure: React.FC<TextPressureProps> = ({
           font-style: normal;
         }
         ` : ''}
+        .text-pressure-title span {
+          font-variation-settings: 'wght' ${minWeight}, 'wdth' 5, 'ital' 0;
+          font-stretch: 25%;
+        }
         .stroke span {
           position: relative;
           color: ${textColor};
@@ -283,7 +287,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
         }
       `}</style>
     );
-  }, [fontFamily, fontUrl, stroke, textColor, strokeColor, strokeWidth]);
+  }, [fontFamily, fontUrl, stroke, textColor, strokeColor, strokeWidth, minWeight]);
 
   return (
     <div ref={containerRef} className="relative w-full h-full overflow-visible bg-transparent">
@@ -300,10 +304,10 @@ const TextPressure: React.FC<TextPressureProps> = ({
           transform: `scale(1, ${scaleY})`,
           transformOrigin: 'center center',
           margin: 0,
-          // Anchor the resting weight to minWeight so the first frame
-          // (before the rAF tick has set the variation settings) matches
-          // the final look — no visible "swell to bold then settle" jolt.
+          // Anchor the resting weight and width so the first frame matches the compressed look
           fontWeight: minWeight,
+          fontVariationSettings: `'wght' ${minWeight}, 'wdth' 5, 'ital' 0`,
+          fontStretch: '25%',
           color: stroke ? undefined : textColor
         }}
       >
@@ -315,6 +319,10 @@ const TextPressure: React.FC<TextPressureProps> = ({
             }}
             data-char={char}
             className="inline-block"
+            style={{
+              fontVariationSettings: `'wght' ${minWeight}, 'wdth' 5, 'ital' 0`,
+              fontStretch: '25%'
+            }}
           >
             {char}
           </span>

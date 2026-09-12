@@ -56,7 +56,7 @@ test.describe("Projects & Certificates Dynamic Center Indicator Suite", () => {
     console.log(`Certificates Counter: ${initialCertNum} -> ${nextCertNum}`);
   });
 
-  test("Mobile: Dynamic counter badge visible and updates during auto-glide / drag", async ({ page }) => {
+  test("Mobile: Dynamic counter badge and navigation arrows visible below counter", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("http://localhost:3000", { waitUntil: "domcontentloaded" });
 
@@ -69,6 +69,12 @@ test.describe("Projects & Certificates Dynamic Center Indicator Suite", () => {
     await expect(projectsCounter).toBeVisible();
     await expect(projectsCounter.locator(".marquee-counter__total")).toHaveText("16");
 
+    // Verify mobile next button is visible and clickable
+    const mobileProjectNextBtn = page.locator("#projects .marquee-nav-btn[aria-label='Next projects']");
+    await expect(mobileProjectNextBtn).toBeVisible();
+    await mobileProjectNextBtn.click();
+    await page.waitForTimeout(500);
+
     // Scroll to Certificates section
     await page.evaluate(() => window.scrollTo({ top: 3500, behavior: "instant" }));
     await page.waitForTimeout(500);
@@ -80,5 +86,10 @@ test.describe("Projects & Certificates Dynamic Center Indicator Suite", () => {
     const certsCounter = page.locator("#certificates .marquee-counter");
     await expect(certsCounter).toBeVisible();
     await expect(certsCounter.locator(".marquee-counter__total")).toHaveText("18");
+
+    // Verify mobile certificate next button is visible and clickable
+    const mobileCertNextBtn = page.locator("#certificates .marquee-nav-btn[aria-label='Next certificates']");
+    await expect(mobileCertNextBtn).toBeVisible();
+    await mobileCertNextBtn.click();
   });
 });

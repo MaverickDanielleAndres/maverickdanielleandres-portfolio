@@ -331,7 +331,12 @@ export default function Certificates() {
         </div>
 
         {/* Navigation Controls & Center Indicator */}
-        <div className="marquee-nav-wrapper">
+        <m.div
+          className="marquee-nav-wrapper"
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.15 }}
+        >
           {/* Live Center Indicator */}
           <div
             className="marquee-counter"
@@ -358,7 +363,7 @@ export default function Certificates() {
               <ChevronRight size={16} />
             </button>
           </div>
-        </div>
+        </m.div>
       </div>
 
       {/* Marquee */}
