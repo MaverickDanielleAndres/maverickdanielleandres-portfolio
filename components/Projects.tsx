@@ -911,6 +911,8 @@ const LOOP_DURATION_S = 60; // seconds for one full loop
 export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [isDragging, setIsDragging]       = useState(false);
+  const [centerIndex, setCenterIndex]     = useState(1);
+  const currentIndexRef                   = useRef(1);
 
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef   = useRef<HTMLDivElement>(null);
@@ -954,10 +956,27 @@ export default function Projects() {
     let rafId = 0;
     let lastTime = 0;
     let halfWidth = 0;
+    let cardWidth = 0;
+    let stride = 0;
+    let outerWidth = 0;
+
+    const computeCenterIndex = () => {
+      if (!stride || !outerWidth) return 1;
+      const cWidth = cardWidth || CARD_STEP_PX;
+      const floatIndex = (outerWidth / 2 - cWidth / 2 - xRef.current) / stride;
+      const nearest = Math.round(floatIndex);
+      const normalized = ((nearest % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
+      return normalized + 1;
+    };
 
     const measure = () => {
       const el = trackRef.current;
+      const outer = outerRef.current;
       if (!el) return;
+      if (outer) outerWidth = outer.clientWidth;
+      const firstCard = el.firstElementChild as HTMLElement | null;
+      if (firstCard) cardWidth = firstCard.offsetWidth;
+
       const newHalfWidth = el.scrollWidth / 2;
       if (newHalfWidth > 0) {
         if (halfWidth > 0 && halfWidth !== newHalfWidth) {
@@ -966,7 +985,14 @@ export default function Projects() {
           if (targetXRef.current !== null) targetXRef.current *= ratio;
         }
         halfWidth = newHalfWidth;
+        stride = halfWidth / PROJECTS.length;
         speedRef.current = reducedRef.current ? 0 : halfWidth / LOOP_DURATION_S;
+      }
+
+      const cur = computeCenterIndex();
+      if (cur !== currentIndexRef.current) {
+        currentIndexRef.current = cur;
+        setCenterIndex(cur);
       }
     };
 
@@ -974,6 +1000,7 @@ export default function Projects() {
     if (typeof document !== "undefined" && document.fonts) {
       document.fonts.ready.then(measure);
     }
+    window.addEventListener("resize", measure);
 
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
@@ -982,6 +1009,7 @@ export default function Projects() {
         const el = trackRef.current;
         if (!el || !el.scrollWidth) return;
         halfWidth = el.scrollWidth / 2;
+        stride = halfWidth / PROJECTS.length;
         speedRef.current = reducedRef.current ? 0 : halfWidth / LOOP_DURATION_S;
         return;
       }
@@ -1027,11 +1055,18 @@ export default function Projects() {
       const roundedX = Math.round(xRef.current * 100) / 100;
       const next = `translate3d(${roundedX}px, 0, 0)`;
       if (el.style.transform !== next) el.style.transform = next;
+
+      const cur = computeCenterIndex();
+      if (cur !== currentIndexRef.current) {
+        currentIndexRef.current = cur;
+        setCenterIndex(cur);
+      }
     }
 
     rafId = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", measure);
       if (activeDragListeners.current) {
         window.removeEventListener("pointermove", activeDragListeners.current.move);
         window.removeEventListener("pointerup",   activeDragListeners.current.up);
@@ -1084,6 +1119,19 @@ export default function Projects() {
       if (hw > 0) {
         while (xRef.current <= -hw) xRef.current += hw;
         while (xRef.current > 0) xRef.current -= hw;
+      }
+      if (outerRef.current && trackRef.current && hw > 0) {
+        const outerW = outerRef.current.clientWidth;
+        const cWidth = (trackRef.current.firstElementChild as HTMLElement)?.offsetWidth || CARD_STEP_PX;
+        const st = hw / PROJECTS.length;
+        const floatIndex = (outerW / 2 - cWidth / 2 - xRef.current) / st;
+        const nearest = Math.round(floatIndex);
+        const normalized = ((nearest % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
+        const cur = normalized + 1;
+        if (cur !== currentIndexRef.current) {
+          currentIndexRef.current = cur;
+          setCenterIndex(cur);
+        }
       }
     };
 
@@ -1154,22 +1202,43 @@ export default function Projects() {
           </m.h2>
         </div>
 
-        {/* Navigation Arrows */}
-        <div className="hidden sm:flex items-center gap-2">
-          <button
-            onClick={handlePrev}
-            className="marquee-nav-btn"
-            aria-label="Previous projects"
+        {/* Navigation Controls & Center Indicator */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Live Center Indicator */}
+          <div
+            className="marquee-counter"
+            aria-label={`Showing project ${centerIndex} of ${PROJECTS.length}`}
+            role="status"
           >
-            <ChevronLeft size={16} />
-          </button>
-          <button
-            onClick={handleNext}
-            className="marquee-nav-btn"
-            aria-label="Next projects"
-          >
-            <ChevronRight size={16} />
-          </button>
+            <span className="marquee-counter__dot" />
+            <div className="marquee-counter__digits">
+              <span className="marquee-counter__current">
+                {String(centerIndex).padStart(2, "0")}
+              </span>
+              <span className="marquee-counter__divider">/</span>
+              <span className="marquee-counter__total">
+                {String(PROJECTS.length).padStart(2, "0")}
+              </span>
+            </div>
+          </div>
+
+          {/* Navigation Arrows */}
+          <div className="hidden sm:flex items-center gap-2">
+            <button
+              onClick={handlePrev}
+              className="marquee-nav-btn"
+              aria-label="Previous projects"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={handleNext}
+              className="marquee-nav-btn"
+              aria-label="Next projects"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
       </div>
 

@@ -49,7 +49,17 @@ const CERTS: Cert[] = [
 ];
 
 // ─── Cert Card ────────────────────────────────────────────────────────────────
-const CertCard = React.memo(function CertCard({ cert, onClick }: { cert: Cert; onClick: () => void }) {
+const CertCard = React.memo(function CertCard({
+  cert,
+  onClick,
+  index,
+}: {
+  cert: Cert;
+  onClick: () => void;
+  index: number;
+}) {
+  const displayNumber = String(index + 1).padStart(2, "0");
+
   return (
     <article
       onClick={onClick}
@@ -84,6 +94,11 @@ const CertCard = React.memo(function CertCard({ cert, onClick }: { cert: Cert; o
         <p className="cert-card__issuer">{cert.issuer}</p>
         <h3 className="cert-card__title">{cert.title}</h3>
         <p className="cert-card__date">{cert.date}</p>
+
+        {/* Subtle editorial numbering — pinned to bottom-right corner */}
+        <span className="cert-card__number" aria-hidden="true">
+          {displayNumber}
+        </span>
       </div>
     </article>
   );
@@ -95,9 +110,11 @@ const CERT_CARD_STEP_PX    = 320;
 
 // --- Certificates Section ---
 export default function Certificates() {
-  const [selected, setSelected]     = useState<Cert | null>(null);
-  const [isEnlarged, setIsEnlarged] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
+  const [selected, setSelected]         = useState<Cert | null>(null);
+  const [isEnlarged, setIsEnlarged]     = useState(false);
+  const [isDragging, setIsDragging]     = useState(false);
+  const [centerIndex, setCenterIndex]   = useState(1);
+  const currentIndexRef                 = useRef(1);
 
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef   = useRef<HTMLDivElement>(null);
@@ -126,10 +143,27 @@ export default function Certificates() {
     let rafId = 0;
     let lastTime = 0;
     let halfWidth = 0;
+    let cardWidth = 0;
+    let stride = 0;
+    let outerWidth = 0;
+
+    const computeCenterIndex = () => {
+      if (!stride || !outerWidth) return 1;
+      const cWidth = cardWidth || CERT_CARD_STEP_PX;
+      const floatIndex = (outerWidth / 2 - cWidth / 2 - xRef.current) / stride;
+      const nearest = Math.round(floatIndex);
+      const normalized = ((nearest % CERTS.length) + CERTS.length) % CERTS.length;
+      return normalized + 1;
+    };
 
     const measure = () => {
       const el = trackRef.current;
+      const outer = outerRef.current;
       if (!el) return;
+      if (outer) outerWidth = outer.clientWidth;
+      const firstCard = el.firstElementChild as HTMLElement | null;
+      if (firstCard) cardWidth = firstCard.offsetWidth;
+
       const newHalfWidth = el.scrollWidth / 2;
       if (newHalfWidth > 0) {
         if (halfWidth > 0 && halfWidth !== newHalfWidth) {
@@ -138,7 +172,14 @@ export default function Certificates() {
           if (targetXRef.current !== null) targetXRef.current *= ratio;
         }
         halfWidth = newHalfWidth;
+        stride = halfWidth / CERTS.length;
         speedRef.current = reducedRef.current ? 0 : halfWidth / CERT_LOOP_DURATION_S;
+      }
+
+      const cur = computeCenterIndex();
+      if (cur !== currentIndexRef.current) {
+        currentIndexRef.current = cur;
+        setCenterIndex(cur);
       }
     };
 
@@ -146,6 +187,7 @@ export default function Certificates() {
     if (typeof document !== "undefined" && document.fonts) {
       document.fonts.ready.then(measure);
     }
+    window.addEventListener("resize", measure);
 
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
@@ -154,6 +196,7 @@ export default function Certificates() {
         const el = trackRef.current;
         if (!el || !el.scrollWidth) return;
         halfWidth = el.scrollWidth / 2;
+        stride = halfWidth / CERTS.length;
         speedRef.current = reducedRef.current ? 0 : halfWidth / CERT_LOOP_DURATION_S;
         return;
       }
@@ -197,11 +240,18 @@ export default function Certificates() {
       const roundedX = Math.round(xRef.current * 100) / 100;
       const next = `translate3d(${roundedX}px, 0, 0)`;
       if (el.style.transform !== next) el.style.transform = next;
+
+      const cur = computeCenterIndex();
+      if (cur !== currentIndexRef.current) {
+        currentIndexRef.current = cur;
+        setCenterIndex(cur);
+      }
     }
 
     rafId = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", measure);
       if (activeDragListeners.current) {
         window.removeEventListener("pointermove", activeDragListeners.current.move);
         window.removeEventListener("pointerup",   activeDragListeners.current.up);
@@ -234,6 +284,19 @@ export default function Certificates() {
         while (xRef.current <= -hw) xRef.current += hw;
         while (xRef.current > 0) xRef.current -= hw;
       }
+      if (outerRef.current && trackRef.current && hw > 0) {
+        const outerW = outerRef.current.clientWidth;
+        const cWidth = (trackRef.current.firstElementChild as HTMLElement)?.offsetWidth || CERT_CARD_STEP_PX;
+        const st = hw / CERTS.length;
+        const floatIndex = (outerW / 2 - cWidth / 2 - xRef.current) / st;
+        const nearest = Math.round(floatIndex);
+        const normalized = ((nearest % CERTS.length) + CERTS.length) % CERTS.length;
+        const cur = normalized + 1;
+        if (cur !== currentIndexRef.current) {
+          currentIndexRef.current = cur;
+          setCenterIndex(cur);
+        }
+      }
     };
 
     const onUp = () => {
@@ -243,13 +306,13 @@ export default function Certificates() {
       isPausedRef.current = false;
       setIsDragging(false);
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointerup",   onUp);
       window.removeEventListener("pointercancel", onUp);
       activeDragListeners.current = null;
     };
 
     window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointerup",   onUp);
     window.addEventListener("pointercancel", onUp);
     activeDragListeners.current = { move: onMove, up: onUp };
   };
@@ -267,14 +330,35 @@ export default function Certificates() {
           </m.h2>
         </div>
 
-        {/* Navigation Arrows */}
-        <div className="hidden sm:flex items-center gap-2">
-          <button onClick={handlePrev} className="marquee-nav-btn" aria-label="Previous certificates">
-            <ChevronLeft size={16} />
-          </button>
-          <button onClick={handleNext} className="marquee-nav-btn" aria-label="Next certificates">
-            <ChevronRight size={16} />
-          </button>
+        {/* Navigation Controls & Center Indicator */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Live Center Indicator */}
+          <div
+            className="marquee-counter"
+            aria-label={`Showing certificate ${centerIndex} of ${CERTS.length}`}
+            role="status"
+          >
+            <span className="marquee-counter__dot" />
+            <div className="marquee-counter__digits">
+              <span className="marquee-counter__current">
+                {String(centerIndex).padStart(2, "0")}
+              </span>
+              <span className="marquee-counter__divider">/</span>
+              <span className="marquee-counter__total">
+                {String(CERTS.length).padStart(2, "0")}
+              </span>
+            </div>
+          </div>
+
+          {/* Navigation Arrows */}
+          <div className="hidden sm:flex items-center gap-2">
+            <button onClick={handlePrev} className="marquee-nav-btn" aria-label="Previous certificates">
+              <ChevronLeft size={16} />
+            </button>
+            <button onClick={handleNext} className="marquee-nav-btn" aria-label="Next certificates">
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -293,7 +377,14 @@ export default function Certificates() {
       >
         <div className="projects-marquee-track" ref={trackRef}>
           {marqueeItems.map((cert, i) => (
-            <CertCard key={`${cert.id}-${i}`} cert={cert} onClick={() => { if (!drag.current.hasMoved) setSelected(cert); }} />
+            <CertCard
+              key={`${cert.id}-${i}`}
+              cert={cert}
+              index={i % CERTS.length}
+              onClick={() => {
+                if (!drag.current.hasMoved) setSelected(cert);
+              }}
+            />
           ))}
         </div>
       </m.div>
