@@ -331,14 +331,13 @@ export default function Certificates() {
         </div>
 
         {/* Navigation Controls & Center Indicator */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="marquee-nav-wrapper">
           {/* Live Center Indicator */}
           <div
             className="marquee-counter"
             aria-label={`Showing certificate ${centerIndex} of ${CERTS.length}`}
             role="status"
           >
-            <span className="marquee-counter__dot" />
             <div className="marquee-counter__digits">
               <span className="marquee-counter__current">
                 {String(centerIndex).padStart(2, "0")}
@@ -351,7 +350,7 @@ export default function Certificates() {
           </div>
 
           {/* Navigation Arrows */}
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="marquee-nav-group">
             <button onClick={handlePrev} className="marquee-nav-btn" aria-label="Previous certificates">
               <ChevronLeft size={16} />
             </button>

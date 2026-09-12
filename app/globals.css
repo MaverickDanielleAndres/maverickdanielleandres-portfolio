@@ -407,7 +407,31 @@ html.lenis, html.lenis body { height: auto; }
   transform: none !important;
 }
 
-/* ===== Marquee navigation buttons ===== */
+/* ===== Marquee navigation controls ===== */
+.marquee-nav-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .marquee-nav-wrapper {
+    gap: 1.125rem;
+  }
+}
+
+.marquee-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (max-width: 480px) {
+  .marquee-nav-group {
+    display: none;
+  }
+}
+
 .marquee-nav-btn {
   display: inline-flex;
   align-items: center;
@@ -445,65 +469,34 @@ html.lenis, html.lenis body { height: auto; }
 .marquee-counter {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   height: 2.625rem;
-  padding: 0 0.875rem;
+  padding: 0 1.125rem;
   border-radius: 9999px;
   border: 1px solid var(--border-subtle);
-  background: color-mix(in srgb, var(--bg) 65%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: transparent;
   color: var(--fg);
   font-variant-numeric: tabular-nums;
   user-select: none;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-@media (min-width: 640px) {
-  .marquee-counter {
-    gap: 0.625rem;
-    padding: 0 1rem;
-  }
+  transition: border-color 0.22s ease;
 }
 
 .marquee-counter:hover {
-  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
-}
-
-.marquee-counter__dot {
-  width: 0.375rem;
-  height: 0.375rem;
-  border-radius: 9999px;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
-  flex-shrink: 0;
-  animation: pulse-dot 2.5s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% {
-    opacity: 0.45;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .marquee-counter__digits {
   display: flex;
   align-items: baseline;
   gap: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.8125rem;
+  font-family: inherit;
+  font-size: 0.875rem;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .marquee-counter__current {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--fg);
   font-size: 0.875rem;
   display: inline-block;
@@ -511,31 +504,23 @@ html.lenis, html.lenis body { height: auto; }
   text-align: center;
 }
 
-@media (min-width: 640px) {
-  .marquee-counter__current {
-    font-size: 0.9375rem;
-  }
-}
-
 .marquee-counter__divider {
-  opacity: 0.3;
+  opacity: 0.35;
   font-weight: 300;
   font-size: 0.8125rem;
-  font-family: inherit;
-  margin-inline: 0.05rem;
+  color: var(--fg-muted);
+  margin-inline: 0.1rem;
 }
 
 .marquee-counter__total {
-  opacity: 0.5;
-  font-weight: 500;
+  opacity: 0.55;
+  font-weight: 400;
   font-size: 0.8125rem;
   color: var(--fg-muted);
 }
 
 .light .marquee-counter {
-  border-color: rgba(0, 0, 0, 0.1);
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .light .marquee-counter:hover {
