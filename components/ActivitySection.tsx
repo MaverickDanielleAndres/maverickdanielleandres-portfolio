@@ -72,20 +72,51 @@ export default function ActivitySection() {
   };
 
   const calendarScrollRef = useRef<HTMLDivElement>(null);
+  const userInteractedRef = useRef(false);
 
   useEffect(() => {
     const el = calendarScrollRef.current;
     if (!el) return;
 
-    // Scroll to the right edge once after mount without continuous reflow thrashing
-    const timer = setTimeout(() => {
-      if (el) {
-        el.scrollLeft = el.scrollWidth;
-      }
-    }, 200);
+    const onUserTouch = () => {
+      userInteractedRef.current = true;
+    };
+    el.addEventListener("touchstart", onUserTouch, { passive: true });
+    el.addEventListener("pointerdown", onUserTouch, { passive: true });
 
-    return () => clearTimeout(timer);
-  }, []);
+    const scrollToRight = () => {
+      if (el && !userInteractedRef.current && el.scrollWidth > el.clientWidth) {
+        el.scrollLeft = el.scrollWidth - el.clientWidth;
+      }
+    };
+
+    scrollToRight();
+
+    const ro = new ResizeObserver(() => {
+      scrollToRight();
+    });
+    ro.observe(el);
+    if (el.firstElementChild) {
+      ro.observe(el.firstElementChild);
+    }
+
+    const mo = new MutationObserver(() => {
+      scrollToRight();
+    });
+    mo.observe(el, { childList: true, subtree: true });
+
+    const timers = [50, 150, 300, 600, 1000, 1800, 3000].map((ms) =>
+      setTimeout(scrollToRight, ms)
+    );
+
+    return () => {
+      ro.disconnect();
+      mo.disconnect();
+      timers.forEach(clearTimeout);
+      el.removeEventListener("touchstart", onUserTouch);
+      el.removeEventListener("pointerdown", onUserTouch);
+    };
+  }, [isInView]);
 
   return (
     <section

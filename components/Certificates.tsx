@@ -98,26 +98,12 @@ export default function Certificates() {
   const [selected, setSelected]     = useState<Cert | null>(null);
   const [isEnlarged, setIsEnlarged] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [isCoarseMobile, setIsCoarseMobile] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef   = useRef<HTMLDivElement>(null);
   const outerRef   = useRef<HTMLDivElement>(null);
   const inView     = useInView(sectionRef, { once: true, margin: "-5% 0px" });
   const isVisible  = useInView(sectionRef, { margin: "300px" });
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(pointer: coarse) and (max-width: 1024px)");
-    setIsCoarseMobile(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setIsCoarseMobile(e.matches);
-    if (mq.addEventListener) mq.addEventListener("change", onChange);
-    else mq.addListener(onChange);
-    return () => {
-      if (mq.removeEventListener) mq.removeEventListener("change", onChange);
-      else mq.removeListener(onChange);
-    };
-  }, []);
 
   const xRef           = useRef(0);
   const targetXRef     = useRef<number | null>(null);
@@ -136,11 +122,6 @@ export default function Certificates() {
     if (!isVisible) return;
     reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (outerRef.current) outerRef.current.dataset.reducedMotion = reducedRef.current ? "1" : "";
-
-    const isCoarse =
-      typeof window !== "undefined" &&
-      window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches;
-    if (isCoarse) return;
 
     let rafId = 0;
     let lastTime = 0;
@@ -286,48 +267,36 @@ export default function Certificates() {
           </m.h2>
         </div>
 
-        {/* Navigation Arrows (Desktop) */}
-        {!isCoarseMobile && (
-          <div className="flex items-center gap-2">
-            <button onClick={handlePrev} className="marquee-nav-btn" aria-label="Previous certificates">
-              <ChevronLeft size={16} />
-            </button>
-            <button onClick={handleNext} className="marquee-nav-btn" aria-label="Next certificates">
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        )}
+        {/* Navigation Arrows */}
+        <div className="hidden sm:flex items-center gap-2">
+          <button onClick={handlePrev} className="marquee-nav-btn" aria-label="Previous certificates">
+            <ChevronLeft size={16} />
+          </button>
+          <button onClick={handleNext} className="marquee-nav-btn" aria-label="Next certificates">
+            <ChevronRight size={16} />
+          </button>
+        </div>
       </div>
 
       {/* Marquee */}
-      {isCoarseMobile ? (
-        <m.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.6 }} className="projects-marquee-outer projects-marquee-outer--snap" aria-label="Certificate showcase — swipe horizontally to browse">
-          <div className="projects-marquee-track projects-marquee-track--snap" ref={trackRef}>
-            {CERTS.map((cert) => (
-              <CertCard key={cert.id} cert={cert} onClick={() => setSelected(cert)} />
-            ))}
-          </div>
-        </m.div>
-      ) : (
-        <m.div
-          ref={outerRef}
-          className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`}
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.25 }}
-          onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true; }}
-          onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }}
-          onPointerDown={onPointerDown}
-          style={{ paddingBlock: "1.5rem", userSelect: "none" }}
-          aria-label="Certificate showcase — drag or use arrows to browse"
-        >
-          <div className="projects-marquee-track" ref={trackRef}>
-            {marqueeItems.map((cert, i) => (
-              <CertCard key={`${cert.id}-${i}`} cert={cert} onClick={() => { if (!drag.current.hasMoved) setSelected(cert); }} />
-            ))}
-          </div>
-        </m.div>
-      )}
+      <m.div
+        ref={outerRef}
+        className={`projects-marquee-outer${isDragging ? " is-dragging" : ""}`}
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.25 }}
+        onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true; }}
+        onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }}
+        onPointerDown={onPointerDown}
+        style={{ paddingBlock: "1.5rem", userSelect: "none" }}
+        aria-label="Certificate showcase — drag or use arrows to browse"
+      >
+        <div className="projects-marquee-track" ref={trackRef}>
+          {marqueeItems.map((cert, i) => (
+            <CertCard key={`${cert.id}-${i}`} cert={cert} onClick={() => { if (!drag.current.hasMoved) setSelected(cert); }} />
+          ))}
+        </div>
+      </m.div>
 
       {/* Certificate Detail Modal */}
       <AnimatePresence>

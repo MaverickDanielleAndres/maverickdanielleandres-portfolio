@@ -386,13 +386,18 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ===== Marquee drag cursor ===== */
 .projects-marquee-outer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
   cursor: grab;
+  touch-action: pan-y;
 }
 .projects-marquee-outer.is-dragging {
   cursor: grabbing;
 }
 /* Cards inside the dragging marquee should show grabbing too */
-.projects-marquee-outer.is-dragging .project-card {
+.projects-marquee-outer.is-dragging .project-card,
+.projects-marquee-outer.is-dragging .cert-card {
   cursor: grabbing;
   /* Suppress the lift/scale during active drag */
   transform: none !important;

@@ -78,7 +78,7 @@ test.describe("Performance, Scroll & Interaction Suite", () => {
     expect(realErrors.length).toBe(0);
   });
 
-  test("Mobile Viewport: Native scrolling and responsive marquee", async ({ page }) => {
+  test("Mobile Viewport: Native scrolling, auto-scrolling marquees, and responsive cards", async ({ page }) => {
     // Emulate modern mobile viewport
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("http://localhost:3000", { waitUntil: "domcontentloaded" });
@@ -86,12 +86,9 @@ test.describe("Performance, Scroll & Interaction Suite", () => {
     // Verify hero displays properly
     await expect(page.locator("#home")).toBeVisible();
 
-    // Touch scroll down
-    await page.evaluate(() => window.scrollBy({ top: 800, behavior: "smooth" }));
-    await page.waitForTimeout(500);
-
-    // Verify projects section on mobile
+    // Scroll to projects section
     const projectsSection = page.locator("#projects");
+    await projectsSection.scrollIntoViewIfNeeded();
     await expect(projectsSection).toBeVisible();
 
     // Check project card size on mobile fits viewport
@@ -99,5 +96,36 @@ test.describe("Performance, Scroll & Interaction Suite", () => {
     const box = await projectCard.boundingBox();
     expect(box).not.toBeNull();
     expect(box.width).toBeLessThanOrEqual(390);
+
+    // Verify projects marquee is gliding continuously on mobile
+    const projectTrack = page.locator("#projects .projects-marquee-track");
+    await expect(projectTrack).toBeVisible();
+    await page.waitForTimeout(400);
+    const p1 = await projectTrack.evaluate((el) => el.style.transform);
+    await page.waitForTimeout(600);
+    const p2 = await projectTrack.evaluate((el) => el.style.transform);
+
+    expect(p1).toContain("translate3d");
+    expect(p2).toContain("translate3d");
+    expect(p1).not.toBe(p2);
+
+    // Scroll down to mount below-the-fold sections via LazyLoad
+    await page.evaluate(() => window.scrollTo({ top: 4000, behavior: "instant" }));
+    await page.waitForTimeout(500);
+
+    const certsSection = page.locator("#certificates");
+    await expect(certsSection).toBeVisible({ timeout: 10000 });
+
+    // Verify certificates marquee is gliding continuously on mobile
+    const certTrack = page.locator("#certificates .projects-marquee-track");
+    await expect(certTrack).toBeVisible();
+    await page.waitForTimeout(400);
+    const c1 = await certTrack.evaluate((el) => el.style.transform);
+    await page.waitForTimeout(600);
+    const c2 = await certTrack.evaluate((el) => el.style.transform);
+
+    expect(c1).toContain("translate3d");
+    expect(c2).toContain("translate3d");
+    expect(c1).not.toBe(c2);
   });
 });
