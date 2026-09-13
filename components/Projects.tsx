@@ -285,47 +285,47 @@ const PROJECTS: Project[] = [
     description: "A community engagement platform for residents and local services.",
     tech: ["Next.js", "Tailwind CSS", "Supabase"],
     features: ["Community Feed", "Event Management", "Resident Directory", "Notifications"],
-    image: "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110325.png",
+    image: "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110325.png",
     screenshots: [
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110325.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110332.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110342.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110351.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110417.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110425.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110435.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110452.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110503.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110518.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110541.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110601.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110614.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110638.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110652.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110701.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110725.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110733.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20110804.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111628.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111637.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111702.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111710.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111730.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111751.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111759.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111813.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111845.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111929.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20111952.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112007.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112016.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112032.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112048.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112111.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112123.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112141.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112229.png",
-      "/Projects/E-Community/screenshots/Screenshot%202025-12-11%20112303.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110325.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110332.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110342.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110351.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110417.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110425.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110435.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110452.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110503.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110518.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110541.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110601.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110614.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110638.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110652.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110701.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110725.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110733.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 110804.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111628.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111637.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111702.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111710.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111730.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111751.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111759.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111813.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111845.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111929.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 111952.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112007.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112016.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112032.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112048.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112111.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112123.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112141.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112229.png",
+      "/Projects/E-Community/screenshots/Screenshot 2025-12-11 112303.png",
     ],
     github: "https://github.com/MaverickDanielleAndres/E-Community-Engagement-Platform",
     contributions: [
@@ -570,7 +570,13 @@ function EnhancedLightbox({
                   loading="eager"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
                   onError={(e: any) => {
-                    e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
+                    // Guard against infinite retries — if the fallback URL
+                    // also fails, the browser would fire onError again and
+                    // we'd swap back to the same broken src forever.
+                    const target = e.currentTarget as HTMLImageElement;
+                    if (target.dataset.fallback === "1") return;
+                    target.dataset.fallback = "1";
+                    target.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
                   }}
                 />
               </div>
@@ -698,7 +704,10 @@ function ProjectModal({
               // the browser hits the cached srcset entry on click.
               sizes="(max-width: 768px) 100vw, 50vw"
               onError={(e: any) => {
-                e.currentTarget.src =
+                const target = e.currentTarget as HTMLImageElement;
+                if (target.dataset.fallback === "1") return;
+                target.dataset.fallback = "1";
+                target.src =
                   "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
               }}
             />
@@ -893,7 +902,10 @@ function ProjectCard({
           draggable={false}
           loading="lazy"
           onError={(e: any) => {
-            e.currentTarget.src =
+            const target = e.currentTarget as HTMLImageElement;
+            if (target.dataset.fallback === "1") return;
+            target.dataset.fallback = "1";
+            target.src =
               "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800";
           }}
         />
