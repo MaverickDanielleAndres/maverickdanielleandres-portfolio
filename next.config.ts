@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
     // Proper breakpoints for responsive srcset generation
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 64, 96, 128, 256, 384],
+    // Allow the qualities we actually use on <Image quality={...}>. Without
+    // this, every Image with quality="85" emits a dev-mode warning AND in
+    // production the optimizer silently falls back to quality 75.
+    qualities: [75, 85],
     // 1-year cache TTL for optimized images (fixes cache-insight audit)
     minimumCacheTTL: 31536000,
     remotePatterns: [
