@@ -28,7 +28,7 @@ export default function ProjectInquiryStepper({
         aria-label={`Step ${currentStep + 1} of ${totalSteps}`}
       >
         <div
-          className="h-full rounded-full transition-all duration-300 ease-out"
+          className="h-full rounded-full transition-[width] duration-300 ease-out"
           style={{
             width: `${progress}%`,
             background: 'var(--accent)',

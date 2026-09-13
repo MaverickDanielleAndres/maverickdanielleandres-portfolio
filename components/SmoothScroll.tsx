@@ -31,21 +31,41 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     lenisRef.current = lenis;
 
-    // Standard Lenis rAF loop. We tried an idle-pause optimization that
-    // would release the main thread when the user wasn't scrolling, but
-    // the resume-on-scroll logic raced with Lenis's own onMount "scroll"
-    // event and left the page frozen. The plain 60Hz loop is the safest
-    // baseline; idle-pause belongs in a future change after we've added
-    // page-level instrumentation to validate the resume path.
-    let rafId: number;
-    function raf(time: number) {
+    // Suspend the rAF loop when Lenis isn't actively animating anything.
+    // Without this, the loop runs at 60Hz forever and burns CPU even when
+    // the user isn't scrolling. We re-arm on scroll/wheel/touch events.
+    let rafId: number | null = null;
+
+    const arm = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(loop);
+    };
+    function loop(time: number) {
+      rafId = null;
       lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
+      // Keep the rAF chain alive while Lenis is animating (momentum,
+      // smooth scroll interpolation). When it settles, we sleep until
+      // the next user input re-arms us.
+      if (lenis.isScrolling) {
+        rafId = requestAnimationFrame(loop);
+      } else {
+        rafId = null;
+      }
     }
-    rafId = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(loop);
+
+    const wake = () => arm();
+    lenis.on("scroll", wake);
+    window.addEventListener("wheel", wake, { passive: true });
+    window.addEventListener("touchstart", wake, { passive: true });
+    window.addEventListener("keydown", wake);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      lenis.off("scroll", wake);
+      window.removeEventListener("wheel", wake);
+      window.removeEventListener("touchstart", wake);
+      window.removeEventListener("keydown", wake);
       lenis.destroy();
       lenisRef.current = null;
     };

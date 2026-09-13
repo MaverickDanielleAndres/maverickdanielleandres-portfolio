@@ -4,8 +4,8 @@ import CountUp from "@/components/ui/CountUp";
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const handleEnd = () => {
-    // Shorter delay to improve LCP/FCP metrics
-    setTimeout(onComplete, 50);
+    // Minimal delay so first paint can fire as soon as the count finishes.
+    onComplete();
   };
 
   return (
@@ -14,7 +14,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
       exit={{
         y: "-100%",
         opacity: 0,
-        transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] }
+        transition: { duration: 0.25, ease: [0.76, 0, 0.24, 1] }
       }}
       className="fixed inset-0 flex items-center justify-center bg-[#111111] overflow-hidden"
       style={{ zIndex: 9999 }}

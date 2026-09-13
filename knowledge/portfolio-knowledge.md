@@ -447,7 +447,7 @@ Maverick has built a large number of projects across web, mobile, AI, e-commerce
 - **Category:** Fire Protection Services / Local Business Landing Page
 - **Year:** 2026
 - **Summary:** A professional landing page and service portal for All Fire Services, providing practical fire protection, inspections, testing, and compliance support across Greater Sydney.
-- **Live:** https://allfireservices-au.vercel.app/
+- **Live:** https://allfireservices.com.au/
 - **Technologies:** Next.js, React, Tailwind CSS
 - **Features:** Local SEO, Interactive Services, Responsive Design, Modern UI
 - **Contributions:**
@@ -461,7 +461,7 @@ Maverick has built a large number of projects across web, mobile, AI, e-commerce
 - **Category:** Property Lifestyle Consulting
 - **Year:** 2026
 - **Summary:** A premium lifestyle consulting platform for end-to-end renovation management. Features design-led renovations that unlock a property's value before sale.
-- **Live:** https://shimmeur.vercel.app/
+- **Live:** https://shimmeur.co/
 - **Technologies:** Next.js, Tailwind CSS, Framer Motion
 - **Features:** Property Consulting, Renovation Management, Smooth Scrolling, Lifestyle Branding
 - **Contributions:**

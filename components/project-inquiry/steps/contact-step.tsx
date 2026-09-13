@@ -99,7 +99,7 @@ export default function ContactStep({
               aria-checked={contactMethod === method}
               onClick={() => onFieldChange('contactMethod', method)}
               className={cn(
-                'px-4 py-1.5 text-xs font-medium rounded-md transition-all duration-200 capitalize',
+                'px-4 py-1.5 text-xs font-medium rounded-md transition-colors capitalize',
                 contactMethod === method
                   ? 'bg-[var(--accent)] text-white'
                   : 'text-[var(--fg-muted)] hover:text-[var(--fg)]'

@@ -71,7 +71,9 @@ export default function IntentStep({ value, onChange }: IntentStepProps) {
               type="button"
               onClick={() => onChange(id)}
               className={cn(
-                'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-all duration-200 outline-none',
+                // transition-colors + transition-shadow only — never transition-all,
+                // which makes the browser track every animatable property per frame.
+                'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-colors outline-none',
                 'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
                 'hover:border-[color-mix(in_srgb,var(--accent)_40%,transparent)]',
                 selected
@@ -82,7 +84,7 @@ export default function IntentStep({ value, onChange }: IntentStepProps) {
             >
               <span
                 className={cn(
-                  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors duration-200',
+                  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors',
                   selected
                     ? 'bg-[var(--accent)]/15 text-[var(--accent)]'
                     : 'bg-[var(--fg)]/[0.06] text-[var(--fg-muted)]'

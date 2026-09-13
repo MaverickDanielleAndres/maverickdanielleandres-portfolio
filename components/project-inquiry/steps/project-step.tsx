@@ -89,7 +89,7 @@ export default function ProjectStep({ value, onChange, intent }: ProjectStepProp
               type="button"
               onClick={() => onChange(id)}
               className={cn(
-                'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-all duration-200 outline-none',
+                'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-colors outline-none',
                 'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
                 'hover:border-[color-mix(in_srgb,var(--accent)_40%,transparent)]',
                 selected

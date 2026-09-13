@@ -67,7 +67,7 @@ export default function ScopeStep({
                 type="button"
                 onClick={() => onBudgetChange(id)}
                 className={cn(
-                  'relative inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-all duration-200 outline-none',
+                  'relative inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-colors outline-none',
                   'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
                   selected
                     ? 'border-[var(--accent)] bg-[var(--accent)]/[0.1] text-[var(--accent)]'
@@ -100,7 +100,7 @@ export default function ScopeStep({
                 type="button"
                 onClick={() => onTimelineChange(id)}
                 className={cn(
-                  'relative inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-all duration-200 outline-none',
+                  'relative inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-colors outline-none',
                   'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
                   selected
                     ? 'border-[var(--accent)] bg-[var(--accent)]/[0.1] text-[var(--accent)]'

@@ -44,8 +44,8 @@ const TOTAL_STEPS = 4;
 
 const backdropVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.25 } },
-  exit: { opacity: 0, transition: { duration: 0.2, delay: 0.05 } },
+  visible: { opacity: 1, transition: { duration: 0.18 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
 };
 
 const modalVariants: Variants = {
@@ -54,30 +54,30 @@ const modalVariants: Variants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
   },
   exit: {
     opacity: 0,
     scale: 0.97,
     y: 8,
-    transition: { duration: 0.2 },
+    transition: { duration: 0.15 },
   },
 };
 
 const stepVariants = (direction: number): Variants => ({
   enter: {
-    x: direction > 0 ? 40 : -40,
+    x: direction > 0 ? 30 : -30,
     opacity: 0,
   },
   center: {
     x: 0,
     opacity: 1,
-    transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] },
   },
   exit: {
-    x: direction > 0 ? -40 : 40,
+    x: direction > 0 ? -30 : 30,
     opacity: 0,
-    transition: { duration: 0.18 },
+    transition: { duration: 0.12 },
   },
 });
 
@@ -303,7 +303,7 @@ export default function ProjectInquiryModal({
           <m.div
             key="inquiry-backdrop"
             className="fixed inset-0 z-[9999]"
-            style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)' }}
+            style={{ background: 'rgba(8, 8, 10, 0.78)' }}
             variants={backdropVariants}
             initial="hidden"
             animate="visible"
@@ -361,7 +361,7 @@ export default function ProjectInquiryModal({
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 -mt-1 -mr-1 shrink-0"
+                      className="flex h-8 w-8 items-center justify-center rounded-full transition-colors -mt-1 -mr-1 shrink-0"
                       style={{
                         color: 'var(--fg-muted)',
                         border: '1px solid var(--border-subtle)',
@@ -384,7 +384,7 @@ export default function ProjectInquiryModal({
                 {submitted ? (
                   <Welcome onClose={handleClose} />
                 ) : (
-                  <AnimatePresence mode="wait" custom={direction}>
+                  <AnimatePresence mode="popLayout" custom={direction}>
                     <m.div
                       key={step}
                       variants={currentStepVariants}
@@ -443,7 +443,7 @@ export default function ProjectInquiryModal({
                         type="button"
                         onClick={goBack}
                         disabled={submitting}
-                        className="inline-flex items-center gap-1.5 text-sm transition-opacity duration-200 hover:opacity-70 disabled:opacity-40"
+                        className="inline-flex items-center gap-1.5 text-sm transition-opacity hover:opacity-70 disabled:opacity-40"
                         style={{ color: 'var(--fg-muted)' }}
                       >
                         <ArrowLeft size={15} />
@@ -459,7 +459,7 @@ export default function ProjectInquiryModal({
                         type="button"
                         onClick={goNext}
                         disabled={!canContinue() || submitting}
-                        className="group inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
+                        className="group inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
                         style={{
                           background: 'var(--fg)',
                           color: 'var(--bg)',
@@ -476,7 +476,7 @@ export default function ProjectInquiryModal({
                         type="button"
                         onClick={handleSubmit}
                         disabled={!canContinue() || submitting}
-                        className="group inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
+                        className="group inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
                         style={{
                           background: 'var(--accent)',
                           color: '#fff',

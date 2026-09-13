@@ -408,12 +408,9 @@ const PROJECTS: Project[] = [
     description: "A professional landing page and service portal for All Fire Services, providing practical fire protection, inspections, testing, and compliance support across Greater Sydney.",
     tech: ["Next.js", "React", "Tailwind CSS"],
     features: ["Local SEO", "Interactive Services", "Responsive Design", "Modern UI"],
-    image: "/Projects/allfireservices/screenshots/preview.png",
-    screenshots: [
-      "/Projects/allfireservices/screenshots/preview.png",
-      ...Array.from({ length: 14 }, (_, i) => `/Projects/allfireservices/screenshots/allfireservices (${i + 2}).png`)
-    ],
-    live: "https://allfireservices-au.vercel.app/",
+    image: "/Projects/allfireservices/screenshots/allfireservices (1).png",
+    screenshots: Array.from({ length: 15 }, (_, i) => `/Projects/allfireservices/screenshots/allfireservices (${i + 1}).png`),
+    live: "https://allfireservices.com.au/",
     contributions: [
       "Built a modern, responsive web application tailored for fire safety services",
       "Integrated engaging animations and a cinematic hero video background",
@@ -430,7 +427,7 @@ const PROJECTS: Project[] = [
     features: ["Property Consulting", "Renovation Management", "Smooth Scrolling", "Lifestyle Branding"],
     image: "/Projects/shimmeur/screenshots/shimmeur (1).png",
     screenshots: Array.from({ length: 15 }, (_, i) => `/Projects/shimmeur/screenshots/shimmeur (${i + 1}).png`),
-    live: "https://shimmeur.vercel.app/",
+    live: "https://shimmeur.co/",
     contributions: [
       "Built a visually stunning, premium landing page reflecting the brand's aesthetics",
       "Integrated smooth scrolling, fade-in animations, and high-quality image reveals",
@@ -469,6 +466,15 @@ function EnhancedLightbox({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose, activeImg, images.length]);
 
+  // Preload the next/prev images so navigation feels instant. Hidden
+  // <Image> components (off-screen, zero size) let Next.js's optimizer
+  // generate the *same* srcset the visible image would request, so the
+  // browser cache key matches exactly when the user clicks prev/next.
+  const preloadIndices = [
+    activeImg + 1,
+    activeImg - 1,
+  ].filter((i) => i >= 0 && i < images.length);
+
   // For the film-strip
   const visibleThumbnails = 5;
   const halfVisible = Math.floor(visibleThumbnails / 2);
@@ -478,12 +484,30 @@ function EnhancedLightbox({
     <Portal>
       <m.div
         className="fixed inset-0 z-[999999] flex flex-col items-center justify-between"
-        style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+        style={{ background: "rgba(8, 8, 10, 0.92)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
       >
+        {/* Hidden preload stack — same srcset as the visible image, so
+            clicking prev/next hits the browser cache. position:fixed with
+            zero size keeps them out of layout and accessibility tree. */}
+        <div aria-hidden="true" style={{ position: "fixed", width: 0, height: 0, overflow: "hidden", pointerEvents: "none" }}>
+          {preloadIndices.map((i) => (
+            <Image
+              key={`preload-${i}`}
+              src={images[i]}
+              alt=""
+              width={1920}
+              height={1080}
+              quality={85}
+              loading="eager"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
+            />
+          ))}
+        </div>
+
         {/* Top Header */}
         <div className="w-full flex items-center justify-between p-4 sm:p-8 z-10">
           <div className="text-white/70 text-sm font-medium tracking-widest">
@@ -491,7 +515,7 @@ function EnhancedLightbox({
           </div>
           <button
             onClick={onClose}
-            className="flex h-12 w-12 items-center justify-center rounded-full text-white/50 transition-all hover:text-white hover:bg-white/10"
+            className="flex h-12 w-12 items-center justify-center rounded-full text-white/50 transition-colors hover:text-white hover:bg-white/10"
           >
             <X size={24} />
           </button>
@@ -526,9 +550,13 @@ function EnhancedLightbox({
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 450, damping: 35 },
-                opacity: { duration: 0.12 },
-                scale: { duration: 0.12 },
+                // Stiffer spring — settles in ~120ms instead of ~250ms.
+                // The user perceives gallery navigation as instant when the
+                // next image is in the browser cache AND the spring settles
+                // quickly enough that it doesn't visually drag.
+                x: { type: "spring", stiffness: 700, damping: 40 },
+                opacity: { duration: 0.08 },
+                scale: { duration: 0.08 },
               }}
               className="absolute inset-0 flex items-center justify-center p-4 sm:p-12 will-change-transform"
             >
@@ -538,9 +566,8 @@ function EnhancedLightbox({
                   alt={`Screenshot ${activeImg + 1}`}
                   fill
                   className="object-contain"
-                  quality={90}
-                  priority
-                  unoptimized
+                  quality={85}
+                  loading="eager"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
                   onError={(e: any) => {
                     e.currentTarget.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
@@ -554,14 +581,14 @@ function EnhancedLightbox({
           <button
             onClick={() => paginate(-1)}
             disabled={activeImg === 0}
-            className="absolute left-4 z-20 h-16 w-16 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-0 transition-all"
+            className="absolute left-4 z-20 h-16 w-16 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-0 transition-opacity"
           >
             <ChevronLeft size={48} strokeWidth={1} />
           </button>
           <button
             onClick={() => paginate(1)}
             disabled={activeImg === images.length - 1}
-            className="absolute right-4 z-20 h-16 w-16 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-0 transition-all"
+            className="absolute right-4 z-20 h-16 w-16 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-0 transition-opacity"
           >
             <ChevronRight size={48} strokeWidth={1} />
           </button>
@@ -581,8 +608,8 @@ function EnhancedLightbox({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.12 }}
-                    className={`relative w-20 aspect-video rounded-md overflow-hidden cursor-pointer border-2 transition-all ${
-                      isActive ? "border-white scale-110 shadow-xl z-20" : "border-transparent opacity-40 hover:opacity-100"
+                    className={`relative w-20 aspect-video rounded-md overflow-hidden cursor-pointer border-2 transition-opacity ${
+                      isActive ? "border-white scale-110 z-20" : "border-transparent opacity-40 hover:opacity-100"
                     }`}
                     onClick={() => {
                       setDirection(actualIndex > activeImg ? 1 : -1);
@@ -623,20 +650,20 @@ function ProjectModal({
     <Portal>
       <m.div
         className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
-        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
+        style={{ background: "rgba(8, 8, 10, 0.88)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.15 }}
+        transition={{ duration: 0.1 }}
         onClick={onClose}
       >
         <m.div
-          className="relative w-full max-w-5xl md:max-w-6xl lg:max-w-7xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row will-change-transform"
-          style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 850px)" }}
+          className="relative w-full max-w-5xl md:max-w-6xl lg:max-w-7xl rounded-2xl overflow-hidden flex flex-col md:flex-row will-change-transform"
+          style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 850px)", boxShadow: "0 24px 48px -12px rgba(0,0,0,0.5)" }}
           initial={{ scale: 0.97, opacity: 0, y: 8 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.97, opacity: 0, y: 8 }}
-          transition={{ duration: 0.16, ease: [0.2, 0.8, 0.2, 1] }}
+          transition={{ duration: 0.12, ease: [0.2, 0.8, 0.2, 1] }}
           onClick={(e) => e.stopPropagation()}
           data-lenis-prevent="true"
         >
@@ -666,15 +693,17 @@ function ProjectModal({
               alt={project.title}
               fill
               className="object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, 800px"
+              loading="eager"
+              // Same sizes string as the card thumbnail — guarantees
+              // the browser hits the cached srcset entry on click.
+              sizes="(max-width: 768px) 100vw, 50vw"
               onError={(e: any) => {
                 e.currentTarget.src =
                   "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200";
               }}
             />
-            <div className="absolute inset-0 bg-black/20 group-hover/img:bg-black/40 transition-colors duration-300 flex items-center justify-center p-4 pointer-events-none">
-              <div className="bg-black/40 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/30 shadow-2xl transform transition-all duration-300 group-hover/img:scale-105 group-hover/img:bg-black/60 group-hover/img:border-white/50 flex items-center gap-2 text-white text-xs font-semibold tracking-wide">
+            <div className="absolute inset-0 bg-black/20 group-hover/img:bg-black/40 flex items-center justify-center p-4 pointer-events-none">
+              <div className="bg-black/60 px-5 py-2.5 rounded-full border border-white/30 flex items-center gap-2 text-white text-xs font-semibold tracking-wide">
                 <Maximize2 size={16} color="#fff" />
                 <span>View Gallery ({project.screenshots.length} Screenshots)</span>
               </div>
@@ -856,7 +885,11 @@ function ProjectCard({
           alt={project.title}
           fill
           className="object-cover"
-          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 28vw"
+          // Use the same sizes as the modal main image so when the user
+          // clicks, the browser hits the same srcset cache entry. Without
+          // this, the modal would re-fetch at a different width even
+          // though the source file is identical.
+          sizes="(max-width: 768px) 100vw, 50vw"
           draggable={false}
           loading="lazy"
           onError={(e: any) => {
@@ -927,6 +960,12 @@ export default function Projects() {
   const isPausedRef    = useRef(false);
   const pauseFactorRef = useRef(1);
   const reducedRef     = useRef(false);
+  const isVisibleRef   = useRef(false);
+  // Coalesce centerIndex updates so we don't re-render on every rAF tick
+  // when the user drags across cards. The visible counter lags by ~one frame
+  // but the perceived drag stays at 60fps.
+  const pendingCenterIndexRef = useRef<number | null>(null);
+  const centerIndexRafRef      = useRef<number | null>(null);
 
   const drag = useRef({
     active:   false,
@@ -947,6 +986,7 @@ export default function Projects() {
 
   useEffect(() => {
     if (!isVisible) return;
+    isVisibleRef.current = true;
 
     reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (outerRef.current) {
@@ -967,6 +1007,31 @@ export default function Projects() {
       const nearest = Math.round(floatIndex);
       const normalized = ((nearest % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
       return normalized + 1;
+    };
+
+    // Schedule a single low-priority flush per tick so React only sees
+    // one render per idle slot, no matter how many position changes
+    // happened during the rAF burst.
+    const flushCenterIndex = () => {
+      centerIndexRafRef.current = null;
+      const next = pendingCenterIndexRef.current;
+      pendingCenterIndexRef.current = null;
+      if (next !== null && next !== currentIndexRef.current) {
+        currentIndexRef.current = next;
+        setCenterIndex(next);
+      }
+    };
+    const scheduleCenterIndexFlush = (idx: number) => {
+      pendingCenterIndexRef.current = idx;
+      if (centerIndexRafRef.current !== null) return;
+      const ric = (window as any).requestIdleCallback as
+        | ((cb: () => void, opts?: { timeout: number }) => number)
+        | undefined;
+      if (ric) {
+        centerIndexRafRef.current = ric(flushCenterIndex, { timeout: 80 });
+      } else {
+        centerIndexRafRef.current = window.setTimeout(flushCenterIndex, 16) as unknown as number;
+      }
     };
 
     const measure = () => {
@@ -1004,6 +1069,10 @@ export default function Projects() {
 
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
+
+      // Visibility gate — keep the rAF chain alive so we resume instantly
+      // when the section scrolls back into view, but skip every line of work.
+      if (!isVisibleRef.current) return;
 
       if (!halfWidth) {
         const el = trackRef.current;
@@ -1058,14 +1127,22 @@ export default function Projects() {
 
       const cur = computeCenterIndex();
       if (cur !== currentIndexRef.current) {
-        currentIndexRef.current = cur;
-        setCenterIndex(cur);
+        // Don't call setCenterIndex directly — defer to idle callback so
+        // the visible counter doesn't fight the rAF for main-thread time.
+        scheduleCenterIndexFlush(cur);
       }
     }
 
     rafId = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(rafId);
+      isVisibleRef.current = false;
+      if (centerIndexRafRef.current !== null) {
+        const cic = (window as any).cancelIdleCallback as ((id: number) => void) | undefined;
+        if (cic) cic(centerIndexRafRef.current);
+        else window.clearTimeout(centerIndexRafRef.current);
+        centerIndexRafRef.current = null;
+      }
       window.removeEventListener("resize", measure);
       if (activeDragListeners.current) {
         window.removeEventListener("pointermove", activeDragListeners.current.move);
@@ -1129,8 +1206,28 @@ export default function Projects() {
         const normalized = ((nearest % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
         const cur = normalized + 1;
         if (cur !== currentIndexRef.current) {
-          currentIndexRef.current = cur;
-          setCenterIndex(cur);
+          // During a drag we *do* want the counter to follow, but at
+          // most once per idle slot so we don't drown the main thread.
+          pendingCenterIndexRef.current = cur;
+          if (centerIndexRafRef.current === null) {
+            const ric = (window as any).requestIdleCallback as
+              | ((cb: () => void, opts?: { timeout: number }) => number)
+              | undefined;
+            const flush = () => {
+              centerIndexRafRef.current = null;
+              const next = pendingCenterIndexRef.current;
+              pendingCenterIndexRef.current = null;
+              if (next !== null && next !== currentIndexRef.current) {
+                currentIndexRef.current = next;
+                setCenterIndex(next);
+              }
+            };
+            if (ric) {
+              centerIndexRafRef.current = ric(flush, { timeout: 60 });
+            } else {
+              centerIndexRafRef.current = window.setTimeout(flush, 16) as unknown as number;
+            }
+          }
         }
       }
     };

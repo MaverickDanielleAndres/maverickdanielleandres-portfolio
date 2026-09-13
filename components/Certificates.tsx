@@ -76,7 +76,9 @@ const CertCard = React.memo(function CertCard({
           alt={cert.title}
           fill
           className="object-cover cert-card__image"
-          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 280px"
+          // Match the modal's sizes — ensures the modal opens with the
+          // same srcset entry already cached by the card.
+          sizes="(max-width: 768px) 100vw, 55vw"
           draggable={false}
           loading="lazy"
           onError={(e) => {
@@ -128,6 +130,9 @@ export default function Certificates() {
   const isPausedRef    = useRef(false);
   const pauseFactorRef = useRef(1);
   const reducedRef     = useRef(false);
+  const isVisibleRef   = useRef(false);
+  const pendingCenterIndexRef = useRef<number | null>(null);
+  const centerIndexRafRef      = useRef<number | null>(null);
 
   const drag = useRef({ active: false, startX: 0, frozenX: 0, lastX: 0, lastTime: 0, velocity: 0, hasMoved: false });
   const velocityRef         = useRef(0);
@@ -137,6 +142,7 @@ export default function Certificates() {
 
   useEffect(() => {
     if (!isVisible) return;
+    isVisibleRef.current = true;
     reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (outerRef.current) outerRef.current.dataset.reducedMotion = reducedRef.current ? "1" : "";
 
@@ -154,6 +160,28 @@ export default function Certificates() {
       const nearest = Math.round(floatIndex);
       const normalized = ((nearest % CERTS.length) + CERTS.length) % CERTS.length;
       return normalized + 1;
+    };
+
+    const flushCenterIndex = () => {
+      centerIndexRafRef.current = null;
+      const next = pendingCenterIndexRef.current;
+      pendingCenterIndexRef.current = null;
+      if (next !== null && next !== currentIndexRef.current) {
+        currentIndexRef.current = next;
+        setCenterIndex(next);
+      }
+    };
+    const scheduleCenterIndexFlush = (idx: number) => {
+      pendingCenterIndexRef.current = idx;
+      if (centerIndexRafRef.current !== null) return;
+      const ric = (window as any).requestIdleCallback as
+        | ((cb: () => void, opts?: { timeout: number }) => number)
+        | undefined;
+      if (ric) {
+        centerIndexRafRef.current = ric(flushCenterIndex, { timeout: 80 });
+      } else {
+        centerIndexRafRef.current = window.setTimeout(flushCenterIndex, 16) as unknown as number;
+      }
     };
 
     const measure = () => {
@@ -191,6 +219,8 @@ export default function Certificates() {
 
     function tick(time: number) {
       rafId = requestAnimationFrame(tick);
+
+      if (!isVisibleRef.current) return;
 
       if (!halfWidth) {
         const el = trackRef.current;
@@ -243,14 +273,20 @@ export default function Certificates() {
 
       const cur = computeCenterIndex();
       if (cur !== currentIndexRef.current) {
-        currentIndexRef.current = cur;
-        setCenterIndex(cur);
+        scheduleCenterIndexFlush(cur);
       }
     }
 
     rafId = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(rafId);
+      isVisibleRef.current = false;
+      if (centerIndexRafRef.current !== null) {
+        const cic = (window as any).cancelIdleCallback as ((id: number) => void) | undefined;
+        if (cic) cic(centerIndexRafRef.current);
+        else window.clearTimeout(centerIndexRafRef.current);
+        centerIndexRafRef.current = null;
+      }
       window.removeEventListener("resize", measure);
       if (activeDragListeners.current) {
         window.removeEventListener("pointermove", activeDragListeners.current.move);
@@ -293,8 +329,26 @@ export default function Certificates() {
         const normalized = ((nearest % CERTS.length) + CERTS.length) % CERTS.length;
         const cur = normalized + 1;
         if (cur !== currentIndexRef.current) {
-          currentIndexRef.current = cur;
-          setCenterIndex(cur);
+          pendingCenterIndexRef.current = cur;
+          if (centerIndexRafRef.current === null) {
+            const ric = (window as any).requestIdleCallback as
+              | ((cb: () => void, opts?: { timeout: number }) => number)
+              | undefined;
+            const flush = () => {
+              centerIndexRafRef.current = null;
+              const next = pendingCenterIndexRef.current;
+              pendingCenterIndexRef.current = null;
+              if (next !== null && next !== currentIndexRef.current) {
+                currentIndexRef.current = next;
+                setCenterIndex(next);
+              }
+            };
+            if (ric) {
+              centerIndexRafRef.current = ric(flush, { timeout: 60 });
+            } else {
+              centerIndexRafRef.current = window.setTimeout(flush, 16) as unknown as number;
+            }
+          }
         }
       }
     };
@@ -397,8 +451,8 @@ export default function Certificates() {
       <AnimatePresence>
         {selected && (
           <Portal>
-            <m.div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} onClick={() => { setSelected(null); setIsEnlarged(false); }}>
-              <m.div className="relative w-full max-w-5xl md:max-w-7xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row will-change-transform" style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 820px)" }} initial={{ scale: 0.97, opacity: 0, y: 8 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.97, opacity: 0, y: 8 }} transition={{ duration: 0.16, ease: [0.2, 0.8, 0.2, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
+            <m.div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ background: "rgba(8, 8, 10, 0.88)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }} onClick={() => { setSelected(null); setIsEnlarged(false); }}>
+              <m.div className="relative w-full max-w-5xl md:max-w-7xl rounded-2xl overflow-hidden flex flex-col md:flex-row will-change-transform" style={{ background: "var(--bg)", color: "var(--fg)", maxHeight: "min(90vh, 820px)", boxShadow: "0 24px 48px -12px rgba(0,0,0,0.5)" }} initial={{ scale: 0.97, opacity: 0, y: 8 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.97, opacity: 0, y: 8 }} transition={{ duration: 0.12, ease: [0.2, 0.8, 0.2, 1] }} onClick={(e) => e.stopPropagation()} data-lenis-prevent="true">
                 {/* Close button — top right of modal (like project modal) */}
                 <button
                   onClick={() => setSelected(null)}
@@ -407,7 +461,6 @@ export default function Certificates() {
                     background: "var(--bg)",
                     color: "var(--fg-muted)",
                     border: "1px solid var(--border-subtle)",
-                    backdropFilter: "blur(8px)",
                   }}
                   aria-label="Close modal"
                 >
@@ -416,9 +469,9 @@ export default function Certificates() {
 
                 {/* Image pane — left on md+, top on mobile */}
                 <div className="relative group/img cursor-zoom-in shrink-0 md:w-[55%] md:h-auto" style={{ aspectRatio: "16/11", borderRight: "1px solid var(--border-subtle)" }} onClick={() => setIsEnlarged(true)}>
-                  <Image src={selected.image} alt={selected.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 600px" />
+                  <Image src={selected.image} alt={selected.title} fill className="object-cover" loading="eager" sizes="(max-width: 768px) 100vw, 55vw" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150 flex items-center justify-center">
-                    <div className="bg-white/20 backdrop-blur-md p-4 rounded-full border border-white/30 transform scale-90 group-hover/img:scale-100 transition-transform duration-150"><Maximize2 size={24} color="#fff" /></div>
+                    <div className="bg-white/20 p-4 rounded-full border border-white/30 transform scale-90 group-hover/img:scale-100 transition-transform duration-150"><Maximize2 size={24} color="#fff" /></div>
                   </div>
                 </div>
 
@@ -467,11 +520,11 @@ export default function Certificates() {
       <AnimatePresence>
         {isEnlarged && selected && (
           <Portal>
-            <m.div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 md:p-12" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} onClick={() => setIsEnlarged(false)}>
+            <m.div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 md:p-12" style={{ background: "rgba(8, 8, 10, 0.92)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }} onClick={() => setIsEnlarged(false)}>
               <m.button className="absolute top-6 right-6 z-[100001] h-12 w-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors" onClick={() => setIsEnlarged(false)}><X size={24} color="#fff" /></m.button>
-              <m.div className="relative w-full h-full flex items-center justify-center will-change-transform" initial={{ scale: 0.97, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.97, opacity: 0 }} transition={{ duration: 0.15, ease: [0.2, 0.8, 0.2, 1] }}>
+              <m.div className="relative w-full h-full flex items-center justify-center will-change-transform" initial={{ scale: 0.97, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.97, opacity: 0 }} transition={{ duration: 0.12, ease: [0.2, 0.8, 0.2, 1] }}>
                 <div className="relative w-full h-full max-w-6xl max-h-screen">
-                  <Image src={selected.image} alt={selected.title} fill className="object-contain" priority sizes="100vw" />
+                  <Image src={selected.image} alt={selected.title} fill className="object-contain" loading="eager" sizes="100vw" />
                 </div>
               </m.div>
             </m.div>

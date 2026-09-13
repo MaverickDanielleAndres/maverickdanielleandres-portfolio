@@ -222,8 +222,10 @@ html.lenis, html.lenis body { height: auto; }
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 90ms ease-out, border-color 90ms ease;
-  transform: translate3d(0, 0, 0);
+  /* Box-shadow (compositor-only) replaces the border-color hover so we
+     avoid triggering paint on every pointer-enter. transform stays GPU
+     so the lift animation is still cheap. */
+  transition: transform 90ms ease-out, box-shadow 90ms ease;
   cursor: pointer;
 }
 
@@ -241,7 +243,7 @@ html.lenis, html.lenis body { height: auto; }
 
 .project-card:hover {
   transform: translate3d(0, -4px, 0);
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 50%, transparent);
 }
 
 .project-card:active {
@@ -390,7 +392,7 @@ html.lenis, html.lenis body { height: auto; }
 .light .project-card:hover {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.8),
               0 12px 40px rgba(0,0,0,0.14),
-              0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+              0 0 0 1.5px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 /* ===== Marquee drag cursor ===== */
@@ -571,9 +573,10 @@ html.lenis, html.lenis body { height: auto; }
   border-radius: 1.25rem;
   border: 1px solid var(--border-subtle);
   width: clamp(240px, 70vw, 390px);
-  transition: transform 90ms ease-out, border-color 90ms ease;
+  /* Same compositor-only treatment as .project-card — no border-color
+     on hover, no forced translate3d layer when not animating. */
+  transition: transform 90ms ease-out, box-shadow 90ms ease;
   cursor: pointer;
-  transform: translate3d(0, 0, 0);
 }
 
 @media (min-width: 640px) {
@@ -589,7 +592,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 .cert-card:hover {
   transform: translate3d(0, -4px, 0);
-  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 .cert-card__image-wrap {
   position: relative;
