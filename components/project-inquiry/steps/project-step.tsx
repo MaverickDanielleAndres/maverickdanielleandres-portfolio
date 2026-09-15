@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import {
   Globe, PanelsTopLeft, Smartphone, Boxes,
   ShoppingBag, ChartNoAxesCombined, ServerCog, Plus, Check,
@@ -55,7 +56,7 @@ const projectOptions = [
     label: 'Something Else',
     description: "For projects that don't fit neatly into the categories above.",
   },
-];
+] as const;
 
 interface ProjectStepProps {
   value: string;
@@ -63,8 +64,83 @@ interface ProjectStepProps {
   intent: string;
 }
 
+/**
+ * Memoized option button. Same reasoning as in intent-step.tsx — without it,
+ * the parent re-renders on every keystroke in later steps trigger an O(n)
+ * button re-render with new className + style objects.
+ */
+const OptionButton = memo(function OptionButton({
+  id,
+  icon: Icon,
+  label,
+  description,
+  selected,
+  onClick,
+}: {
+  id: string;
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
+  label: string;
+  description: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-colors outline-none',
+        'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
+        'hover:border-[color-mix(in_srgb,var(--accent)_40%,transparent)]',
+        selected
+          ? 'border-[var(--accent)] bg-[var(--accent)]/[0.08]'
+          : 'border-[var(--border-subtle)] bg-transparent hover:bg-[var(--fg)]/[0.03]'
+      )}
+      aria-pressed={selected}
+    >
+      <span
+        className={cn(
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors duration-200',
+          selected
+            ? 'bg-[var(--accent)]/15 text-[var(--accent)]'
+            : 'bg-[var(--fg)]/[0.06] text-[var(--fg-muted)]'
+        )}
+      >
+        <Icon size={18} strokeWidth={1.75} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <span
+          className="text-sm font-medium block leading-tight"
+          style={{ color: 'var(--fg)' }}
+        >
+          {label}
+        </span>
+        <span
+          className="text-xs leading-snug mt-0.5 block"
+          style={{ color: 'var(--fg-muted)' }}
+        >
+          {description}
+        </span>
+      </div>
+      {selected && (
+        <span className="absolute top-2.5 right-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent)] text-white">
+          <Check size={12} strokeWidth={2.5} />
+        </span>
+      )}
+    </button>
+  );
+});
+
 export default function ProjectStep({ value, onChange, intent }: ProjectStepProps) {
   const isHiring = intent === 'hire-me';
+
+  const handlers = useMemo(
+    () => projectOptions.reduce<Record<string, () => void>>((acc, opt) => {
+      acc[opt.id] = () => onChange(opt.id);
+      return acc;
+    }, {}),
+    [onChange]
+  );
 
   return (
     <div className="space-y-4">
@@ -81,55 +157,17 @@ export default function ProjectStep({ value, onChange, intent }: ProjectStepProp
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide">
-        {projectOptions.map(({ id, icon: Icon, label, description }) => {
-          const selected = value === id;
-          return (
-            <button
-              key={id}
-              type="button"
-              onClick={() => onChange(id)}
-              className={cn(
-                'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-colors outline-none',
-                'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
-                'hover:border-[color-mix(in_srgb,var(--accent)_40%,transparent)]',
-                selected
-                  ? 'border-[var(--accent)] bg-[var(--accent)]/[0.08]'
-                  : 'border-[var(--border-subtle)] bg-transparent hover:bg-[var(--fg)]/[0.03]'
-              )}
-              aria-pressed={selected}
-            >
-              <span
-                className={cn(
-                  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors duration-200',
-                  selected
-                    ? 'bg-[var(--accent)]/15 text-[var(--accent)]'
-                    : 'bg-[var(--fg)]/[0.06] text-[var(--fg-muted)]'
-                )}
-              >
-                <Icon size={18} strokeWidth={1.75} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <span
-                  className="text-sm font-medium block leading-tight"
-                  style={{ color: 'var(--fg)' }}
-                >
-                  {label}
-                </span>
-                <span
-                  className="text-xs leading-snug mt-0.5 block"
-                  style={{ color: 'var(--fg-muted)' }}
-                >
-                  {description}
-                </span>
-              </div>
-              {selected && (
-                <span className="absolute top-2.5 right-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent)] text-white">
-                  <Check size={12} strokeWidth={2.5} />
-                </span>
-              )}
-            </button>
-          );
-        })}
+        {projectOptions.map((opt) => (
+          <OptionButton
+            key={opt.id}
+            id={opt.id}
+            icon={opt.icon}
+            label={opt.label}
+            description={opt.description}
+            selected={value === opt.id}
+            onClick={handlers[opt.id]}
+          />
+        ))}
       </div>
     </div>
   );

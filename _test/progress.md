@@ -50,5 +50,11 @@ Improve scrolling performance, eliminate lag, bouncing, and glitching on Project
 - **Checks**: `npx tsc --noEmit` ✓ passed cleanly.
 - **Result**: Buttery smooth scrolling, zero sticky layout bugs, native mobile momentum scrolling.
 
-### Slice 4 — Mobile Performance, Build Verification & Automated Testing (In Progress)
-- Target: `_test/`, `tests/performance-verification.spec.mjs`, `npm run build`
+### Slice 5 — WordPress & WooCommerce Projects Showcase (2x2 Grid)
+- **Files touched**:
+  - `components/ui/project-showcase.tsx` (built 2x2 grid showcase with GPU-accelerated cursor-following floating preview, zero rAF CPU waste at idle, responsive 2-column layout)
+  - `components/Projects.tsx` (integrated ProjectShowcase directly beneath the Selected Projects & Work marquee)
+- **Checks**:
+  - `npx tsc --noEmit` ✓ passed cleanly (0 errors).
+  - `npm run build` ✓ production build compiled successfully in 1.6s.
+- **Result**: Interactive 2x2 WordPress and WooCommerce showcase with instantaneous hover response, zero scroll lag, and full mobile responsiveness.

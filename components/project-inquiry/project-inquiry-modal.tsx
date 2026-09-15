@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { AnimatePresence, m, type Variants } from 'framer-motion';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { m, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight, ArrowLeft, ArrowUpRight, Loader2 } from 'lucide-react';
 import ProjectInquiryStepper from './project-inquiry-stepper';
 import IntentStep from './steps/intent-step';
 import ProjectStep from './steps/project-step';
 import ScopeStep from './steps/scope-step';
-import ContactStep from './steps/contact-step';
+import ContactStep, { type ContactStepHandle, type ContactStepValues } from './steps/contact-step';
 import Welcome from '@/components/ui/welcome';
 
 /* ── Types ─────────────────────────────────────────────────────────────────── */
@@ -40,46 +40,29 @@ const INITIAL_STATE: ProjectInquiry = {
 
 const TOTAL_STEPS = 4;
 
-/* ── Animation variants ────────────────────────────────────────────────────── */
+/* ── Animation variants (memoized at module scope) ────────────────────────── */
 
-const backdropVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.18 } },
-  exit: { opacity: 0, transition: { duration: 0.15 } },
+const backdropVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.12 } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
-const modalVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.96, y: 10 },
-  visible: {
+const modalVariants = {
+  initial: { opacity: 0, scale: 0.98, y: 6 },
+  animate: {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] as const },
   },
   exit: {
     opacity: 0,
-    scale: 0.97,
-    y: 8,
-    transition: { duration: 0.15 },
+    scale: 0.99,
+    y: 4,
+    transition: { duration: 0.1 },
   },
 };
-
-const stepVariants = (direction: number): Variants => ({
-  enter: {
-    x: direction > 0 ? 30 : -30,
-    opacity: 0,
-  },
-  center: {
-    x: 0,
-    opacity: 1,
-    transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] },
-  },
-  exit: {
-    x: direction > 0 ? -30 : 30,
-    opacity: 0,
-    transition: { duration: 0.12 },
-  },
-});
 
 /* ── Helpers ───────────────────────────────────────────────────────────────── */
 
@@ -88,6 +71,13 @@ const validateEmail = (email: string) =>
 
 const validatePhone = (phone: string) =>
   /^[\d\s\-+()]{7,}$/.test(phone.trim());
+
+/* ── Step transition (CSS-only, no nested AnimatePresence) ────────────────── */
+
+const STEP_DIRECTION_CLASS = {
+  forward: 'inquiry-step-forward',
+  backward: 'inquiry-step-backward',
+} as const;
 
 /* ── Component ─────────────────────────────────────────────────────────────── */
 
@@ -110,16 +100,22 @@ export default function ProjectInquiryModal({
 
   const modalRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const contactStepRef = useRef<ContactStepHandle>(null);
+  // Live validity state for the (uncontrolled) contact step. The child
+  // notifies us via onValidityChange whenever validity *flips* — not on
+  // every keystroke — so this stays cheap.
+  const [contactValid, setContactValid] = useState(false);
 
-  /* ── Focus management ──────────────────────────────────────────────────── */
+  /* ── Focus management (no setTimeout delay) ────────────────────────────── */
 
   useEffect(() => {
     if (isOpen) {
-      // Store the trigger element
       triggerRef.current = document.activeElement as HTMLElement;
-      // Focus modal after animation
-      const timer = setTimeout(() => modalRef.current?.focus(), 100);
-      return () => clearTimeout(timer);
+      // Use rAF instead of setTimeout(100) — focus moves on the next frame,
+      // well before the modal's first paint completes. setTimeout(100) was
+      // artificially delaying focus by 100ms.
+      const raf = requestAnimationFrame(() => modalRef.current?.focus());
+      return () => cancelAnimationFrame(raf);
     } else if (triggerRef.current) {
       triggerRef.current.focus();
       triggerRef.current = null;
@@ -129,17 +125,15 @@ export default function ProjectInquiryModal({
   /* ── Body scroll lock ──────────────────────────────────────────────────── */
 
   useEffect(() => {
-    if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    }
+    if (!isOpen) return;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const prevOverflow = document.body.style.overflow;
+    const prevPadding = document.body.style.paddingRight;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      document.body.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevPadding;
     };
   }, [isOpen]);
 
@@ -154,11 +148,11 @@ export default function ProjectInquiryModal({
         return;
       }
 
-      // Focus trap
       if (e.key === 'Tab' && modalRef.current) {
         const focusable = modalRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
+        if (focusable.length === 0) return;
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
 
@@ -183,8 +177,14 @@ export default function ProjectInquiryModal({
   /* ── State updaters ────────────────────────────────────────────────────── */
 
   const updateField = useCallback((field: string, value: string) => {
-    setData((prev) => ({ ...prev, [field]: value }));
+    setData((prev) => {
+      // Avoid re-renders when value hasn't changed
+      if (prev[field as keyof ProjectInquiry] === value) return prev;
+      return { ...prev, [field]: value };
+    });
+    // Only clear the error if one exists for this field — avoids useless state churn
     setErrors((prev) => {
+      if (!prev[field]) return prev;
       const next = { ...prev };
       delete next[field];
       return next;
@@ -193,7 +193,7 @@ export default function ProjectInquiryModal({
 
   /* ── Validation ────────────────────────────────────────────────────────── */
 
-  const canContinue = (): boolean => {
+  const canContinue = useCallback((): boolean => {
     switch (step) {
       case 0:
         return !!data.intent;
@@ -202,50 +202,72 @@ export default function ProjectInquiryModal({
       case 2:
         return !!data.budget && !!data.timeline;
       case 3: {
-        if (!data.name.trim()) return false;
-        if (data.contactMethod === 'email') return validateEmail(data.email);
-        return validatePhone(data.phone);
+        // Contact step uses uncontrolled inputs; validity is reported back
+        // via the `onValidityChange` callback. This avoids forcing a parent
+        // state update on every keystroke just to know if the Submit button
+        // should be enabled.
+        return contactValid;
       }
       default:
         return false;
     }
-  };
+  }, [step, data, contactValid]);
 
-  const validateContactStep = (): Record<string, string> => {
+  const handleContactValidityChange = useCallback((valid: boolean) => {
+    setContactValid(valid);
+  }, []);
+
+  const validateContactStep = useCallback((values: ContactStepValues): Record<string, string> => {
     const errs: Record<string, string> = {};
-    if (!data.name.trim()) errs.name = 'Please enter your name.';
-    if (data.contactMethod === 'email') {
-      if (!data.email.trim()) errs.email = 'Please enter your email.';
-      else if (!validateEmail(data.email)) errs.email = 'Please enter a valid email address.';
+    if (!values.name.trim()) errs.name = 'Please enter your name.';
+    if (values.contactMethod === 'email') {
+      if (!values.email.trim()) errs.email = 'Please enter your email.';
+      else if (!validateEmail(values.email)) errs.email = 'Please enter a valid email address.';
     } else {
-      if (!data.phone.trim()) errs.phone = 'Please enter your phone number.';
-      else if (!validatePhone(data.phone)) errs.phone = 'Please enter a valid phone number.';
+      if (!values.phone.trim()) errs.phone = 'Please enter your phone number.';
+      else if (!validatePhone(values.phone)) errs.phone = 'Please enter a valid phone number.';
     }
     return errs;
-  };
+  }, []);
 
   /* ── Navigation ────────────────────────────────────────────────────────── */
 
-  const goNext = () => {
+  const goNext = useCallback(() => {
     if (step === TOTAL_STEPS - 1) return;
     setDirection(1);
     setStep((s) => s + 1);
-  };
+  }, [step]);
 
-  const goBack = () => {
+  const goBack = useCallback(() => {
     if (step === 0) return;
     setDirection(-1);
     setStep((s) => s - 1);
-  };
+  }, [step]);
 
   /* ── Submit ────────────────────────────────────────────────────────────── */
 
-  const handleSubmit = async () => {
-    const contactErrors = validateContactStep();
+  const handleSubmit = useCallback(async () => {
+    // Pull live values from the uncontrolled contact step. Falls back to the
+    // last-known `data` props if the ref hasn't attached yet (defensive).
+    const contactValues: ContactStepValues =
+      contactStepRef.current?.getValues() ?? {
+        name: data.name,
+        contactMethod: data.contactMethod,
+        email: data.email,
+        phone: data.phone,
+        company: data.company,
+        message: data.message,
+      };
+
+    const contactErrors = validateContactStep(contactValues);
     if (Object.keys(contactErrors).length > 0) {
       setErrors(contactErrors);
       return;
     }
+
+    // Persist the contact fields into the parent state so the reset path
+    // and any external listeners see the final values.
+    setData((prev) => ({ ...prev, ...contactValues }));
 
     setSubmitting(true);
     setSubmitError(null);
@@ -256,7 +278,7 @@ export default function ProjectInquiryModal({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, ...contactValues }),
       });
 
       const result = await response.json();
@@ -272,14 +294,15 @@ export default function ProjectInquiryModal({
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [data, validateContactStep]);
 
   /* ── Close & reset ─────────────────────────────────────────────────────── */
 
   const handleClose = useCallback(() => {
     onClose();
-    // Reset after animation completes
     if (submitted) {
+      // Reset after the exit animation completes so the user doesn't see
+      // the form flicker back to step 0 before the modal fades out.
       setTimeout(() => {
         setData(INITIAL_STATE);
         setStep(0);
@@ -287,26 +310,34 @@ export default function ProjectInquiryModal({
         setSubmitted(false);
         setSubmitError(null);
         setErrors({});
-      }, 300);
+      }, 200);
     }
   }, [onClose, submitted]);
 
-  /* ── Render ────────────────────────────────────────────────────────────── */
+  /* ── Memoized direction class for CSS step transition ───────────────────── */
 
-  const currentStepVariants = stepVariants(direction);
+  const stepAnimClass = useMemo(
+    () => (direction > 0 ? STEP_DIRECTION_CLASS.forward : STEP_DIRECTION_CLASS.backward),
+    [direction]
+  );
+
+  /* ── Render (no nested AnimatePresence — single motion layer) ──────────── */
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {isOpen && (
         <>
           {/* Backdrop */}
           <m.div
             key="inquiry-backdrop"
             className="fixed inset-0 z-[9999]"
-            style={{ background: 'rgba(8, 8, 10, 0.78)' }}
+            style={{
+              background: 'rgba(8, 8, 10, 0.7)',
+              willChange: 'opacity',
+            }}
             variants={backdropVariants}
-            initial="hidden"
-            animate="visible"
+            initial="initial"
+            animate="animate"
             exit="exit"
             onClick={handleClose}
             aria-hidden="true"
@@ -323,18 +354,19 @@ export default function ProjectInquiryModal({
             className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-6 outline-none"
             style={{ pointerEvents: 'none' }}
             variants={modalVariants}
-            initial="hidden"
-            animate="visible"
+            initial="initial"
+            animate="animate"
             exit="exit"
           >
             <div
-              className="relative w-full max-w-xl rounded-2xl overflow-hidden flex flex-col"
+              className="relative w-full max-w-xl rounded-2xl overflow-hidden flex flex-col inquiry-modal-card"
               style={{
                 background: 'var(--bg)',
                 border: '1px solid var(--border-subtle)',
-                boxShadow: '0 24px 64px rgba(0,0,0,0.4)',
+                boxShadow: '0 16px 48px rgba(0,0,0,0.35)',
                 pointerEvents: 'auto',
                 maxHeight: 'min(calc(100vh - 2rem), calc(100dvh - 2rem))',
+                willChange: 'transform',
               }}
               onClick={(e) => e.stopPropagation()}
               data-lenis-prevent="true"
@@ -342,7 +374,6 @@ export default function ProjectInquiryModal({
               {/* ── Header ──────────────────────────────────────────────── */}
               {!submitted && (
                 <div className="px-6 pt-5 pb-0 flex-shrink-0">
-                  {/* Top row: title + close */}
                   <div className="flex items-start justify-between mb-1">
                     <div>
                       <h1
@@ -372,61 +403,57 @@ export default function ProjectInquiryModal({
                     </button>
                   </div>
 
-                  {/* Stepper */}
                   <div className="mt-3 mb-4">
                     <ProjectInquiryStepper currentStep={step} totalSteps={TOTAL_STEPS} />
                   </div>
                 </div>
               )}
 
-              {/* ── Content ─────────────────────────────────────────────── */}
-              <div className="flex-1 overflow-y-auto px-6 pb-2 min-h-0">
+              {/* ── Content (CSS-only step transitions, no nested AnimatePresence) ── */}
+              <div className="flex-1 overflow-y-auto px-6 pb-2 min-h-0 inquiry-content">
                 {submitted ? (
                   <Welcome onClose={handleClose} />
                 ) : (
-                  <AnimatePresence mode="popLayout" custom={direction}>
-                    <m.div
-                      key={step}
-                      variants={currentStepVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                    >
-                      {step === 0 && (
-                        <IntentStep
-                          value={data.intent}
-                          onChange={(v) => updateField('intent', v)}
-                        />
-                      )}
-                      {step === 1 && (
-                        <ProjectStep
-                          value={data.projectType}
-                          onChange={(v) => updateField('projectType', v)}
-                          intent={data.intent}
-                        />
-                      )}
-                      {step === 2 && (
-                        <ScopeStep
-                          budget={data.budget}
-                          timeline={data.timeline}
-                          onBudgetChange={(v) => updateField('budget', v)}
-                          onTimelineChange={(v) => updateField('timeline', v)}
-                        />
-                      )}
-                      {step === 3 && (
-                        <ContactStep
-                          name={data.name}
-                          contactMethod={data.contactMethod}
-                          email={data.email}
-                          phone={data.phone}
-                          company={data.company}
-                          message={data.message}
-                          onFieldChange={updateField}
-                          errors={errors}
-                        />
-                      )}
-                    </m.div>
-                  </AnimatePresence>
+                  <div
+                    key={step}
+                    className={`inquiry-step ${stepAnimClass}`}
+                  >
+                    {step === 0 && (
+                      <IntentStep
+                        value={data.intent}
+                        onChange={(v) => updateField('intent', v)}
+                      />
+                    )}
+                    {step === 1 && (
+                      <ProjectStep
+                        value={data.projectType}
+                        onChange={(v) => updateField('projectType', v)}
+                        intent={data.intent}
+                      />
+                    )}
+                    {step === 2 && (
+                      <ScopeStep
+                        budget={data.budget}
+                        timeline={data.timeline}
+                        onBudgetChange={(v) => updateField('budget', v)}
+                        onTimelineChange={(v) => updateField('timeline', v)}
+                      />
+                    )}
+                    {step === 3 && (
+                      <ContactStep
+                        ref={contactStepRef}
+                        name={data.name}
+                        contactMethod={data.contactMethod}
+                        email={data.email}
+                        phone={data.phone}
+                        company={data.company}
+                        message={data.message}
+                        onFieldChange={updateField}
+                        onValidityChange={handleContactValidityChange}
+                        errors={errors}
+                      />
+                    )}
+                  </div>
                 )}
               </div>
 
@@ -437,7 +464,6 @@ export default function ProjectInquiryModal({
                   style={{ borderTop: '1px solid var(--border-subtle)' }}
                 >
                   <div className="flex items-center justify-between w-full">
-                    {/* Back button */}
                     {step > 0 ? (
                       <button
                         type="button"
@@ -453,7 +479,6 @@ export default function ProjectInquiryModal({
                       <span />
                     )}
 
-                    {/* Continue / Submit */}
                     {step < TOTAL_STEPS - 1 ? (
                       <button
                         type="button"

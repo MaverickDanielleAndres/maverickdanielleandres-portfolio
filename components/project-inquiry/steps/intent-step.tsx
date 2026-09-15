@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import { Sparkles, RefreshCw, BriefcaseBusiness, Wrench, Gauge, MessageCircleQuestion, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -40,14 +41,95 @@ const intentOptions = [
     label: 'Not Sure Yet',
     description: "I have an idea, but I need help figuring out the best approach.",
   },
-];
+] as const;
 
 interface IntentStepProps {
   value: string;
   onChange: (value: string) => void;
 }
 
+/**
+ * Memoized option button. Renders only when its `selected` state or its
+ * stable props change. Crucial because the parent re-renders on every
+ * keystroke in any later step (contact field updates etc.) — without
+ * memo, all 6 buttons re-render and re-compute their `cn()` + inline
+ * styles on every parent commit.
+ */
+const OptionButton = memo(function OptionButton({
+  id,
+  icon: Icon,
+  label,
+  description,
+  selected,
+  onClick,
+}: {
+  id: string;
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
+  label: string;
+  description: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        // transition-colors + transition-shadow only — never transition-all,
+        // which makes the browser track every animatable property per frame.
+        'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-colors outline-none',
+        'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
+        'hover:border-[color-mix(in_srgb,var(--accent)_40%,transparent)]',
+        selected
+          ? 'border-[var(--accent)] bg-[var(--accent)]/[0.08]'
+          : 'border-[var(--border-subtle)] bg-transparent hover:bg-[var(--fg)]/[0.03]'
+      )}
+      aria-pressed={selected}
+    >
+      <span
+        className={cn(
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors',
+          selected
+            ? 'bg-[var(--accent)]/15 text-[var(--accent)]'
+            : 'bg-[var(--fg)]/[0.06] text-[var(--fg-muted)]'
+        )}
+      >
+        <Icon size={18} strokeWidth={1.75} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <span
+          className="text-sm font-medium block leading-tight"
+          style={{ color: 'var(--fg)' }}
+        >
+          {label}
+        </span>
+        <span
+          className="text-xs leading-snug mt-0.5 block"
+          style={{ color: 'var(--fg-muted)' }}
+        >
+          {description}
+        </span>
+      </div>
+      {selected && (
+        <span className="absolute top-2.5 right-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent)] text-white">
+          <Check size={12} strokeWidth={2.5} />
+        </span>
+      )}
+    </button>
+  );
+});
+
 export default function IntentStep({ value, onChange }: IntentStepProps) {
+  // Stable click handler per option — without useMemo, `onClick={() => onChange(id)}`
+  // would create a new closure on every parent re-render, defeating React.memo.
+  const handlers = useMemo(
+    () => intentOptions.reduce<Record<string, () => void>>((acc, opt) => {
+      acc[opt.id] = () => onChange(opt.id);
+      return acc;
+    }, {}),
+    [onChange]
+  );
+
   return (
     <div className="space-y-4">
       <div>
@@ -63,57 +145,17 @@ export default function IntentStep({ value, onChange }: IntentStepProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {intentOptions.map(({ id, icon: Icon, label, description }) => {
-          const selected = value === id;
-          return (
-            <button
-              key={id}
-              type="button"
-              onClick={() => onChange(id)}
-              className={cn(
-                // transition-colors + transition-shadow only — never transition-all,
-                // which makes the browser track every animatable property per frame.
-                'relative flex items-start gap-3 rounded-xl p-3.5 text-left transition-colors outline-none',
-                'border focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1',
-                'hover:border-[color-mix(in_srgb,var(--accent)_40%,transparent)]',
-                selected
-                  ? 'border-[var(--accent)] bg-[var(--accent)]/[0.08]'
-                  : 'border-[var(--border-subtle)] bg-transparent hover:bg-[var(--fg)]/[0.03]'
-              )}
-              aria-pressed={selected}
-            >
-              <span
-                className={cn(
-                  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors',
-                  selected
-                    ? 'bg-[var(--accent)]/15 text-[var(--accent)]'
-                    : 'bg-[var(--fg)]/[0.06] text-[var(--fg-muted)]'
-                )}
-              >
-                <Icon size={18} strokeWidth={1.75} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <span
-                  className="text-sm font-medium block leading-tight"
-                  style={{ color: 'var(--fg)' }}
-                >
-                  {label}
-                </span>
-                <span
-                  className="text-xs leading-snug mt-0.5 block"
-                  style={{ color: 'var(--fg-muted)' }}
-                >
-                  {description}
-                </span>
-              </div>
-              {selected && (
-                <span className="absolute top-2.5 right-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent)] text-white">
-                  <Check size={12} strokeWidth={2.5} />
-                </span>
-              )}
-            </button>
-          );
-        })}
+        {intentOptions.map((opt) => (
+          <OptionButton
+            key={opt.id}
+            id={opt.id}
+            icon={opt.icon}
+            label={opt.label}
+            description={opt.description}
+            selected={value === opt.id}
+            onClick={handlers[opt.id]}
+          />
+        ))}
       </div>
     </div>
   );

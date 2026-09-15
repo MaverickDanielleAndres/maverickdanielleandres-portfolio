@@ -1,7 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback, useImperativeHandle, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
+
+export interface ContactStepValues {
+  name: string;
+  contactMethod: 'email' | 'phone';
+  email: string;
+  phone: string;
+  company: string;
+  message: string;
+}
+
+export interface ContactStepHandle {
+  /** Reads the current values from the underlying inputs/refs. */
+  getValues: () => ContactStepValues;
+  /** Whether the step's required fields are all valid (Continue enabled). */
+  isValid: () => boolean;
+}
 
 interface ContactStepProps {
   name: string;
@@ -11,26 +27,110 @@ interface ContactStepProps {
   company: string;
   message: string;
   onFieldChange: (field: string, value: string) => void;
+  /** Called whenever validity flips. Used by the parent to re-evaluate
+   *  the Submit button's disabled state without forcing a parent re-render
+   *  on every keystroke. */
+  onValidityChange?: (valid: boolean) => void;
   errors: Record<string, string>;
 }
 
-export default function ContactStep({
-  name,
-  contactMethod,
-  email,
-  phone,
-  company,
-  message,
-  onFieldChange,
-  errors,
-}: ContactStepProps) {
+const validateEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const validatePhone = (phone: string) =>
+  /^[\d\s\-+()]{7,}$/.test(phone.trim());
+
+/**
+ * Contact step uses UNCONTROLLED inputs. Keystrokes no longer trigger parent
+ * state updates — only blur events sync to the parent. This eliminates the
+ * cascade of parent re-renders on every keystroke that was making the
+ * contact step feel sluggish when typing in any of the 4+ fields.
+ *
+ * The parent reads the live values via the imperative `getValues()` handle
+ * when the user clicks "Send Project Inquiry", and gets a boolean validity
+ * change notification (cheap, just a setState in the parent) so the Submit
+ * button can update its disabled state.
+ */
+const ContactStep = forwardRef<ContactStepHandle, ContactStepProps>(function ContactStep(
+  {
+    name,
+    contactMethod,
+    email,
+    phone,
+    company,
+    message,
+    onFieldChange,
+    onValidityChange,
+    errors,
+  },
+  ref
+) {
+  // Refs hold the live input values (uncontrolled). We mirror the prop value
+  // into the ref once on mount via defaultValue, so the parent still controls
+  // the initial render (important for server-rendered step state) but no
+  // keystroke ever propagates back to it.
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const companyRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const methodRef = useRef<'email' | 'phone'>(contactMethod);
+
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const handleBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-  };
+  // Helper: compute live values from the uncontrolled inputs.
+  const readValues = useCallback((): ContactStepValues => ({
+    name: nameRef.current?.value ?? name,
+    contactMethod: methodRef.current,
+    email: emailRef.current?.value ?? email,
+    phone: phoneRef.current?.value ?? phone,
+    company: companyRef.current?.value ?? company,
+    message: messageRef.current?.value ?? message,
+  }), [name, email, phone, company, message]);
+
+  const computeValid = useCallback((v: ContactStepValues): boolean => {
+    if (!v.name.trim()) return false;
+    if (v.contactMethod === 'email') return validateEmail(v.email);
+    return validatePhone(v.phone);
+  }, []);
+
+  // Notify parent only when validity *flips*. No-op otherwise — avoids the
+  // parent re-rendering on every keystroke just to recompute `disabled`.
+  const lastValidRef = useRef<boolean>(false);
+  const notifyValidity = useCallback(() => {
+    if (!onValidityChange) return;
+    const valid = computeValid(readValues());
+    if (valid !== lastValidRef.current) {
+      lastValidRef.current = valid;
+      onValidityChange(valid);
+    }
+  }, [onValidityChange, readValues, computeValid]);
+
+  const handleBlur = useCallback((field: string) => {
+    setTouched((prev) => (prev[field] ? prev : { ...prev, [field]: true }));
+    notifyValidity();
+  }, [notifyValidity]);
+
+  const handleMethodChange = useCallback((method: 'email' | 'phone') => {
+    methodRef.current = method;
+    onFieldChange('contactMethod', method);
+    setTouched((prev) => ({ ...prev }));
+    notifyValidity();
+  }, [onFieldChange, notifyValidity]);
 
   const showError = (field: string) => touched[field] && errors[field];
+
+  const getValues = useCallback((): ContactStepValues => readValues(), [readValues]);
+
+  const isValid = useCallback((): boolean => computeValid(readValues()), [computeValid, readValues]);
+
+  useImperativeHandle(ref, () => ({ getValues, isValid }), [getValues, isValid]);
+
+  // Re-validate after every keystroke without committing it to state. We
+  // listen on `input` (not `change`) so the parent knows within the same
+  // paint whether the Submit button should be enabled.
+  const handleInput = useCallback(() => {
+    notifyValidity();
+  }, [notifyValidity]);
 
   return (
     <div className="space-y-5">
@@ -58,8 +158,9 @@ export default function ContactStep({
         <input
           id="inquiry-name"
           type="text"
-          value={name}
-          onChange={(e) => onFieldChange('name', e.target.value)}
+          ref={nameRef}
+          defaultValue={name}
+          onInput={handleInput}
           onBlur={() => handleBlur('name')}
           placeholder="Your name"
           className="w-full bg-transparent border-b text-sm outline-none transition-colors"
@@ -97,7 +198,7 @@ export default function ContactStep({
               type="button"
               role="radio"
               aria-checked={contactMethod === method}
-              onClick={() => onFieldChange('contactMethod', method)}
+              onClick={() => handleMethodChange(method)}
               className={cn(
                 'px-4 py-1.5 text-xs font-medium rounded-md transition-colors capitalize',
                 contactMethod === method
@@ -116,8 +217,9 @@ export default function ContactStep({
             <input
               id="inquiry-email"
               type="email"
-              value={email}
-              onChange={(e) => onFieldChange('email', e.target.value)}
+              ref={emailRef}
+              defaultValue={email}
+              onInput={handleInput}
               onBlur={() => handleBlur('email')}
               placeholder="Email address"
               className="w-full bg-transparent border-b text-sm outline-none transition-colors"
@@ -140,8 +242,9 @@ export default function ContactStep({
             <input
               id="inquiry-phone"
               type="tel"
-              value={phone}
-              onChange={(e) => onFieldChange('phone', e.target.value)}
+              ref={phoneRef}
+              defaultValue={phone}
+              onInput={handleInput}
               onBlur={() => handleBlur('phone')}
               placeholder="Phone number"
               className="w-full bg-transparent border-b text-sm outline-none transition-colors"
@@ -174,8 +277,8 @@ export default function ContactStep({
         <input
           id="inquiry-company"
           type="text"
-          value={company}
-          onChange={(e) => onFieldChange('company', e.target.value)}
+          ref={companyRef}
+          defaultValue={company}
           placeholder="Company or organization (optional)"
           className="w-full bg-transparent border-b text-sm outline-none transition-colors"
           style={{
@@ -198,8 +301,8 @@ export default function ContactStep({
         </label>
         <textarea
           id="inquiry-message"
-          value={message}
-          onChange={(e) => onFieldChange('message', e.target.value)}
+          ref={messageRef}
+          defaultValue={message}
           placeholder="Tell me a little about the project, problem, or idea..."
           rows={3}
           className="w-full bg-transparent border-b text-sm resize-none outline-none transition-colors"
@@ -212,4 +315,6 @@ export default function ContactStep({
       </div>
     </div>
   );
-}
+});
+
+export default ContactStep;

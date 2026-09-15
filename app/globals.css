@@ -929,3 +929,49 @@ html.lenis, html.lenis body { height: auto; }
     height: 100% !important;
   }
 }
+
+/* ── Project Inquiry Modal: CSS-only step transitions ──────────────────── */
+/*
+   Replaces the previously-nested <AnimatePresence mode="popLayout"> wrapper
+   that was causing 4 synchronization barriers per step change. The motion
+   is now a single CSS keyframe animation on the keyed `.inquiry-step`
+   container. The browser composites it on the GPU via transform + opacity,
+   so it stays smooth under load (typing, focus moves, scroll, etc.).
+*/
+@keyframes inquiry-step-in-forward {
+  from { transform: translate3d(20px, 0, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0);    opacity: 1; }
+}
+@keyframes inquiry-step-in-backward {
+  from { transform: translate3d(-20px, 0, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0);     opacity: 1; }
+}
+
+.inquiry-step {
+  /* Promote to its own compositor layer — animations stay on the GPU. */
+  will-change: transform, opacity;
+  animation-duration: 160ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+.inquiry-step-forward  { animation-name: inquiry-step-in-forward; }
+.inquiry-step-backward { animation-name: inquiry-step-in-backward; }
+
+@media (prefers-reduced-motion: reduce) {
+  .inquiry-step {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* Modal card: a single GPU layer for the entrance animation. */
+.inquiry-modal-card {
+  /* The card itself doesn't need to repaint during the entrance transform. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Contain the content scroll so step changes don't repaint the rest of the modal. */
+.inquiry-content {
+  contain: layout paint;
+}

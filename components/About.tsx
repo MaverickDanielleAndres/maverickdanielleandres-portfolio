@@ -1,12 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { m, useInView } from "framer-motion";
 import { ImageSwiper } from "@/components/ui/image-swiper";
 import { ArrowUpRight, Download, Github, Linkedin, Facebook, Instagram } from "lucide-react";
 import SpotlightCard from "@/components/ui/SpotlightCard";
 import { useTheme } from "next-themes";
+
+// Shared prefetch handle — first hover/touch on either trigger starts the
+// modal chunk download. Same pattern as GetStartedButton in the hero.
+let inquiryChunkPrefetched: Promise<unknown> | null = null;
+function prefetchInquiryChunk(): void {
+  if (typeof window === "undefined") return;
+  if (!inquiryChunkPrefetched) {
+    inquiryChunkPrefetched = import(
+      "@/components/project-inquiry/project-inquiry-modal"
+    ).then((m) => m.default);
+  }
+}
 
 const SOCIAL_LINKS = [
   { icon: "github", label: "GitHub", href: "https://github.com/MaverickDanielleAndres" },
@@ -33,9 +45,18 @@ export default function About({ onStartProject }: AboutProps) {
   const isInView = useInView(containerRef, { once: true, margin: "-10%" });
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  
+
   useEffect(() => setMounted(true), []);
   const isDark = mounted && resolvedTheme === "dark";
+
+  // Trigger prefetch when the About section scrolls into view — the chunk
+  // arrives before the user has time to read the section and click.
+  useEffect(() => {
+    if (!isInView) return;
+    prefetchInquiryChunk();
+  }, [isInView]);
+
+  const handleStartHover = useCallback(() => prefetchInquiryChunk(), []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -132,6 +153,9 @@ export default function About({ onStartProject }: AboutProps) {
                       <button
                         type="button"
                         onClick={onStartProject}
+                        onMouseEnter={handleStartHover}
+                        onFocus={handleStartHover}
+                        onTouchStart={handleStartHover}
                         className="inline-flex items-center gap-2 justify-center text-xs font-bold px-4 py-2.5 rounded-xl transition-all hover:scale-[1.02] active:scale-95 shadow-[0_4px_12px_rgba(96,85,240,0.15)]"
                         style={{ background: "var(--accent)", color: "#fff" }}
                       >

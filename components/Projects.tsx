@@ -5,6 +5,7 @@ import { m, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Github, ExternalLink } from "lucide-react";
 import Portal from "@/components/Portal";
+import ProjectShowcase from "@/components/ui/project-showcase";
 
 type Project = {
   id: number;
@@ -1381,6 +1382,11 @@ export default function Projects() {
           ))}
         </div>
       </m.div>
+
+      {/* ── WordPress and WooCommerce Projects Showcase (2x2 Grid) */}
+      <div className="mt-8 sm:mt-12">
+        <ProjectShowcase />
+      </div>
 
       {/* ── Project Modal */}
       <AnimatePresence>
