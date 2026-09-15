@@ -13,6 +13,7 @@ const GitHubCalendar = dynamic(() => import("react-github-calendar").then((mod) 
 
 import SpotlightCard from "@/components/ui/SpotlightCard";
 import { useTheme } from "next-themes";
+import { ArrowUpRight } from "lucide-react";
 
 const EXPERIENCE = [
   {
@@ -195,9 +196,10 @@ export default function ActivitySection() {
                 href="https://github.com/MaverickDanielleAndres"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-medium px-4 py-2 rounded-full border border-[var(--border-subtle)] text-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-colors duration-150"
+                className="group inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full border border-black/15 dark:border-white/15 bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-neutral-100 hover:!bg-neutral-950 hover:!text-white dark:hover:!bg-white dark:hover:!text-neutral-950 hover:border-transparent transition-all duration-200 hover:scale-[1.03] active:scale-95 shadow-sm cursor-pointer select-none"
               >
-                View Profile
+                <span className="transition-colors">View Profile</span>
+                <ArrowUpRight size={13} className="opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
               </a>
             </div>
  

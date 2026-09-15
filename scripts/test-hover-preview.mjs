@@ -38,18 +38,14 @@ import { chromium } from '@playwright/test';
   await page.waitForTimeout(500); // wait for fade-in
 
   const previewState = await page.evaluate(() => {
-    // Find the floating preview — it has z-50 and pointer-events-none
-    const allDivs = Array.from(document.querySelectorAll('div'));
-    const preview = allDivs.find((d) =>
-      d.className.includes('pointer-events-none fixed z-50')
-    );
+    // Find the floating preview — Portal'd into body, has unique z-index class
+    const preview = document.querySelector('.pointer-events-none.fixed.z-\\[2147483646\\]');
     if (!preview) return { found: false };
     const styles = getComputedStyle(preview);
     return {
       found: true,
       opacity: styles.opacity,
       transform: preview.style.transform,
-      // Check if it has moved away from the off-screen seed position
       isOnScreen: !preview.style.transform.includes('-9999'),
     };
   });
@@ -81,12 +77,8 @@ import { chromium } from '@playwright/test';
     await page.waitForTimeout(300);
 
     const pos = await page.evaluate(() => {
-      const allDivs = Array.from(document.querySelectorAll('div'));
-      const preview = allDivs.find((d) =>
-        d.className.includes('pointer-events-none fixed z-50')
-      );
+      const preview = document.querySelector('.pointer-events-none.fixed.z-\\[2147483646\\]');
       if (!preview) return null;
-      // Parse translate3d from style.transform
       const m = preview.style.transform.match(/translate3d\(([^,]+)px, ([^,]+)px/);
       return m ? { x: parseFloat(m[1]), y: parseFloat(m[2]) } : null;
     });
@@ -108,10 +100,7 @@ import { chromium } from '@playwright/test';
   await page.waitForTimeout(500);
 
   const afterLeave = await page.evaluate(() => {
-    const allDivs = Array.from(document.querySelectorAll('div'));
-    const preview = allDivs.find((d) =>
-      d.className.includes('pointer-events-none fixed z-50')
-    );
+    const preview = document.querySelector('.pointer-events-none.fixed.z-\\[2147483646\\]');
     if (!preview) return { found: false };
     const styles = getComputedStyle(preview);
     return { found: true, opacity: styles.opacity };

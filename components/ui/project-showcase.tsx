@@ -1,6 +1,8 @@
 "use client"
+
 import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
+import { createPortal } from "react-dom"
 import { ArrowUpRight } from "lucide-react"
 
 export interface Project {
@@ -79,38 +81,6 @@ interface ProjectShowcaseProps {
 const PREVIEW_WIDTH = 320
 const PREVIEW_HEIGHT = 200
 
-/**
- * Hover-preview showcase — perf rewrite that KEEPS the original hover
- * behavior intact.
- *
- * Performance wins over the original implementation:
- *
- *   1. Mouse + smooth positions live in REFS, not React state. Updating
- *      them 60×/sec no longer triggers React reconciliation of the
- *      section tree (8 cards, 8 images). Previously the rAF called
- *      `setSmoothPosition` and `setMousePosition` every frame — two
- *      state updates per frame on the same component, forcing it to
- *      re-render ~120 times per second whenever the cursor moved over
- *      this section.
- *
- *   2. The rAF writes `style.transform` directly to the floating
- *      preview's DOM node — bypasses React's virtual DOM diffing
- *      entirely. The transform is GPU-composited (`will-change:
- *      transform`) so the browser doesn't paint the preview every
- *      frame, it just moves the composited layer.
- *
- *   3. The rAF runs only while the section is in view (IntersectionObserver)
- *      — when the user scrolls past the showcase, no work is done.
- *      When the user is not hovering, the rAF still runs but only
- *      continues while the cursor is over the section.
- *
- * Hover behavior preserved:
- *   - Hover a card → preview fades in + smoothly follows the cursor.
- *   - Move cursor across cards → preview tracks, content swaps to the
- *     hovered card's screenshot.
- *   - Leave the section → preview fades out.
- *   - Touch devices show a centered preview on tap (auto-hides after 2.8s).
- */
 export function ProjectShowcase({
   projects = defaultProjects,
   title = "Wordpress and Woocommerce projects",
@@ -118,18 +88,20 @@ export function ProjectShowcase({
 }: ProjectShowcaseProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const containerRef = useRef<HTMLElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const touchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Mouse + smooth positions live in refs — never in React state.
-  // Updating them doesn't trigger a re-render.
   const mousePosRef = useRef({ x: 0, y: 0 })
   const smoothPosRef = useRef({ x: 0, y: 0 })
   const animRef = useRef<number | null>(null)
-  const isVisibleRef = useRef(false)
+  const isHoveredRef = useRef(false)
 
-  // ── Mobile detection (one re-render on mount, never again) ────────
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   useEffect(() => {
     const checkMobile = () => {
       const mobile =
@@ -143,92 +115,81 @@ export function ProjectShowcase({
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  // ── Visibility gate + rAF lifecycle ────────────────────────────────
-  // Combines the visibility observer, the rAF start/stop, the lerp loop,
-  // and the cursor-in/out tracking in one effect so we only pay the
-  // setup cost once. The rAF starts when the section enters the viewport
-  // and stops when it leaves — the browser's IntersectionObserver fires
-  // synchronously with the initial observe() call so we don't need a
-  // polling fallback.
+  // 60fps spring/lerp tracking that stops when not hovering
   useEffect(() => {
-    if (!containerRef.current) return
-    const section = containerRef.current
-
     const lerp = (start: number, end: number, factor: number) =>
       start + (end - start) * factor
 
     const tick = () => {
-      animRef.current = requestAnimationFrame(tick)
-
       const preview = previewRef.current
-      if (!preview) return
+      if (preview && !isMobile) {
+        const target = mousePosRef.current
+        const current = smoothPosRef.current
 
-      const target = mousePosRef.current
-      const current = smoothPosRef.current
-      smoothPosRef.current = {
-        x: lerp(current.x, target.x, 0.15),
-        y: lerp(current.y, target.y, 0.15),
+        smoothPosRef.current = {
+          x: lerp(current.x, target.x, 0.22),
+          y: lerp(current.y, target.y, 0.22),
+        }
+
+        // Center preview on cursor:
+        // Position top-left at (cursorX - width/2, cursorY - height/2)
+        const dx = smoothPosRef.current.x - PREVIEW_WIDTH / 2
+        const dy = smoothPosRef.current.y - PREVIEW_HEIGHT / 2
+
+        preview.style.transform = `translate3d(${Math.round(dx)}px, ${Math.round(dy)}px, 0)`
       }
 
-      const { x: nx, y: ny } = smoothPosRef.current
-      // Position the preview so its CENTER sits on the cursor. Then clamp
-      // to the viewport edges so the preview never goes off-screen.
-      let dx = nx - PREVIEW_WIDTH / 2
-      let dy = ny - PREVIEW_HEIGHT / 2
-      const margin = 12
-      if (dx < margin) dx = margin
-      if (dy < margin) dy = margin
-      if (dx + PREVIEW_WIDTH > window.innerWidth - margin) {
-        dx = window.innerWidth - PREVIEW_WIDTH - margin
+      if (isHoveredRef.current) {
+        animRef.current = requestAnimationFrame(tick)
+      } else {
+        animRef.current = null
       }
-      if (dy + PREVIEW_HEIGHT > window.innerHeight - margin) {
-        dy = window.innerHeight - PREVIEW_HEIGHT - margin
-      }
-      preview.style.transform = `translate3d(${dx}px, ${dy}px, 0)`
     }
 
-    const start = () => {
+    if (hoveredIndex !== null) {
+      isHoveredRef.current = true
       if (animRef.current === null) {
         animRef.current = requestAnimationFrame(tick)
       }
+    } else {
+      isHoveredRef.current = false
     }
-    const stop = () => {
+
+    return () => {
       if (animRef.current !== null) {
         cancelAnimationFrame(animRef.current)
         animRef.current = null
       }
     }
+  }, [hoveredIndex, isMobile])
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisibleRef.current = entry.isIntersecting
-        if (entry.isIntersecting) start()
-        else stop()
-      },
-      { rootMargin: "200px" }
-    )
-    observer.observe(section)
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (isMobile) return
+      mousePosRef.current = { x: e.clientX, y: e.clientY }
+    },
+    [isMobile]
+  )
 
-    return () => {
-      observer.disconnect()
-      stop()
-      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
-    }
-  }, [])
+  const handleMouseEnter = useCallback(
+    (index: number, e: React.MouseEvent) => {
+      if (isMobile) return
+      // Seed both target and current directly at cursor coordinates
+      mousePosRef.current = { x: e.clientX, y: e.clientY }
+      smoothPosRef.current = { x: e.clientX, y: e.clientY }
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isMobile) return
-    mousePosRef.current = { x: e.clientX, y: e.clientY }
-  }, [isMobile])
+      // Immediately snap preview DOM to cursor center on entry frame
+      const preview = previewRef.current
+      if (preview) {
+        const dx = e.clientX - PREVIEW_WIDTH / 2
+        const dy = e.clientY - PREVIEW_HEIGHT / 2
+        preview.style.transform = `translate3d(${Math.round(dx)}px, ${Math.round(dy)}px, 0)`
+      }
 
-  const handleMouseEnter = useCallback((index: number, e: React.MouseEvent) => {
-    if (isMobile) return
-    // Seed both refs at the cursor so the preview appears at the right
-    // place on the very first frame (no snap from off-screen).
-    mousePosRef.current = { x: e.clientX, y: e.clientY }
-    smoothPosRef.current = { x: e.clientX, y: e.clientY }
-    setHoveredIndex(index)
-  }, [isMobile])
+      setHoveredIndex(index)
+    },
+    [isMobile]
+  )
 
   const handleMouseLeave = useCallback(() => {
     setHoveredIndex(null)
@@ -237,11 +198,61 @@ export function ProjectShowcase({
   const handleTouchStart = useCallback((index: number) => {
     if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
     setHoveredIndex(index)
-    // Keep preview visible briefly on touch
     touchTimeoutRef.current = setTimeout(() => {
       setHoveredIndex(null)
     }, 2800)
   }, [])
+
+  // Floating preview rendered via React portal to document.body
+  const previewPortal = mounted
+    ? createPortal(
+        <div
+          ref={previewRef}
+          className={`pointer-events-none fixed z-[999999] overflow-hidden rounded-xl shadow-2xl transition-opacity duration-300 ease-out will-change-transform ${
+            isMobile
+              ? "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              : "top-0 left-0"
+          }`}
+          style={{
+            opacity: hoveredIndex !== null ? 1 : 0,
+            transform: isMobile
+              ? "translate3d(-50%, -50%, 0)"
+              : undefined,
+          }}
+        >
+          <div
+            className={`relative overflow-hidden rounded-xl bg-secondary border border-border/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] ${
+              isMobile
+                ? "w-[min(84vw,320px)] h-[min(54vw,200px)]"
+                : "w-[320px] h-[200px]"
+            }`}
+          >
+            {projects.map((project, index) => (
+              <img
+                key={project.title}
+                src={project.image || "/placeholder.svg"}
+                alt={project.title}
+                loading="eager"
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-400 ease-out"
+                style={{
+                  opacity: hoveredIndex === index ? 1 : 0,
+                  transform: hoveredIndex === index ? "scale(1)" : "scale(1.1)",
+                  filter: hoveredIndex === index ? "blur(0)" : "blur(10px)",
+                }}
+                onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement
+                  target.src =
+                    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+                }}
+              />
+            ))}
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
+          </div>
+        </div>,
+        document.body
+      )
+    : null
 
   return (
     <section
@@ -249,6 +260,8 @@ export function ProjectShowcase({
       onMouseMove={handleMouseMove}
       className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
     >
+      {previewPortal}
+
       {/* ── Section Header */}
       <div className="mb-8 sm:mb-10">
         <p className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.18em] mb-2">
@@ -259,70 +272,7 @@ export function ProjectShowcase({
         </h2>
       </div>
 
-      {/* ── Floating Preview ─────────────────────────────────────────
-          Hover-only, GPU-composited (transform + opacity). On mobile the
-          preview sits in the centre and is auto-hidden after 2.8s.
-          The rAF above lerps `smoothPosRef` toward `mousePosRef` and
-          writes the result directly to this element's transform — no
-          React state, no virtual-DOM diffing per frame. */}
-      <div
-        ref={previewRef}
-        className="pointer-events-none fixed z-50 overflow-hidden rounded-xl shadow-2xl"
-        style={{
-          top: 0,
-          left: 0,
-          // Seeded off-screen so the very first paint doesn't show a flash
-          // of the preview at (0,0). The rAF overwrites this on frame 1.
-          transform: "translate3d(-9999px, -9999px, 0)",
-          opacity: hoveredIndex !== null ? 1 : 0,
-          transition: "opacity 0.3s ease-out",
-          willChange: "transform, opacity",
-        }}
-      >
-        <div
-          className={`relative overflow-hidden rounded-xl bg-secondary border border-border/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] ${
-            isMobile
-              ? "w-[min(84vw,320px)] h-[min(54vw,200px)]"
-              : "w-[300px] sm:w-[320px] h-[190px] sm:h-[200px]"
-          }`}
-          style={
-            isMobile
-              ? {
-                  position: "fixed",
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                }
-              : undefined
-          }
-        >
-          {projects.map((project, index) => (
-            <img
-              key={project.title}
-              src={project.image || "/placeholder.svg"}
-              alt={project.title}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{
-                opacity: hoveredIndex === index ? 1 : 0,
-                transform: hoveredIndex === index ? "scale(1)" : "scale(1.1)",
-                filter: hoveredIndex === index ? "blur(0)" : "blur(10px)",
-                transition:
-                  "opacity 0.4s ease-out, transform 0.4s ease-out, filter 0.4s ease-out",
-              }}
-              onError={(e) => {
-                const target = e.currentTarget as HTMLImageElement
-                target.src =
-                  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
-              }}
-            />
-          ))}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent" />
-        </div>
-      </div>
-
-      {/* ── 2 by 2 Grid Layout */}
+      {/* ── 2 by 2 Grid Layout (8 projects total: 2 columns x 4 rows) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 lg:gap-x-12 gap-y-0">
         {projects.map((project, index) => {
           const isHovered = hoveredIndex === index
@@ -342,53 +292,70 @@ export function ProjectShowcase({
               aria-label={`Open ${project.title} website`}
             >
               <div
-                className={`relative py-6 sm:py-7 border-t border-border ${
+                className={`relative py-6 sm:py-7 border-t border-border transition-all duration-300 ease-out ${
                   isLastItem ? "border-b" : isLastRow ? "md:border-b" : ""
                 }`}
               >
                 {/* Background highlight on hover */}
                 <div
-                  className={`absolute inset-0 -mx-3 sm:-mx-4 px-3 sm:px-4 bg-secondary/50 rounded-lg transition-opacity duration-300 ${
-                    isHovered ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={`
+                    absolute inset-0 -mx-3 sm:-mx-4 px-3 sm:px-4 bg-secondary/50 rounded-lg
+                    transition-all duration-300 ease-out
+                    ${isHovered ? "opacity-100 scale-100" : "opacity-0 scale-95"}
+                  `}
                 />
 
                 <div className="relative flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
+                    {/* Title with animated underline */}
                     <div className="inline-flex items-center gap-2">
                       <h3 className="text-foreground font-medium text-lg sm:text-xl tracking-tight">
                         <span className="relative">
                           {project.title}
+                          {/* Animated underline */}
                           <span
-                            className={`absolute left-0 -bottom-0.5 h-px bg-foreground transition-[width] duration-300 ${
-                              isHovered ? "w-full" : "w-0"
-                            }`}
+                            className={`
+                              absolute left-0 -bottom-0.5 h-px bg-foreground
+                              transition-all duration-300 ease-out
+                              ${isHovered ? "w-full" : "w-0"}
+                            `}
                           />
                         </span>
                       </h3>
 
+                      {/* Arrow that slides in */}
                       <ArrowUpRight
-                        className={`w-4 h-4 transition-[opacity,transform,color] duration-300 ${
-                          isHovered
-                            ? "opacity-100 translate-x-0 translate-y-0 text-foreground"
-                            : "opacity-0 -translate-x-2 translate-y-2 text-muted-foreground"
-                        }`}
+                        className={`
+                          w-4 h-4 text-muted-foreground
+                          transition-all duration-300 ease-out
+                          ${
+                            isHovered
+                              ? "opacity-100 translate-x-0 translate-y-0 text-foreground"
+                              : "opacity-0 -translate-x-2 translate-y-2"
+                          }
+                        `}
                       />
                     </div>
 
+                    {/* Description with fade effect */}
                     <p
-                      className={`mt-2 text-xs sm:text-sm leading-relaxed transition-colors duration-300 ${
-                        isHovered ? "text-foreground/80" : "text-muted-foreground"
-                      }`}
+                      className={`
+                        text-muted-foreground text-xs sm:text-sm mt-2 leading-relaxed
+                        transition-all duration-300 ease-out
+                        ${isHovered ? "text-foreground/80" : "text-muted-foreground"}
+                      `}
                     >
                       {project.description}
                     </p>
                   </div>
 
+                  {/* Year badge */}
                   <span
-                    className={`text-xs font-mono tabular-nums shrink-0 transition-colors duration-300 ${
-                      isHovered ? "text-foreground/70" : "text-muted-foreground"
-                    }`}
+                    className={`
+                      text-xs font-mono text-muted-foreground tabular-nums
+                      transition-all duration-300 ease-out shrink-0
+                      ${isHovered ? "text-foreground/70" : ""}
+                    `}
                   >
                     {project.year}
                   </span>
