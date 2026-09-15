@@ -930,6 +930,118 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
+/* ── Scroll performance: defer off-screen section rendering ─────────── */
+/*
+   `content-visibility: auto` tells the browser to skip layout/paint work
+   for sections that are off-screen and only render them as they approach
+   the viewport. Combined with `contain-intrinsic-size` (set per-section
+   below), the user sees a placeholder-sized box until the real content
+   is needed — saving significant main-thread work during scroll, which
+   was the primary cause of the "stop / go" feel when scrolling past the
+   Projects and Certificates sections.
+
+   Trade-off: when the section becomes visible, there's a brief moment
+   where the browser re-flows. For marquee-style sections this is fine
+   because we already gate the rAF loop on IntersectionObserver and only
+   start the auto-animation when visible.
+*/
+section[id] {
+  /* Default for sections without a known intrinsic size — the browser
+     falls back to no placeholder (slight pop-in is acceptable here). */
+}
+
+#projects {
+  /* Marquee track has a known height of ~700px on desktop, ~520px mobile. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto clamp(420px, 60vh, 720px);
+}
+
+#certificates {
+  content-visibility: auto;
+  contain-intrinsic-size: auto clamp(380px, 55vh, 660px);
+}
+
+#skills {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+#activity {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+#contact {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+#about {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+/* Promote the marquee tracks to their own compositor layer once visible.
+   The previous code set `will-change: transform` only at certain points;
+   here we keep it persistent because the track is animated almost every
+   frame while on-screen, and dropping the layer repeatedly costs more
+   than keeping it. */
+.projects-marquee-track {
+  will-change: transform;
+  /* `transform: translateZ(0)` is a fallback for browsers that don't
+     honor will-change without an initial transform. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ── GPU-composited marquee animations ───────────────────────────────── */
+/*
+   The marquee tracks used to drive their auto-scroll via a JavaScript
+   requestAnimationFrame loop that wrote `el.style.transform` every frame.
+   That JS rAF:
+     - burned a frame slot, competing with the browser's scroll handler
+     - triggered style recalculation + composite every frame, even when the
+       user wasn't looking at the section
+     - interacted badly with Lenis's smooth-scroll interpolation (now removed)
+
+   These CSS animations:
+     - run on the browser's compositor (no main thread per-frame work)
+     - pause automatically when the section is off-screen via IntersectionObserver
+       toggling the `.marquee-paused` class
+     - pause on hover via the `:hover` selector
+     - resume via `animation-play-state: running`
+*/
+@keyframes marquee-scroll-x {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.projects-marquee-track {
+  /* 60s loop matches the previous `LOOP_DURATION_S` constant. */
+  animation: marquee-scroll-x 60s linear infinite;
+  /* When the parent gets `.marquee-paused`, freeze the animation. */
+}
+.projects-marquee-track.marquee-paused {
+  animation-play-state: paused;
+}
+/* Pause on hover when the user is inspecting cards (desktop only). */
+@media (hover: hover) {
+  .projects-marquee-outer:hover .projects-marquee-track {
+    animation-play-state: paused;
+  }
+}
+/* Respect reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .projects-marquee-track {
+    animation: none !important;
+  }
+}
+
+/* Disable transitions that would interfere with the smooth CSS animation. */
+.projects-marquee-track {
+  transition: none !important;
+}
+
 /* ── Project Inquiry Modal: CSS-only step transitions ──────────────────── */
 /*
    Replaces the previously-nested <AnimatePresence mode="popLayout"> wrapper

@@ -19,7 +19,13 @@ export default function LazyLoad({ children, height = "100vh" }: LazyLoadProps) 
           observer.disconnect();
         }
       },
-      { rootMargin: "600px" } // Load well before it comes into view
+      // Was 600px — too eager. Mounting sections 600px ahead of the viewport
+      // means a heavy component (e.g. the GitHub calendar with hundreds of
+      // SVG nodes) starts layout/paint work while the user is still mid-scroll
+      // through the previous section. 100px is enough for the new section
+      // to be ready by the time it scrolls into view, without piling work
+      // onto an already-busy scroll.
+      { rootMargin: "100px" }
     );
 
     if (ref.current) {

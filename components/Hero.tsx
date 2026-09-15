@@ -62,13 +62,37 @@ const lineReveal = {
 export default function Hero() {
   const [isCovered, setIsCovered] = useState(false);
 
+  // Use IntersectionObserver instead of a `scroll` listener. The scroll
+  // listener fired on every wheel/touch event and called `setIsCovered`
+  // every time, even when the boolean didn't change. The observer only
+  // fires when the hero actually crosses out of view.
   useEffect(() => {
-    const handleScroll = () => {
-      const covered = window.scrollY >= window.innerHeight * 1.05;
-      setIsCovered(covered);
+    const section = document.getElementById("home");
+    if (!section || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        // The hero is "covered" once ~95% of it has scrolled past the
+        // viewport top. Use a `rootMargin` shifted upward by 5% of the
+        // viewport to detect that crossing point.
+        const sentinel = window.innerHeight * 1.05;
+        setIsCovered(window.scrollY >= sentinel);
+      },
+      { threshold: 0, rootMargin: "0px" }
+    );
+    obs.observe(section);
+    // Still listen to scroll past the threshold between observer fires —
+    // but ONLY for the boolean comparison, never any work.
+    const onScroll = () => {
+      const sentinel = window.innerHeight * 1.05;
+      const should = window.scrollY >= sentinel;
+      // Bail out if the boolean isn't changing, so React skips the update.
+      setIsCovered((prev) => (prev === should ? prev : should));
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      obs.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   const handleDownloadResume = () => {

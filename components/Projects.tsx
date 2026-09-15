@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { m, useInView, AnimatePresence } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Github, ExternalLink } from "lucide-react";
 import Portal from "@/components/Portal";
@@ -859,7 +859,12 @@ function ProjectModal({
 }
 
 // ─── Project Card ────────────────────────────────────────────────────────────
-function ProjectCard({
+/**
+ * Memoized so a parent re-render (e.g. `centerIndex` flip, hover state)
+ * doesn't cascade to all 32 marquee cards. The card only re-renders when
+ * one of its props actually changes.
+ */
+const ProjectCard = React.memo(function ProjectCard({
   project,
   index,
   onClick,
@@ -948,7 +953,7 @@ function ProjectCard({
       </div>
     </div>
   );
-}
+});
 
 // ─── Projects Section ─────────────────────────────────────────────────────────
 const CARD_STEP_PX = 420;
@@ -958,241 +963,121 @@ export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [isDragging, setIsDragging]       = useState(false);
   const [centerIndex, setCenterIndex]     = useState(1);
+  const [hasEnteredView, setHasEnteredView] = useState(false);
   const currentIndexRef                   = useRef(1);
 
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef   = useRef<HTMLDivElement>(null);
   const outerRef   = useRef<HTMLDivElement>(null);
 
-  const inView    = useInView(sectionRef, { once: true, margin: "-5% 0px" });
-  const isVisible = useInView(sectionRef, { margin: "300px" });
-
-  const xRef           = useRef(0);
-  const targetXRef     = useRef<number | null>(null);
-  const speedRef       = useRef(0);
-  const isPausedRef    = useRef(false);
-  const pauseFactorRef = useRef(1);
-  const reducedRef     = useRef(false);
+  // ── Visibility tracking via refs (NOT React state) ───────────────────
   const isVisibleRef   = useRef(false);
-  // Coalesce centerIndex updates so we don't re-render on every rAF tick
-  // when the user drags across cards. The visible counter lags by ~one frame
-  // but the perceived drag stays at 60fps.
-  const pendingCenterIndexRef = useRef<number | null>(null);
-  const centerIndexRafRef      = useRef<number | null>(null);
+  const hasEnteredViewRef = useRef(false);
 
+  useEffect(() => {
+    if (!sectionRef.current || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        // Toggle the `marquee-paused` class on the outer wrapper — the CSS
+        // animation handles the rest. This means there is ZERO main-thread
+        // work for the marquee animation itself; the GPU compositor handles
+        // every frame.
+        if (outerRef.current) {
+          outerRef.current.classList.toggle("marquee-paused", !entry.isIntersecting);
+        }
+        if (entry.isIntersecting && !hasEnteredViewRef.current) {
+          hasEnteredViewRef.current = true;
+          setHasEnteredView(true);
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+    obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  const inView = hasEnteredView;
+
+  // ── Drag state ────────────────────────────────────────────────────────
   const drag = useRef({
     active:   false,
     startX:   0,
-    frozenX:  0,
     lastX:    0,
     lastTime: 0,
     velocity: 0,
     hasMoved: false,
   });
-  const velocityRef = useRef(0);
   const activeDragListeners = useRef<{
     move: (e: PointerEvent) => void;
     up:   (e: PointerEvent) => void;
   } | null>(null);
+  // Animation-delay offset, accumulated by user drag. We pause the CSS
+  // animation, write a direct transform during drag, and resume from the
+  // new offset on release. This avoids any JS rAF per frame.
+  const animDelayRef = useRef(0);
 
   const marqueeProjects = [...PROJECTS, ...PROJECTS];
 
   useEffect(() => {
-    if (!isVisible) return;
-    isVisibleRef.current = true;
+    // The marquee auto-animation is now driven entirely by the CSS
+    // `@keyframes marquee-scroll-x` (see globals.css). The browser
+    // composites it on the GPU with zero per-frame main-thread work.
+    // This effect only handles the drag interaction.
+  }, []);
 
-    reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (outerRef.current) {
-      outerRef.current.dataset.reducedMotion = reducedRef.current ? "1" : "";
+  // Helper: bump the animation-delay to jump the CSS marquee by one card.
+  // Positive delay = the animation has already advanced by that amount, so
+  // the track appears shifted leftward (we're "rewinding" the animation).
+  const bumpAnimation = (cardOffsetPx: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    // Convert pixel offset to animation-duration fractions.
+    // (Each full loop = LOOP_DURATION_S, total scroll = track.scrollWidth/2.)
+    const halfWidth = track.scrollWidth / 2 || 1;
+    const seconds = (cardOffsetPx / halfWidth) * LOOP_DURATION_S;
+    animDelayRef.current -= seconds;
+    track.style.animationDelay = `${animDelayRef.current}s`;
+    // Also update the counter so the user knows where they are.
+    const stride = halfWidth / PROJECTS.length;
+    const cWidth = (track.firstElementChild as HTMLElement)?.offsetWidth || CARD_STEP_PX;
+    const normalizedPos =
+      ((-animDelayRef.current / LOOP_DURATION_S) * halfWidth) % halfWidth;
+    const floatIndex = (halfWidth - cWidth / 2 - normalizedPos) / stride;
+    const nearest = ((Math.round(floatIndex) % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
+    const newIndex = nearest + 1;
+    if (newIndex !== currentIndexRef.current) {
+      currentIndexRef.current = newIndex;
+      setCenterIndex(newIndex);
     }
-
-    let rafId = 0;
-    let lastTime = 0;
-    let halfWidth = 0;
-    let cardWidth = 0;
-    let stride = 0;
-    let outerWidth = 0;
-
-    const computeCenterIndex = () => {
-      if (!stride || !outerWidth) return 1;
-      const cWidth = cardWidth || CARD_STEP_PX;
-      const floatIndex = (outerWidth / 2 - cWidth / 2 - xRef.current) / stride;
-      const nearest = Math.round(floatIndex);
-      const normalized = ((nearest % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
-      return normalized + 1;
-    };
-
-    // Schedule a single low-priority flush per tick so React only sees
-    // one render per idle slot, no matter how many position changes
-    // happened during the rAF burst.
-    const flushCenterIndex = () => {
-      centerIndexRafRef.current = null;
-      const next = pendingCenterIndexRef.current;
-      pendingCenterIndexRef.current = null;
-      if (next !== null && next !== currentIndexRef.current) {
-        currentIndexRef.current = next;
-        setCenterIndex(next);
-      }
-    };
-    const scheduleCenterIndexFlush = (idx: number) => {
-      pendingCenterIndexRef.current = idx;
-      if (centerIndexRafRef.current !== null) return;
-      const ric = (window as any).requestIdleCallback as
-        | ((cb: () => void, opts?: { timeout: number }) => number)
-        | undefined;
-      if (ric) {
-        centerIndexRafRef.current = ric(flushCenterIndex, { timeout: 80 });
-      } else {
-        centerIndexRafRef.current = window.setTimeout(flushCenterIndex, 16) as unknown as number;
-      }
-    };
-
-    const measure = () => {
-      const el = trackRef.current;
-      const outer = outerRef.current;
-      if (!el) return;
-      if (outer) outerWidth = outer.clientWidth;
-      const firstCard = el.firstElementChild as HTMLElement | null;
-      if (firstCard) cardWidth = firstCard.offsetWidth;
-
-      const newHalfWidth = el.scrollWidth / 2;
-      if (newHalfWidth > 0) {
-        if (halfWidth > 0 && halfWidth !== newHalfWidth) {
-          const ratio = newHalfWidth / halfWidth;
-          xRef.current *= ratio;
-          if (targetXRef.current !== null) targetXRef.current *= ratio;
-        }
-        halfWidth = newHalfWidth;
-        stride = halfWidth / PROJECTS.length;
-        speedRef.current = reducedRef.current ? 0 : halfWidth / LOOP_DURATION_S;
-      }
-
-      const cur = computeCenterIndex();
-      if (cur !== currentIndexRef.current) {
-        currentIndexRef.current = cur;
-        setCenterIndex(cur);
-      }
-    };
-
-    measure();
-    if (typeof document !== "undefined" && document.fonts) {
-      document.fonts.ready.then(measure);
-    }
-    window.addEventListener("resize", measure);
-
-    function tick(time: number) {
-      rafId = requestAnimationFrame(tick);
-
-      // Visibility gate — keep the rAF chain alive so we resume instantly
-      // when the section scrolls back into view, but skip every line of work.
-      if (!isVisibleRef.current) return;
-
-      if (!halfWidth) {
-        const el = trackRef.current;
-        if (!el || !el.scrollWidth) return;
-        halfWidth = el.scrollWidth / 2;
-        stride = halfWidth / PROJECTS.length;
-        speedRef.current = reducedRef.current ? 0 : halfWidth / LOOP_DURATION_S;
-        return;
-      }
-
-      const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.1) : 0;
-      lastTime = time;
-      if (!dt) return;
-
-      if (!drag.current.active) {
-        const targetFactor = isPausedRef.current ? 0 : 1;
-        pauseFactorRef.current += (targetFactor - pauseFactorRef.current) * (1 - Math.exp(-14 * dt));
-
-        if (velocityRef.current !== 0) {
-          xRef.current += velocityRef.current * dt;
-          velocityRef.current *= Math.pow(0.88, dt * 60);
-          if (Math.abs(velocityRef.current) < 1.5) velocityRef.current = 0;
-        } else if (targetXRef.current !== null) {
-          const diff = targetXRef.current - xRef.current;
-          const t    = 1 - Math.exp(-12 * dt);
-          xRef.current += diff * t;
-          if (Math.abs(diff) < 0.4) {
-            xRef.current       = targetXRef.current;
-            targetXRef.current = null;
-          }
-        } else if (pauseFactorRef.current > 0.001 && speedRef.current > 0) {
-          xRef.current -= speedRef.current * dt * pauseFactorRef.current;
-        }
-      }
-
-      if (halfWidth > 0) {
-        while (xRef.current <= -halfWidth) {
-          xRef.current += halfWidth;
-          if (targetXRef.current !== null) targetXRef.current += halfWidth;
-        }
-        while (xRef.current > 0) {
-          xRef.current -= halfWidth;
-          if (targetXRef.current !== null) targetXRef.current -= halfWidth;
-        }
-      }
-
-      const el = trackRef.current;
-      if (!el) return;
-      const roundedX = Math.round(xRef.current * 100) / 100;
-      const next = `translate3d(${roundedX}px, 0, 0)`;
-      if (el.style.transform !== next) el.style.transform = next;
-
-      const cur = computeCenterIndex();
-      if (cur !== currentIndexRef.current) {
-        // Don't call setCenterIndex directly — defer to idle callback so
-        // the visible counter doesn't fight the rAF for main-thread time.
-        scheduleCenterIndexFlush(cur);
-      }
-    }
-
-    rafId = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(rafId);
-      isVisibleRef.current = false;
-      if (centerIndexRafRef.current !== null) {
-        const cic = (window as any).cancelIdleCallback as ((id: number) => void) | undefined;
-        if (cic) cic(centerIndexRafRef.current);
-        else window.clearTimeout(centerIndexRafRef.current);
-        centerIndexRafRef.current = null;
-      }
-      window.removeEventListener("resize", measure);
-      if (activeDragListeners.current) {
-        window.removeEventListener("pointermove", activeDragListeners.current.move);
-        window.removeEventListener("pointerup",   activeDragListeners.current.up);
-        window.removeEventListener("pointercancel", activeDragListeners.current.up);
-        activeDragListeners.current = null;
-      }
-    };
-  }, [isVisible]);
-
-  const handlePrev = () => {
-    velocityRef.current = 0;
-    targetXRef.current  = (targetXRef.current ?? xRef.current) + CARD_STEP_PX;
-    isPausedRef.current = false;
   };
 
-  const handleNext = () => {
-    velocityRef.current = 0;
-    targetXRef.current  = (targetXRef.current ?? xRef.current) - CARD_STEP_PX;
-    isPausedRef.current = false;
-  };
+  const handlePrev = () => bumpAnimation(CARD_STEP_PX);
+  const handleNext = () => bumpAnimation(-CARD_STEP_PX);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
-    targetXRef.current  = null;
-    velocityRef.current = 0;
-    drag.current.hasMoved = false;
+    const track = trackRef.current;
+    if (!track) return;
+
+    // Pause the CSS animation and capture the current visible offset.
+    track.style.animationPlayState = "paused";
+    const computedTransform = getComputedStyle(track).transform;
+    // matrix(a, b, c, d, tx, ty) → tx = 5th element
+    let currentTx = 0;
+    if (computedTransform && computedTransform !== "none") {
+      const matrix = new DOMMatrixReadOnly(computedTransform);
+      currentTx = matrix.m41;
+    }
+
     drag.current = {
       active:   true,
       startX:   e.clientX,
-      frozenX:  xRef.current,
       lastX:    e.clientX,
       lastTime: performance.now(),
       velocity: 0,
       hasMoved: false,
     };
-    isPausedRef.current = true;
     setIsDragging(true);
 
     const onMove = (ev: PointerEvent) => {
@@ -1204,61 +1089,30 @@ export default function Projects() {
       drag.current.lastX    = ev.clientX;
       drag.current.lastTime = now;
       if (Math.abs(ev.clientX - drag.current.startX) > 8) drag.current.hasMoved = true;
-      xRef.current += deltaX;
-      const hw = trackRef.current ? trackRef.current.scrollWidth / 2 : 0;
-      if (hw > 0) {
-        while (xRef.current <= -hw) xRef.current += hw;
-        while (xRef.current > 0) xRef.current -= hw;
-      }
-      if (outerRef.current && trackRef.current && hw > 0) {
-        const outerW = outerRef.current.clientWidth;
-        const cWidth = (trackRef.current.firstElementChild as HTMLElement)?.offsetWidth || CARD_STEP_PX;
-        const st = hw / PROJECTS.length;
-        const floatIndex = (outerW / 2 - cWidth / 2 - xRef.current) / st;
-        const nearest = Math.round(floatIndex);
-        const normalized = ((nearest % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
-        const cur = normalized + 1;
-        if (cur !== currentIndexRef.current) {
-          // During a drag we *do* want the counter to follow, but at
-          // most once per idle slot so we don't drown the main thread.
-          pendingCenterIndexRef.current = cur;
-          if (centerIndexRafRef.current === null) {
-            const ric = (window as any).requestIdleCallback as
-              | ((cb: () => void, opts?: { timeout: number }) => number)
-              | undefined;
-            const flush = () => {
-              centerIndexRafRef.current = null;
-              const next = pendingCenterIndexRef.current;
-              pendingCenterIndexRef.current = null;
-              if (next !== null && next !== currentIndexRef.current) {
-                currentIndexRef.current = next;
-                setCenterIndex(next);
-              }
-            };
-            if (ric) {
-              centerIndexRafRef.current = ric(flush, { timeout: 60 });
-            } else {
-              centerIndexRafRef.current = window.setTimeout(flush, 16) as unknown as number;
-            }
-          }
-        }
-      }
+      currentTx += deltaX;
+      track.style.transform = `translate3d(${currentTx}px, 0, 0)`;
     };
 
     const onUp = () => {
       if (!drag.current.active) return;
-      velocityRef.current = drag.current.velocity * 0.45;
+      // Convert the final transform offset into an animation-delay shift so
+      // the CSS animation resumes from the new position seamlessly.
+      const halfWidth = track.scrollWidth / 2 || 1;
+      const seconds = (-currentTx / halfWidth) * LOOP_DURATION_S;
+      animDelayRef.current += seconds;
+      track.style.animationDelay = `${animDelayRef.current}s`;
+      track.style.transform = "";
+      track.style.animationPlayState = "running";
       drag.current.active = false;
-      isPausedRef.current = false;
       setIsDragging(false);
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup",   onUp);
+      window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
       activeDragListeners.current = null;
     };
 
     window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup",   onUp);
+    window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onUp);
     activeDragListeners.current = { move: onMove, up: onUp };
   };
@@ -1363,8 +1217,6 @@ export default function Projects() {
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 0.8, delay: 0.25 }}
-        onMouseEnter={() => { if (!drag.current.active) isPausedRef.current = true;  }}
-        onMouseLeave={() => { if (!drag.current.active) isPausedRef.current = false; }}
         onPointerDown={onPointerDown}
         style={{ paddingBlock: "1.5rem", userSelect: "none" }}
         aria-label="Project showcase — drag or use arrows to browse, click any card to view details"
