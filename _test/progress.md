@@ -1,60 +1,36 @@
-# Progress: Performance, Scroll & Interaction Optimization
+# Progress: Tech Stack Header Category Filter with High-Performance Expanding Animation
 
 ## Goal
-Improve scrolling performance, eliminate lag, bouncing, and glitching on Projects and Certifications marquees, eliminate the 1-second cursor and hover delay across all sections, and enhance mobile performance.
+Implement a category filter on the top-right header of the "Tech Stack" section in `components/Skills.tsx`. When a user selects a category (e.g., "Frontend & Mobile"), the other categories smoothly exit while the selected category expands across the card container. Selecting "All" smoothly restores all 6 categories in the original 3-column grid. Ensure 100% performance (no lag, 60fps GPU animations, zero hover delays), preserve the existing baseline design, and maintain SEO and accessibility.
 
 ## Acceptance Criteria
-- [ ] AC1: Instant cursor and hover response across all sections (<16ms, zero noticeable delay, no 1-second rubber-banding).
-- [ ] AC2: Smooth, glitch-free Projects & Certifications marquees (zero jumping, bouncing, or phase glitching on font-load, resize, or button/hover interaction).
-- [ ] AC3: Buttery-smooth scrolling (no root compositor layer lock, sticky headers intact, native 120Hz momentum scrolling on mobile).
-- [ ] AC4: Zero layout thrashing on mousemove (`TextPressure`, `SpotlightCard`, `Magnet`).
-- [ ] AC5: Mobile performance optimized (lightweight GPU/DOM footprint, no long tasks on scroll).
-- [ ] AC6: Clean TypeScript build and passing verification tests.
+- [x] AC1: Far-left header title & subtitle, far-right category filter dropdown with item counts.
+- [x] AC2: Accessible interaction (keyboard navigation, outside-click handling, ARIA attributes).
+- [x] AC3: "All" view maintains 100% pixel-perfect original 3-column grid and pill styling.
+- [x] AC4: Filtered view smoothly transitions and expands the selected category with 60fps GPU animations, left-aligned description, right-aligned "Show All Categories" action, and preserved tag pill aesthetic without changing container dimensions.
+- [x] AC5: Zero hover delays, zero layout reflows, instant responsive feel.
+- [x] AC6: SEO crawlability maintained for all skills.
+- [x] AC7: Automated Playwright tests passing (5/5 tests ok) and clean `npm run build`.
 
 ## Plan
-[_test/PLAN.md](file:///c:/Users/maver/Downloads/portfolio/maverickdanielleandres-portfolio/_test/PLAN.md)
+[Link to PLAN.md](file:///c:/Users/maver/Downloads/portfolio/maverickdanielleandres-portfolio/_test/PLAN.md)
 
-## Status: IN PROGRESS (Slice 3 complete, Starting Slice 4)
+## Status: COMPLETE — All Slices Finished
 
 ## Token Usage
-| Milestone | Files | Checks | Commits |
-|---|---|---|---|
-| Slice 1 | 4 | tsc --noEmit (pass) | - |
-| Slice 2 | 3 | tsc --noEmit (pass) | - |
-| Slice 3 | 4 | tsc --noEmit (pass) | - |
+| Milestone | In | Out | Files | Commits |
+|---|---|---|---|---|
+| Complete | ~18k | ~7k | 4 | 1 |
 
 ## Slice Log
-### Slice 1 — Eliminate Cursor/Hover Delay & Main-Thread Bottlenecks
-- **Files touched**:
-  - `components/ui/TextPressure.tsx` (cached maxDist, eliminated getBoundingClientRect from rAF, snappy 0.4 damping, paused when offscreen)
-  - `components/ui/SpotlightCard.tsx` (cached rect on enter, eliminated getBoundingClientRect on every mousemove)
-  - `components/ui/Magnet.tsx` (eliminated window mousemove listeners and React state re-renders)
-  - `components/ui/cursor-dither-trail.tsx` (paused rAF when no dots exist, replaced document.body ResizeObserver)
-- **Checks**: `npx tsc --noEmit` ✓ passed cleanly.
-- **Result**: Instant hover response, 0 layout thrashing during mouse movements.
+### Slice 1 & 2 — Header Alignment, Dropdown & Smooth View Transition
+- Aligned "Tech Stack" title and subtitle to the far left.
+- Placed glassmorphic filter dropdown trigger on the far right.
+- In filtered mode: Left-aligned category title & description (removed 10 items badge), right-aligned "Show All Categories" reset button, and rendered tags in original rounded pill aesthetic.
+- Added 60fps GPU-accelerated enter/exit animations via Framer Motion.
+- Files touched: `components/Skills.tsx`, `components/ui/SpotlightCard.css`.
 
-### Slice 2 — Fix Projects & Certificates Marquee Bouncing and Glitching
-- **Files touched**:
-  - `components/Projects.tsx` (continuous coordinate normalization, proportional remeasurement, delta-based dragging)
-  - `components/Certificates.tsx` (continuous coordinate normalization, proportional remeasurement, delta-based dragging)
-  - `app/globals.css` (removed 3D perspective / preserve-3d overhead on marquee track)
-- **Checks**: `npx tsc --noEmit` ✓ passed cleanly.
-- **Result**: Zero bouncing, zero jumping on font load or window resize, smooth gliding at 60/120fps.
-
-### Slice 3 — Fix Scrolling Jank & Optimize Lenis / Compositor Layers
-- **Files touched**:
-  - `components/SmoothScroll.tsx` (upgraded to official lenis, native momentum scrolling on mobile, removed root willChange & contain)
-  - `components/OverlapWrapper.tsx` (removed contain: layout paint to fix sticky containment)
-  - `components/ui/ScrollVelocity.tsx` (replaced heavy motion/react physics loop with pure GPU-composited CSS marquee)
-  - `package.json` (removed deprecated @studio-freight/lenis)
-- **Checks**: `npx tsc --noEmit` ✓ passed cleanly.
-- **Result**: Buttery smooth scrolling, zero sticky layout bugs, native mobile momentum scrolling.
-
-### Slice 5 — WordPress & WooCommerce Projects Showcase (2x2 Grid)
-- **Files touched**:
-  - `components/ui/project-showcase.tsx` (built 2x2 grid showcase with GPU-accelerated cursor-following floating preview, zero rAF CPU waste at idle, responsive 2-column layout)
-  - `components/Projects.tsx` (integrated ProjectShowcase directly beneath the Selected Projects & Work marquee)
-- **Checks**:
-  - `npx tsc --noEmit` ✓ passed cleanly (0 errors).
-  - `npm run build` ✓ production build compiled successfully in 1.6s.
-- **Result**: Interactive 2x2 WordPress and WooCommerce showcase with instantaneous hover response, zero scroll lag, and full mobile responsiveness.
+### Slice 3 — Automated Testing & Build Validation
+- Created `tests/skills-filter.spec.mjs` covering full interaction flow, expanding view, reset to all, and responsive rendering.
+- 5/5 Playwright tests passed.
+- `npm run build` compiled with 0 errors.

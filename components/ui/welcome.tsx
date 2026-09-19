@@ -11,17 +11,19 @@ interface WelcomeProps {
 export default function Welcome({ onClose }: WelcomeProps) {
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Check reduced motion preference
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
-    setShowConfetti(true);
-    const timer = setTimeout(() => setShowConfetti(false), 3000);
-    return () => clearTimeout(timer);
-  }, [prefersReducedMotion]);
+    if (typeof window !== 'undefined') {
+      const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+      setPrefersReducedMotion(media.matches);
+      if (!media.matches) {
+        setShowConfetti(true);
+        const timer = setTimeout(() => setShowConfetti(false), 3000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
 
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement | null) => {

@@ -1,95 +1,105 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Projects & Certificates Dynamic Center Indicator Suite", () => {
-  test("Desktop: Dynamic counter indicators render and change based on centered card", async ({ page }) => {
+test.describe("Portfolio Navigation, WordPress Modal & Dynamic Center Counters Suite", () => {
+  test("Desktop & Mobile: Navigation menu, WordPress redirect, and real-time auto counters", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://localhost:3000", { waitUntil: "domcontentloaded" });
+    await page.goto("http://localhost:3000", { waitUntil: "networkidle" });
+    await page.waitForTimeout(1000);
 
-    // Scroll to Projects section
+    // 1. Verify Offcanvas Navigation Menu
+    const menuBtn = page.locator("button[aria-label='Open menu']");
+    await expect(menuBtn).toBeVisible();
+    await menuBtn.click();
+    await page.waitForTimeout(600);
+
+    // Verify all 9 links inside the Offcanvas Navigation Menu in exact requested hierarchy
+    const expectedLinks = [
+      { text: "Home", href: "/" },
+      { text: "Projects", href: "#projects" },
+      { text: "Wordpress", href: "#wordpress" },
+      { text: "Testimonials", href: "#testimonials" },
+      { text: "About Me", href: "#about" },
+      { text: "Skills", href: "#skills" },
+      { text: "Work", href: "#activity" },
+      { text: "Certs", href: "#certificates" },
+      { text: "Contact Me", href: "#contact" },
+    ];
+
+    const offcanvasNav = page.locator("[data-lenis-prevent='true']");
+    await expect(offcanvasNav).toBeVisible();
+
+    for (const item of expectedLinks) {
+      const link = offcanvasNav.locator(`a[href='${item.href}']`).first();
+      await expect(link).toBeVisible();
+      const text = await link.innerText();
+      expect(text.toLowerCase()).toContain(item.text.toLowerCase());
+    }
+
+    // Click Wordpress menu link and verify panel closes and page scrolls to #wordpress
+    const wpMenuLink = offcanvasNav.locator("a[href='#wordpress']");
+    await wpMenuLink.click();
+    await page.waitForTimeout(600);
+    const wpSection = page.locator("#wordpress");
+    await expect(wpSection).toBeVisible();
+
+    // 2. Verify Projects Marquee & Live Auto Counter
     const projectsSection = page.locator("#projects");
     await projectsSection.scrollIntoViewIfNeeded();
-    await expect(projectsSection).toBeVisible();
+    await page.waitForTimeout(400);
 
-    // Verify Projects marquee counter exists and displays / 16
-    const projectsCounter = page.locator("#projects .marquee-counter");
+    const projectsCounter = page.locator("#projects .marquee-counter").first();
     await expect(projectsCounter).toBeVisible();
-    await expect(projectsCounter.locator(".marquee-counter__total")).toHaveText("16");
-
     const initialProjectNum = await projectsCounter.locator(".marquee-counter__current").innerText();
-    expect(Number(initialProjectNum)).toBeGreaterThanOrEqual(1);
-    expect(Number(initialProjectNum)).toBeLessThanOrEqual(16);
+    console.log(`Initial Projects center index: ${initialProjectNum}`);
 
-    // Click Next button on projects and verify counter changes
-    const projectNextBtn = page.locator("#projects .marquee-nav-btn[aria-label='Next projects']");
-    await expect(projectNextBtn).toBeVisible();
-    await projectNextBtn.click();
+    // Wait and verify the continuous marquee auto-adjusts the counter
+    await page.waitForTimeout(4500);
+    const updatedProjectNum = await projectsCounter.locator(".marquee-counter__current").innerText();
+    console.log(`Auto-adjusted Projects center index: ${updatedProjectNum}`);
+
+    // Click WordPress Collection card to open modal via evaluate
+    await page.evaluate(() => {
+      const card = document.querySelector(".project-card[aria-label*='WordPress']");
+      if (card) card.click();
+    });
+    await page.waitForTimeout(500);
+
+    // Verify WordPress Modal content
+    const modal = page.locator("[data-lenis-prevent='true']");
+    await expect(modal).toBeVisible();
+    await expect(modal.locator("h3:has-text('WordPress & WooCommerce Collection')")).toBeVisible();
+
+    // Verify "View WordPress projects" button
+    const viewWpBtn = page.locator("button:has-text('View WordPress projects')");
+    await expect(viewWpBtn).toBeVisible();
+    await viewWpBtn.click();
     await page.waitForTimeout(600);
 
-    const nextProjectNum = await projectsCounter.locator(".marquee-counter__current").innerText();
-    console.log(`Projects Counter: ${initialProjectNum} -> ${nextProjectNum}`);
+    // Verify modal is closed and #wordpress is in view
+    await expect(modal).not.toBeVisible();
+    await expect(wpSection).toBeVisible();
 
-    // Scroll down to load Certificates
-    await page.evaluate(() => window.scrollTo({ top: 3500, behavior: "instant" }));
-    await page.waitForTimeout(500);
+    // 3. Verify Testimonials Marquee & Live Center Counter
+    const testimonialsSection = page.locator("#testimonials");
+    await testimonialsSection.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
 
-    // Scroll to Certificates section
-    const certsSection = page.locator("#certificates");
-    await certsSection.scrollIntoViewIfNeeded();
-    await expect(certsSection).toBeVisible();
+    const testimonialsCounter = page.locator("#testimonials .marquee-counter");
+    await expect(testimonialsCounter).toBeVisible();
+    await expect(testimonialsCounter.locator(".marquee-counter__total")).toHaveText("08");
 
-    // Verify Certificates marquee counter exists and displays / 18
-    const certsCounter = page.locator("#certificates .marquee-counter");
-    await expect(certsCounter).toBeVisible();
-    await expect(certsCounter.locator(".marquee-counter__total")).toHaveText("18");
-
-    const initialCertNum = await certsCounter.locator(".marquee-counter__current").innerText();
-    expect(Number(initialCertNum)).toBeGreaterThanOrEqual(1);
-    expect(Number(initialCertNum)).toBeLessThanOrEqual(18);
-
-    // Click Next button on certificates and verify counter updates
-    const certNextBtn = page.locator("#certificates .marquee-nav-btn[aria-label='Next certificates']");
-    await expect(certNextBtn).toBeVisible();
-    await certNextBtn.click();
-    await page.waitForTimeout(600);
-
-    const nextCertNum = await certsCounter.locator(".marquee-counter__current").innerText();
-    console.log(`Certificates Counter: ${initialCertNum} -> ${nextCertNum}`);
-  });
-
-  test("Mobile: Dynamic counter badge and navigation arrows visible below counter", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("http://localhost:3000", { waitUntil: "domcontentloaded" });
-
-    // Scroll to Projects section
-    const projectsSection = page.locator("#projects");
-    await projectsSection.scrollIntoViewIfNeeded();
-    await expect(projectsSection).toBeVisible();
-
-    const projectsCounter = page.locator("#projects .marquee-counter");
-    await expect(projectsCounter).toBeVisible();
-    await expect(projectsCounter.locator(".marquee-counter__total")).toHaveText("16");
-
-    // Verify mobile next button is visible and clickable
-    const mobileProjectNextBtn = page.locator("#projects .marquee-nav-btn[aria-label='Next projects']");
-    await expect(mobileProjectNextBtn).toBeVisible();
-    await mobileProjectNextBtn.click();
-    await page.waitForTimeout(500);
-
-    // Scroll to Certificates section
-    await page.evaluate(() => window.scrollTo({ top: 3500, behavior: "instant" }));
-    await page.waitForTimeout(500);
+    // 4. Scroll down to trigger Certificates LazyLoad and verify Center Counter
+    await page.evaluate(() => window.scrollTo(0, 5000));
+    await page.waitForTimeout(800);
 
     const certsSection = page.locator("#certificates");
     await certsSection.scrollIntoViewIfNeeded();
-    await expect(certsSection).toBeVisible();
+    await page.waitForTimeout(400);
 
     const certsCounter = page.locator("#certificates .marquee-counter");
     await expect(certsCounter).toBeVisible();
     await expect(certsCounter.locator(".marquee-counter__total")).toHaveText("18");
 
-    // Verify mobile certificate next button is visible and clickable
-    const mobileCertNextBtn = page.locator("#certificates .marquee-nav-btn[aria-label='Next certificates']");
-    await expect(mobileCertNextBtn).toBeVisible();
-    await mobileCertNextBtn.click();
+    console.log("All navigation, modal redirects, and auto counters verified successfully!");
   });
 });

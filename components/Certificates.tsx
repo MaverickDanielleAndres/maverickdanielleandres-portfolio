@@ -156,11 +156,50 @@ export default function Certificates() {
 
   const marqueeItems = [...CERTS, ...CERTS];
 
+  // ── Auto-adjusting center index ticker during continuous scrolling ───
   useEffect(() => {
-    // The marquee auto-animation is now driven entirely by the CSS
-    // `@keyframes marquee-scroll-x` (see globals.css). The browser
-    // composites it on the GPU with zero per-frame main-thread work.
-    // This effect is intentionally a no-op.
+    let animId: number;
+
+    const checkCenter = () => {
+      if (isVisibleRef.current && trackRef.current && !drag.current.active) {
+        const track = trackRef.current;
+        const computedTransform = window.getComputedStyle(track).transform;
+        if (computedTransform && computedTransform !== "none") {
+          let currentTx = 0;
+          try {
+            const matrix = new DOMMatrixReadOnly(computedTransform);
+            currentTx = matrix.m41;
+          } catch {
+            const match = computedTransform.match(/matrix.*\((.+)\)/);
+            if (match) {
+              const values = match[1].split(",");
+              currentTx = parseFloat(values[4]) || 0;
+            }
+          }
+
+          const containerWidth = outerRef.current?.clientWidth || window.innerWidth;
+          const halfWidth = track.scrollWidth / 2 || 1;
+          const stride = halfWidth / CERTS.length;
+
+          // Center of outer container relative to track origin
+          const centerOffset = containerWidth / 2 - currentTx;
+          const normalizedOffset = ((centerOffset % halfWidth) + halfWidth) % halfWidth;
+          const floatIndex = (normalizedOffset / stride) - 0.5;
+          const nearest = Math.round(floatIndex);
+          const wrapped = ((nearest % CERTS.length) + CERTS.length) % CERTS.length;
+          const displayIndex = wrapped + 1;
+
+          if (displayIndex !== currentIndexRef.current) {
+            currentIndexRef.current = displayIndex;
+            setCenterIndex(displayIndex);
+          }
+        }
+      }
+      animId = requestAnimationFrame(checkCenter);
+    };
+
+    animId = requestAnimationFrame(checkCenter);
+    return () => cancelAnimationFrame(animId);
   }, []);
 
   // Helper: bump the animation-delay to jump the CSS marquee by one card.

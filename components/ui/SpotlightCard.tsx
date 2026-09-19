@@ -11,7 +11,7 @@ interface SpotlightCardProps {
 
 const SpotlightCard = ({ children, className = '' }: SpotlightCardProps) => {
   return (
-    <div className={`card-spotlight ${className}`}>
+    <div className={`card-spotlight ${className}`} suppressHydrationWarning>
       {children}
     </div>
   );

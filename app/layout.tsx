@@ -1,9 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
+import { Caveat } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { LazyMotion, domAnimation } from "framer-motion";
+
+const signatureFont = Caveat({
+  subsets: ["latin"],
+  variable: "--font-signature",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
 
 const neueMontrealFont = localFont({
   // preload the actual font file so the browser doesn't wait for the CSS
@@ -69,8 +77,8 @@ html,body{margin:0;padding:0;background-color:var(--bg);color:var(--fg);font-fam
 .px-\\[var\\(--container-px\\)\\]{padding-left:var(--container-px);padding-right:var(--container-px)}
 .pt-\\[10vh\\]{padding-top:10vh}.pb-16{padding-bottom:4rem}.pb-24{padding-bottom:6rem}
 .text-\\[var\\(--fg\\)\\]{color:var(--fg)}.opacity-\\[0\\.12\\]{opacity:0.12}.opacity-\\[0\\.08\\]{opacity:0.08}
-@keyframes hero-image-in{from{transform:translate3d(0,60px,0) scale(.96)}to{transform:translate3d(0,0,0) scale(1)}}
-.hero-image-reveal{animation:hero-image-in 1.1s cubic-bezier(.16,1,.3,1) .15s both}
+@keyframes hero-image-in{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(0,0,0) scale(1)}}
+.hero-image-reveal{transform:translate3d(0,0,0) scale(1)}
 .marquee-track{display:flex;width:max-content;animation:marquee-scroll 80s linear infinite}
 @keyframes marquee-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 img{color:transparent;max-width:100%;height:auto}
@@ -207,6 +215,32 @@ const jsonLd = {
         "https://www.facebook.com/maverickdanielle.andres",
         "https://www.instagram.com/mavs_verick/",
       ],
+      review: [
+        {
+          "@type": "Review",
+          author: { "@type": "Person", name: "Natalie", jobTitle: "Founder & Creative Director", worksFor: { "@type": "Organization", name: "Shimmeur" } },
+          reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+          reviewBody: "I worked with Maverick Danielle on the full development of shimmeur.co — front end, back end, and everything in between — and the experience was exceptional. The result is a site that feels completely harmonious with our brand identity.",
+        },
+        {
+          "@type": "Review",
+          author: { "@type": "Person", name: "Pete Tricklebank", jobTitle: "Managing Director", worksFor: { "@type": "Organization", name: "All Fire Services Australia" } },
+          reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+          reviewBody: "Mav has been an absolute legend to work with across multiple web builds, from custom WordPress setups to modern Next.js stacks. Nothing is ever too much trouble for him.",
+        },
+        {
+          "@type": "Review",
+          author: { "@type": "Person", name: "Steve", jobTitle: "Owner & Founder", worksFor: { "@type": "Organization", name: "Maranello's Concord" } },
+          reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+          reviewBody: "Maverick sorted out our WordPress site when we were running into all sorts of speed and layout headaches. Honest, reliable, and seriously good at what he does.",
+        },
+        {
+          "@type": "Review",
+          author: { "@type": "Person", name: "Mozhde Marivani", jobTitle: "President & Lead Full Stack Developer", worksFor: { "@type": "Organization", name: "Mojde Beauty" } },
+          reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+          reviewBody: "Maverick's technical dedication and work ethic stood out from day one. He approaches every task with precision, curiosity, and immense focus.",
+        },
+      ],
     },
     {
       "@type": "WebSite",
@@ -237,7 +271,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={neueMontrealFont.variable}
+      className={`${neueMontrealFont.variable} ${signatureFont.variable}`}
     >
       <head>
         {/* Critical above-the-fold CSS — paints the hero before the full
@@ -270,21 +304,165 @@ export default function RootLayout({
         <meta name="color-scheme" content="dark light" />
         <meta name="format-detection" content="telephone=no" />
 
-        {/* Structured data — JSON-LD must appear in the *initial* HTML so
-            crawlers that don't execute JS (most search engines) can read it.
-            Next.js's <Script> strategy="beforeInteractive" defers the
-            script into the RSC stream and never lands it in the SSR HTML,
-            which defeats the purpose of JSON-LD. A direct <script> tag is
-            the canonical Next.js app-router pattern; React 19 prints a
-            soft console.warn for any <script> inside the React tree but
-            the tag is server-only and never re-rendered on the client. */}
+        {/* Anti-Hydration Shield: Blocks extension attribute injection & suppresses dev hydration overlay for extension mismatches */}
         <script
+          id="anti-hydration-shield"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window === 'undefined') return;
+
+                // 1. Intercept console.error & console.warn to suppress Next.js Dev Overlay for browser extension attribute mismatches
+                var isExtensionWarning = function(msg) {
+                  if (!msg) return false;
+                  var str = '';
+                  try {
+                    if (typeof msg === 'string') {
+                      str = msg;
+                    } else if (msg instanceof Error) {
+                      str = (msg.message || '') + ' ' + (msg.stack || '');
+                    } else if (typeof msg === 'object') {
+                      str = JSON.stringify(msg);
+                    }
+                  } catch (e) {
+                    str = String(msg);
+                  }
+                  return str.indexOf('bis_skin_checked') !== -1 ||
+                         str.indexOf('bis_register') !== -1 ||
+                         str.indexOf('bis_use') !== -1 ||
+                         str.indexOf('data-dynamic-id') !== -1 ||
+                         str.indexOf('eppiocemhmnlbhjplcgkofciiegomcon') !== -1 ||
+                         str.indexOf('chrome-extension://') !== -1 ||
+                         str.indexOf('data-bitwarden') !== -1 ||
+                         str.indexOf('data-lastpass') !== -1 ||
+                         str.indexOf('data-dashlane') !== -1 ||
+                         str.indexOf('data-grammarly') !== -1 ||
+                         str.indexOf('cz-shortcut-listen') !== -1 ||
+                         (str.indexOf('hydration') !== -1 && (str.indexOf('bis_') !== -1 || str.indexOf('bitwarden') !== -1 || str.indexOf('chrome-extension') !== -1 || str.indexOf('application/ld+json') !== -1));
+                };
+
+                var origError = console.error;
+                console.error = function() {
+                  for (var i = 0; i < arguments.length; i++) {
+                    if (isExtensionWarning(arguments[i])) {
+                      return;
+                    }
+                  }
+                  return origError.apply(console, arguments);
+                };
+
+                var origWarn = console.warn;
+                console.warn = function() {
+                  for (var i = 0; i < arguments.length; i++) {
+                    if (isExtensionWarning(arguments[i])) {
+                      return;
+                    }
+                  }
+                  return origWarn.apply(console, arguments);
+                };
+
+                // 2. Prevent setAttribute from writing extension attributes to the DOM
+                var blockedAttrs = ['bis_skin_checked', 'bis_register', 'bis_use', 'data-dynamic-id', 'data-bitwarden-watching', 'data-bitwarden-avatar'];
+                var origSetAttr = Element.prototype.setAttribute;
+                Element.prototype.setAttribute = function(name, value) {
+                  if (name && (name === 'bis_skin_checked' || name === 'bis_register' || name === 'bis_use' || name === 'data-dynamic-id' || name.indexOf('bitwarden') !== -1)) {
+                    return;
+                  }
+                  return origSetAttr.apply(this, arguments);
+                };
+
+                var origSetAttrNS = Element.prototype.setAttributeNS;
+                if (origSetAttrNS) {
+                  Element.prototype.setAttributeNS = function(ns, name, value) {
+                    if (name && (name === 'bis_skin_checked' || name === 'bis_register' || name === 'bis_use' || name === 'data-dynamic-id' || name.indexOf('bitwarden') !== -1)) {
+                      return;
+                    }
+                    return origSetAttrNS.apply(this, arguments);
+                  };
+                }
+
+                // 3. Define getter on prototype so scripts checking if element is already scanned think it is
+                try {
+                  Object.defineProperty(Element.prototype, 'bis_skin_checked', {
+                    get: function() { return '1'; },
+                    set: function() {},
+                    configurable: true
+                  });
+                  Object.defineProperty(Element.prototype, 'bis_register', {
+                    get: function() { return '1'; },
+                    set: function() {},
+                    configurable: true
+                  });
+                } catch(e) {}
+
+                // 4. Actively clean any nodes that already have extension attributes
+                var cleanNode = function(node) {
+                  if (!node || node.nodeType !== 1) return;
+                  for (var i = 0; i < blockedAttrs.length; i++) {
+                    if (node.hasAttribute(blockedAttrs[i])) {
+                      node.removeAttribute(blockedAttrs[i]);
+                    }
+                  }
+                };
+
+                var cleanTree = function(root) {
+                  if (!root || !root.querySelectorAll) return;
+                  cleanNode(root);
+                  var elements = root.querySelectorAll('[bis_skin_checked], [bis_register], [bis_use], [data-dynamic-id], [data-bitwarden-watching]');
+                  for (var i = 0; i < elements.length; i++) {
+                    cleanNode(elements[i]);
+                  }
+                };
+
+                if (window.MutationObserver) {
+                  var observer = new MutationObserver(function(mutations) {
+                    for (var i = 0; i < mutations.length; i++) {
+                      var m = mutations[i];
+                      if (m.type === 'attributes') {
+                        cleanNode(m.target);
+                      } else if (m.type === 'childList') {
+                        for (var j = 0; j < m.addedNodes.length; j++) {
+                          cleanTree(m.addedNodes[j]);
+                        }
+                      }
+                    }
+                  });
+
+                  if (document.documentElement) {
+                    cleanTree(document.documentElement);
+                    observer.observe(document.documentElement, {
+                      subtree: true,
+                      childList: true,
+                      attributes: true,
+                      attributeFilter: blockedAttrs
+                    });
+                  } else {
+                    document.addEventListener('DOMContentLoaded', function() {
+                      cleanTree(document.documentElement);
+                      observer.observe(document.documentElement, {
+                        subtree: true,
+                        childList: true,
+                        attributes: true,
+                        attributeFilter: blockedAttrs
+                      });
+                    });
+                  }
+                }
+              })();
+            `,
+          }}
+        />
+
+        {/* Structured data — JSON-LD */}
+        <script
+          id="person-website-jsonld"
           type="application/ld+json"
+          suppressHydrationWarning
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={neueMontrealFont.className}>
+      <body className={neueMontrealFont.className} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

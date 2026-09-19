@@ -59,6 +59,7 @@
     "critters": "^0.0.23",
     "eslint": "^9",
     "eslint-config-next": "15.4.7",
+    "lighthouse": "^13.5.0",
     "postcss": "^8.5.6",
     "prettier": "^3.8.1",
     "stylelint": "^17.3.0",

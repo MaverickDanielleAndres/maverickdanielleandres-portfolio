@@ -40,9 +40,12 @@ const MessengerIcon = ({ size = 18 }: { size?: number }) => (
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
-  { href: '#about', label: 'About' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#wordpress', label: 'Wordpress' },
+  { href: '#testimonials', label: 'Testimonials' },
+  { href: '#about', label: 'About Me' },
   { href: '#skills', label: 'Skills' },
-  { href: '#projects', label: 'Work' },
+  { href: '#activity', label: 'Work' },
   { href: '#certificates', label: 'Certs' },
   { href: '#contact', label: 'Contact Me' },
 ];
@@ -196,11 +199,11 @@ export function Offcanvas() {
             {/* Panel — GPU-composited slide via translateX */}
             <m.div
               key="panel"
-              className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm flex flex-col justify-start gap-8 overflow-y-auto"
+              className="fixed top-0 right-0 z-40 h-screen w-full max-w-sm sm:max-w-[420px] lg:max-w-[460px] flex flex-col justify-between overflow-y-auto"
               style={{
                 background: 'var(--bg)',
                 color: 'var(--fg)',
-                padding: 'clamp(4rem, 10vh, 6rem) 3rem 3rem',
+                padding: 'clamp(3.5rem, 6vh, 4.5rem) clamp(1.75rem, 5vw, 3rem) clamp(1.5rem, 3vh, 2.5rem)',
                 borderLeft: '1px solid var(--border-subtle)',
                 willChange: 'transform',
               }}
@@ -212,29 +215,28 @@ export function Offcanvas() {
             >
               {/* Nav links */}
               <div>
-                <p className="mb-4 sm:mb-8 text-xs uppercase tracking-[0.12em] opacity-40">Navigation</p>
-                <ul className="flex flex-col gap-1" onMouseLeave={() => setActiveHref(pathname)}>
+                <p className="mb-2.5 sm:mb-4 text-[11px] sm:text-xs uppercase tracking-[0.14em] opacity-40 font-medium">Navigation</p>
+                <ul className="flex flex-col gap-1 sm:gap-1.5 md:gap-2" onMouseLeave={() => setActiveHref(pathname)}>
                   {NAV_LINKS.map(({ href, label }, i) => (
                     <m.li
                       key={href}
                       className="relative flex items-center"
-                      initial={{ y: 60, opacity: 0 }}
+                      initial={{ y: 30, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 40, opacity: 0 }}
-                      transition={{ duration: 0.55, delay: 0.1 + i * 0.06, ease: [0.16, 1, 0.3, 1] as const }}
+                      exit={{ y: 20, opacity: 0 }}
+                      transition={{ duration: 0.45, delay: 0.05 + i * 0.04, ease: [0.16, 1, 0.3, 1] as const }}
                       onMouseEnter={() => setActiveHref(href)}
                     >
                       {/* Active dot */}
                       <m.span
-                        className="absolute -left-5 h-1.5 w-1.5 rounded-full bg-current"
+                        className="absolute -left-3.5 sm:-left-4 md:-left-5 top-1/2 -translate-y-1/2 h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-current"
                         animate={{ scale: activeHref === href ? 1 : 0, opacity: activeHref === href ? 1 : 0 }}
                         transition={{ duration: 0.2 }}
                       />
                       <Link
                         href={href}
                         onClick={() => setOpen(false)}
-                        className="font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200"
-                        style={{ fontSize: 'clamp(2.25rem, 6.5vh, 3.5rem)', lineHeight: 1.15 }}
+                        className="font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200 text-[1.4rem] sm:text-[1.75rem] md:text-[2rem] lg:text-[2.25rem] leading-[1.28]"
                       >
                         {label}
                       </Link>
@@ -244,16 +246,16 @@ export function Offcanvas() {
               </div>
 
               {/* Social links */}
-              <div>
-                <p className="mb-3 text-xs uppercase tracking-[0.12em] opacity-40">Social</p>
-                <div className="flex flex-wrap gap-x-6 gap-y-1">
+              <div className="pt-2 border-t border-border/40">
+                <p className="mb-2 text-[10px] uppercase tracking-[0.14em] opacity-40">Social</p>
+                <div className="flex flex-wrap gap-x-5 gap-y-1">
                   {SOCIAL_LINKS.map(({ href, label }) => (
                     <a
                       key={href}
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm opacity-60 hover:opacity-100 transition-opacity"
+                      className="text-xs sm:text-sm opacity-60 hover:opacity-100 transition-opacity"
                     >
                       {label}
                     </a>

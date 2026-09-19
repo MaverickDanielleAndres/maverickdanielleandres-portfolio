@@ -6,6 +6,7 @@ import Image from "next/image";
 import { X, ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Github, ExternalLink } from "lucide-react";
 import Portal from "@/components/Portal";
 import ProjectShowcase from "@/components/ui/project-showcase";
+import Testimonials from "@/components/Testimonials";
 
 type Project = {
   id: number;
@@ -20,6 +21,7 @@ type Project = {
   github?: string;
   live?: string;
   contributions: string[];
+  isWordPressCollection?: boolean;
 };
 
 const PROJECTS: Project[] = [
@@ -43,22 +45,24 @@ const PROJECTS: Project[] = [
   },
   {
     id: 8,
-    title: "WordPress Development",
-    category: "Business Websites & Landing Pages",
-    year: "2026",
-    description: "Professionally designed business websites built with WordPress, including Mojde Beauty and a Gym business site. Features custom CSS styling and Elementor page builder for a polished, responsive front-end experience.",
-    tech: ["WordPress", "Elementor", "Custom CSS"],
-    features: ["Custom CSS", "Responsive Layout", "Services Section", "Membership Plans", "Contact Forms"],
-    image: "/Projects/WordPress & Shopify/1st.png",
+    title: "WordPress & WooCommerce Collection",
+    category: "WordPress & WooCommerce Projects",
+    year: "2024–2026",
+    description: "Professionally designed and developed business websites and e-commerce stores built with WordPress & WooCommerce, featuring custom CSS styling, Elementor page builder, bespoke plugin integrations, and high-converting responsive layouts.",
+    tech: ["WordPress", "WooCommerce", "Elementor", "Custom CSS", "PHP"],
+    features: ["Custom CSS", "Responsive Layout", "Services Section", "Membership Plans", "Contact Forms", "WooCommerce Stores"],
+    image: "/Projects/wordpress-sites/mojdebeauty.png",
     screenshots: [
-      "/Projects/WordPress & Shopify/1st.png",
-      "/Projects/WordPress & Shopify/2nd.png",
-      "/Projects/WordPress & Shopify/Screenshot 2026-07-18 004402.png",
-      "/Projects/WordPress & Shopify/Screenshot 2026-07-18 004418.png",
-      "/Projects/WordPress & Shopify/Screenshot 2026-07-18 004538.png",
-      ...Array.from({ length: 15 }, (_, i) => `/Projects/WordPress & Shopify/wordpress (${i + 2}).png`)
+      "/Projects/wordpress-sites/ajlautoelectrical.png",
+      "/Projects/wordpress-sites/burwoodmechanics.png",
+      "/Projects/wordpress-sites/crystalbuildingsupplies.png",
+      "/Projects/wordpress-sites/maranellosconcord.png",
+      "/Projects/wordpress-sites/mojdebeauty.png",
+      "/Projects/wordpress-sites/nexvision.png",
+      "/Projects/wordpress-sites/ovenelements.png",
+      "/Projects/wordpress-sites/truckelectrical.png",
     ],
-    live: "https://mojde.beauty/",
+    isWordPressCollection: true,
     contributions: [
       "Built multiple websites solo from setup to launch",
       "Designed and structured all pages using Elementor page builder",
@@ -816,28 +820,48 @@ function ProjectModal({
             </div>
 
             {/* Links / Action Buttons */}
-            {(project.live || project.github) && (
+            {(project.live || project.github || project.isWordPressCollection || project.id === 8) && (
               <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-[var(--border-subtle)] mt-2">
-                {project.live && (
-                  <a
-                    href={project.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity"
-                    style={{ color: "var(--accent)" }}
+                {(project.isWordPressCollection || project.id === 8) ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      setTimeout(() => {
+                        const el = document.getElementById("wordpress");
+                        if (el) {
+                          el.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }, 100);
+                    }}
+                    className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-85 transition-all cursor-pointer px-5 py-2.5 rounded-full border border-[var(--accent)] text-white bg-[var(--accent)] shadow-md active:scale-95"
                   >
-                    Visit Site <ExternalLink size={14} />
-                  </a>
-                )}
-                {project.github && (
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity text-[var(--fg-muted)]"
-                  >
-                    GitHub <Github size={14} />
-                  </a>
+                    View WordPress projects <ArrowUpRight size={15} />
+                  </button>
+                ) : (
+                  <>
+                    {project.live && (
+                      <a
+                        href={project.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        Visit Site <ExternalLink size={14} />
+                      </a>
+                    )}
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity text-[var(--fg-muted)]"
+                      >
+                        GitHub <Github size={14} />
+                      </a>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -885,7 +909,7 @@ const ProjectCard = React.memo(function ProjectCard({
       onClick={onClick}
       role="button"
       tabIndex={0}
-      aria-label={`Open details for ${project.title}`}
+      aria-label={`${project.title} - View project details`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -1019,11 +1043,50 @@ export default function Projects() {
 
   const marqueeProjects = [...PROJECTS, ...PROJECTS];
 
+  // ── Auto-adjusting center index ticker during continuous scrolling ───
   useEffect(() => {
-    // The marquee auto-animation is now driven entirely by the CSS
-    // `@keyframes marquee-scroll-x` (see globals.css). The browser
-    // composites it on the GPU with zero per-frame main-thread work.
-    // This effect only handles the drag interaction.
+    let animId: number;
+
+    const checkCenter = () => {
+      if (isVisibleRef.current && trackRef.current && !drag.current.active) {
+        const track = trackRef.current;
+        const computedTransform = window.getComputedStyle(track).transform;
+        if (computedTransform && computedTransform !== "none") {
+          let currentTx = 0;
+          try {
+            const matrix = new DOMMatrixReadOnly(computedTransform);
+            currentTx = matrix.m41;
+          } catch {
+            const match = computedTransform.match(/matrix.*\((.+)\)/);
+            if (match) {
+              const values = match[1].split(",");
+              currentTx = parseFloat(values[4]) || 0;
+            }
+          }
+
+          const containerWidth = outerRef.current?.clientWidth || window.innerWidth;
+          const halfWidth = track.scrollWidth / 2 || 1;
+          const stride = halfWidth / PROJECTS.length;
+
+          // Center of the outer container relative to track origin
+          const centerOffset = containerWidth / 2 - currentTx;
+          const normalizedOffset = ((centerOffset % halfWidth) + halfWidth) % halfWidth;
+          const floatIndex = (normalizedOffset / stride) - 0.5;
+          const nearest = Math.round(floatIndex);
+          const wrapped = ((nearest % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
+          const displayIndex = wrapped + 1;
+
+          if (displayIndex !== currentIndexRef.current) {
+            currentIndexRef.current = displayIndex;
+            setCenterIndex(displayIndex);
+          }
+        }
+      }
+      animId = requestAnimationFrame(checkCenter);
+    };
+
+    animId = requestAnimationFrame(checkCenter);
+    return () => cancelAnimationFrame(animId);
   }, []);
 
   // Helper: bump the animation-delay to jump the CSS marquee by one card.
@@ -1238,6 +1301,11 @@ export default function Projects() {
       {/* ── WordPress and WooCommerce Projects Showcase (2x2 Grid) */}
       <div className="mt-8 sm:mt-12">
         <ProjectShowcase />
+      </div>
+
+      {/* ── Testimonials Section */}
+      <div className="mt-8 sm:mt-12">
+        <Testimonials />
       </div>
 
       {/* ── Project Modal */}

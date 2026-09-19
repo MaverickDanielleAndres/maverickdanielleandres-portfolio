@@ -113,37 +113,75 @@ const TextPressure: React.FC<TextPressureProps> = ({
     };
   }, []);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isInViewRef.current) return;
-      if (cursorRef.current.x === -9999) {
-        mouseRef.current.x = e.clientX;
-        mouseRef.current.y = e.clientY;
+  const isRunningRef = useRef(false);
+
+  const startAnimation = useCallback(() => {
+    if (isRunningRef.current || !isInViewRef.current) return;
+    isRunningRef.current = true;
+
+    let lastX = mouseRef.current.x;
+    let lastY = mouseRef.current.y;
+    const lastWrittenFontVars: string[] = [];
+    let idleFrames = 0;
+
+    const animate = () => {
+      if (!isInViewRef.current) {
+        isRunningRef.current = false;
+        return;
       }
-      cursorRef.current.x = e.clientX;
-      cursorRef.current.y = e.clientY;
-    };
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isInViewRef.current) return;
-      const t = e.touches[0];
-      if (t) {
-        if (cursorRef.current.x === -9999) {
-          mouseRef.current.x = t.clientX;
-          mouseRef.current.y = t.clientY;
-        }
-        cursorRef.current.x = t.clientX;
-        cursorRef.current.y = t.clientY;
+
+      mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) * 0.85;
+      mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) * 0.85;
+
+      const hasMoved =
+        Math.abs(mouseRef.current.x - lastX) > 0.3 ||
+        Math.abs(mouseRef.current.y - lastY) > 0.3;
+
+      if (hasMoved && titleRef.current && spanCentersRef.current.length > 0) {
+        idleFrames = 0;
+        lastX = mouseRef.current.x;
+        lastY = mouseRef.current.y;
+
+        const maxDist = maxDistRef.current || 150;
+
+        spansRef.current.forEach((span, i) => {
+          if (!span) return;
+          const charCenter = spanCentersRef.current[i];
+          if (!charCenter) return;
+
+          const d = dist(mouseRef.current, charCenter);
+          const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 25;
+          const wght = weight ? Math.floor(getAttr(d, maxDist, minWeight, maxWeight)) : minWeight;
+          const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : '0';
+
+          const newFontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
+          if (lastWrittenFontVars[i] !== newFontVariationSettings) {
+            lastWrittenFontVars[i] = newFontVariationSettings;
+            span.style.fontVariationSettings = newFontVariationSettings;
+          }
+
+          if (alpha) {
+            const alphaVal = getAttr(d, maxDist, 0, 1).toFixed(2);
+            if (span.style.opacity !== alphaVal) {
+              span.style.opacity = alphaVal;
+            }
+          }
+        });
+      } else {
+        idleFrames++;
       }
+
+      // If settled for more than 5 consecutive frames, sleep until next mouse/touch event
+      if (idleFrames > 5) {
+        isRunningRef.current = false;
+        return;
+      }
+
+      requestAnimationFrame(animate);
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
+    requestAnimationFrame(animate);
+  }, [width, weight, italic, alpha, minWeight, maxWeight]);
 
   const setSize = useCallback(() => {
     if (!containerRef.current || !titleRef.current) return;
@@ -185,7 +223,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
     const debouncedSetSize = debounce(setSize, 100);
     debouncedSetSize();
     window.addEventListener('resize', debouncedSetSize);
-    
+
     // Recalculate when fonts finish loading to avoid scale mismatch on first load
     if (typeof document !== 'undefined' && document.fonts) {
       document.fonts.ready.then(() => {
@@ -197,61 +235,39 @@ const TextPressure: React.FC<TextPressureProps> = ({
   }, [setSize]);
 
   useEffect(() => {
-    let rafId: number;
-    let lastX = mouseRef.current.x;
-    let lastY = mouseRef.current.y;
-    const lastWrittenFontVars: string[] = [];
-    let initialRender = true;
-
-    const animate = () => {
-      rafId = requestAnimationFrame(animate);
-
+    const handleMouseMove = (e: MouseEvent) => {
       if (!isInViewRef.current) return;
+      if (cursorRef.current.x === -9999) {
+        mouseRef.current.x = e.clientX;
+        mouseRef.current.y = e.clientY;
+      }
+      cursorRef.current.x = e.clientX;
+      cursorRef.current.y = e.clientY;
+      startAnimation();
+    };
 
-      mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) * 0.85;
-      mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) * 0.85;
-
-      const hasMoved = Math.abs(mouseRef.current.x - lastX) > 0.5 || Math.abs(mouseRef.current.y - lastY) > 0.5;
-
-      if ((hasMoved || initialRender) && titleRef.current && spanCentersRef.current.length > 0) {
-        initialRender = false;
-        lastX = mouseRef.current.x;
-        lastY = mouseRef.current.y;
-
-        const maxDist = maxDistRef.current || 150;
-
-        spansRef.current.forEach((span, i) => {
-          if (!span) return;
-
-          const charCenter = spanCentersRef.current[i];
-          if (!charCenter) return;
-
-          const d = dist(mouseRef.current, charCenter);
-
-          const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 25;
-          const wght = weight ? Math.floor(getAttr(d, maxDist, minWeight, maxWeight)) : minWeight;
-          const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : '0';
-
-          const newFontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
-
-          if (lastWrittenFontVars[i] !== newFontVariationSettings) {
-            lastWrittenFontVars[i] = newFontVariationSettings;
-            span.style.fontVariationSettings = newFontVariationSettings;
-          }
-
-          if (alpha) {
-            const alphaVal = getAttr(d, maxDist, 0, 1).toFixed(2);
-            if (span.style.opacity !== alphaVal) {
-              span.style.opacity = alphaVal;
-            }
-          }
-        });
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isInViewRef.current) return;
+      const t = e.touches[0];
+      if (t) {
+        if (cursorRef.current.x === -9999) {
+          mouseRef.current.x = t.clientX;
+          mouseRef.current.y = t.clientY;
+        }
+        cursorRef.current.x = t.clientX;
+        cursorRef.current.y = t.clientY;
+        startAnimation();
       }
     };
 
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [width, weight, italic, alpha, minWeight, maxWeight]);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [startAnimation]);
 
   // The font @font-face is declared in globals.css (self-hosted, preloaded).
   // No @import here — that would re-trigger a Google Fonts CDN fetch and

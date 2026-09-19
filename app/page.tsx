@@ -33,11 +33,11 @@ const Contact = dynamic(() => import("@/components/Contact"));
 export default function Home() {
   return (
     <>
-      <div className="relative">
+      <div className="relative" suppressHydrationWarning>
         {/* Transparent navbar (overlays hero) */}
         <Navbar />
 
-        <main className="relative" style={{ position: "relative" }}>
+        <main className="relative" style={{ position: "relative" }} suppressHydrationWarning>
           <OverlapWrapper zIndex={1} bg="var(--bg-hero)" sticky={true}>
             <Hero />
           </OverlapWrapper>

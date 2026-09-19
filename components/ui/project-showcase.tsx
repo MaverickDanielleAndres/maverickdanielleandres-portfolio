@@ -91,6 +91,10 @@ export function ProjectShowcase({
   const [mounted, setMounted] = useState(false)
   const containerRef = useRef<HTMLElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
+
+  const touchStartPosRef = useRef({ x: 0, y: 0 })
+  const isSwipingRef = useRef(false)
+  const activeMobileItemRef = useRef<number | null>(null)
   const touchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const mousePosRef = useRef({ x: 0, y: 0 })
@@ -115,8 +119,33 @@ export function ProjectShowcase({
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  // 60fps spring/lerp tracking that stops when not hovering
+  // Dismiss on tap outside or scroll
   useEffect(() => {
+    const handleWindowTouch = (e: TouchEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setHoveredIndex(null)
+        activeMobileItemRef.current = null
+      }
+    }
+    const handleScroll = () => {
+      if (isMobile) {
+        setHoveredIndex(null)
+        activeMobileItemRef.current = null
+      }
+    }
+
+    window.addEventListener("touchstart", handleWindowTouch, { passive: true })
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener("touchstart", handleWindowTouch)
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [isMobile])
+
+  // Desktop 60fps spring/lerp tracking that stops when not hovering
+  useEffect(() => {
+    if (isMobile) return
+
     const lerp = (start: number, end: number, factor: number) =>
       start + (end - start) * factor
 
@@ -131,8 +160,6 @@ export function ProjectShowcase({
           y: lerp(current.y, target.y, 0.22),
         }
 
-        // Center preview on cursor:
-        // Position top-left at (cursorX - width/2, cursorY - height/2)
         const dx = smoothPosRef.current.x - PREVIEW_WIDTH / 2
         const dy = smoothPosRef.current.y - PREVIEW_HEIGHT / 2
 
@@ -174,11 +201,9 @@ export function ProjectShowcase({
   const handleMouseEnter = useCallback(
     (index: number, e: React.MouseEvent) => {
       if (isMobile) return
-      // Seed both target and current directly at cursor coordinates
       mousePosRef.current = { x: e.clientX, y: e.clientY }
       smoothPosRef.current = { x: e.clientX, y: e.clientY }
 
-      // Immediately snap preview DOM to cursor center on entry frame
       const preview = previewRef.current
       if (preview) {
         const dx = e.clientX - PREVIEW_WIDTH / 2
@@ -192,75 +217,154 @@ export function ProjectShowcase({
   )
 
   const handleMouseLeave = useCallback(() => {
+    if (isMobile) return
     setHoveredIndex(null)
+  }, [isMobile])
+
+  // Mobile Touch Handlers
+  const handleTouchStart = useCallback((index: number, e: React.TouchEvent) => {
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
+    const touch = e.touches[0]
+    touchStartPosRef.current = { x: touch.clientX, y: touch.clientY }
+    isSwipingRef.current = false
+
+    // Touching finger triggers the centered hover image effect
+    setHoveredIndex(index)
   }, [])
 
-  const handleTouchStart = useCallback((index: number) => {
-    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    const dx = Math.abs(touch.clientX - touchStartPosRef.current.x)
+    const dy = Math.abs(touch.clientY - touchStartPosRef.current.y)
+    // If movement is detected (swiping or scrolling), dismiss preview and flag swipe
+    if (dx > 8 || dy > 8) {
+      isSwipingRef.current = true
+      setHoveredIndex(null)
+    }
+  }, [])
+
+  const handleTouchEnd = useCallback((index: number) => {
+    if (isSwipingRef.current) {
+      // Swiping or scrolling should not keep the preview or trigger navigation
+      return
+    }
+    // For a clean touch, keep the centered preview visible
     setHoveredIndex(index)
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
     touchTimeoutRef.current = setTimeout(() => {
       setHoveredIndex(null)
-    }, 2800)
+      activeMobileItemRef.current = null
+    }, 3000)
   }, [])
 
-  // Floating preview rendered via React portal to document.body
-  const previewPortal = mounted
-    ? createPortal(
-        <div
-          ref={previewRef}
-          className={`pointer-events-none fixed z-[999999] overflow-hidden rounded-xl shadow-2xl transition-opacity duration-300 ease-out will-change-transform ${
-            isMobile
-              ? "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-              : "top-0 left-0"
-          }`}
-          style={{
-            opacity: hoveredIndex !== null ? 1 : 0,
-            transform: isMobile
-              ? "translate3d(-50%, -50%, 0)"
-              : undefined,
-          }}
-        >
+  const handleClick = useCallback(
+    (index: number, e: React.MouseEvent) => {
+      if (isMobile) {
+        // If swiping or scrolling occurred, prevent navigation
+        if (isSwipingRef.current) {
+          e.preventDefault()
+          return
+        }
+
+        // First tap: trigger hover preview without visiting website
+        if (activeMobileItemRef.current !== index) {
+          e.preventDefault()
+          activeMobileItemRef.current = index
+          setHoveredIndex(index)
+
+          if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
+          touchTimeoutRef.current = setTimeout(() => {
+            setHoveredIndex(null)
+            activeMobileItemRef.current = null
+          }, 3000)
+          return
+        }
+
+        // Second click on already active project: allows visiting website
+        activeMobileItemRef.current = null
+        setHoveredIndex(null)
+      }
+    },
+    [isMobile]
+  )
+
+  // Floating preview for Desktop
+  const desktopPreviewPortal =
+    mounted && !isMobile
+      ? createPortal(
           <div
-            className={`relative overflow-hidden rounded-xl bg-secondary border border-border/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] ${
-              isMobile
-                ? "w-[min(84vw,320px)] h-[min(54vw,200px)]"
-                : "w-[320px] h-[200px]"
-            }`}
+            ref={previewRef}
+            className="pointer-events-none fixed top-0 left-0 z-[999999] overflow-hidden rounded-xl shadow-2xl transition-opacity duration-300 ease-out will-change-transform"
+            style={{
+              opacity: hoveredIndex !== null ? 1 : 0,
+            }}
           >
-            {projects.map((project, index) => (
-              <img
-                key={project.title}
-                src={project.image || "/placeholder.svg"}
-                alt={project.title}
-                loading="eager"
-                className="absolute inset-0 w-full h-full object-cover transition-all duration-400 ease-out"
-                style={{
-                  opacity: hoveredIndex === index ? 1 : 0,
-                  transform: hoveredIndex === index ? "scale(1)" : "scale(1.1)",
-                  filter: hoveredIndex === index ? "blur(0)" : "blur(10px)",
-                }}
-                onError={(e) => {
-                  const target = e.currentTarget as HTMLImageElement
-                  target.src =
-                    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
-                }}
-              />
-            ))}
-            {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
-          </div>
-        </div>,
-        document.body
-      )
-    : null
+            <div className="relative w-[320px] h-[200px] overflow-hidden rounded-xl bg-secondary border border-border/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]">
+              {hoveredIndex !== null && projects[hoveredIndex] && (
+                <img
+                  key={projects[hoveredIndex].title}
+                  src={projects[hoveredIndex].image || "/placeholder.svg"}
+                  alt={projects[hoveredIndex].title}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out"
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement
+                    target.src =
+                      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+                  }}
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
+            </div>
+          </div>,
+          document.body
+        )
+      : null
+
+  // Centered preview for Mobile (Always perfectly centered on screen)
+  const mobilePreviewPortal =
+    mounted && isMobile
+      ? createPortal(
+          <div
+            className="pointer-events-none fixed inset-0 z-[999999] flex items-center justify-center p-4 transition-all duration-300 ease-out"
+            style={{
+              opacity: hoveredIndex !== null ? 1 : 0,
+              transform: hoveredIndex !== null ? "scale(1)" : "scale(0.95)",
+            }}
+          >
+            <div className="relative w-[min(86vw,340px)] h-[min(56vw,220px)] overflow-hidden rounded-2xl bg-secondary border border-border/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)]">
+              {hoveredIndex !== null && projects[hoveredIndex] && (
+                <img
+                  key={projects[hoveredIndex].title}
+                  src={projects[hoveredIndex].image || "/placeholder.svg"}
+                  alt={projects[hoveredIndex].title}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement
+                    target.src =
+                      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+                  }}
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
+            </div>
+          </div>,
+          document.body
+        )
+      : null
 
   return (
     <section
+      id="wordpress"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
     >
-      {previewPortal}
+      {desktopPreviewPortal}
+      {mobilePreviewPortal}
 
       {/* ── Section Header */}
       <div className="mb-8 sm:mb-10">
@@ -285,11 +389,14 @@ export function ProjectShowcase({
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block"
+              className="group block select-none"
               onMouseEnter={(e) => handleMouseEnter(index, e)}
               onMouseLeave={handleMouseLeave}
-              onTouchStart={() => handleTouchStart(index)}
-              aria-label={`Open ${project.title} website`}
+              onTouchStart={(e) => handleTouchStart(index, e)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={() => handleTouchEnd(index)}
+              onClick={(e) => handleClick(index, e)}
+              aria-label={`${project.title} - ${project.description}`}
             >
               <div
                 className={`relative py-6 sm:py-7 border-t border-border transition-all duration-300 ease-out ${

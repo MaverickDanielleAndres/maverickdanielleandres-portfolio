@@ -43,12 +43,14 @@ export default function OverlapWrapper({
     return (
       <div
         ref={ref}
+        suppressHydrationWarning
         className={cn(
           "w-full",
           sticky ? "sticky top-0 h-screen overflow-hidden" : "relative"
         )}
       >
         <m.div
+          suppressHydrationWarning
           style={{
             y,
             opacity,
@@ -70,6 +72,7 @@ export default function OverlapWrapper({
   return (
     <div
       ref={ref}
+      suppressHydrationWarning
       className={cn(
         "w-full",
         sticky ? "sticky top-0 h-screen overflow-hidden" : "relative"
@@ -77,6 +80,7 @@ export default function OverlapWrapper({
       style={{ zIndex }}
     >
       <div
+        suppressHydrationWarning
         className={cn("w-full", sticky ? "h-screen" : "", shadowClassName)}
         style={{ position: "relative", background: bg }}
       >

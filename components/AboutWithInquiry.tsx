@@ -15,10 +15,12 @@ export default function AboutWithInquiry() {
   return (
     <>
       <About onStartProject={() => setInquiryOpen(true)} />
-      <ProjectInquiryModal
-        isOpen={inquiryOpen}
-        onClose={() => setInquiryOpen(false)}
-      />
+      {inquiryOpen && (
+        <ProjectInquiryModal
+          isOpen={inquiryOpen}
+          onClose={() => setInquiryOpen(false)}
+        />
+      )}
     </>
   );
 }
