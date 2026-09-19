@@ -361,23 +361,48 @@ export function ProjectShowcase({
       id="wordpress"
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+      className="relative w-full"
+      style={{ position: "relative" }}
     >
       {desktopPreviewPortal}
       {mobilePreviewPortal}
 
       {/* ── Section Header */}
-      <div className="mb-8 sm:mb-10">
-        <p className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.18em] mb-2">
-          {subtitle}
-        </p>
-        <h2 className="text-foreground text-2xl sm:text-3xl md:text-4xl font-normal tracking-tight">
-          {title}
-        </h2>
+      <div
+        style={{
+          paddingInline: "var(--container-px)",
+          marginBottom: "clamp(2rem, 4vh, 3rem)",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: "1rem",
+        }}
+      >
+        <div>
+          <p
+            className="text-xs uppercase tracking-[0.18em] mb-4"
+            style={{ color: "var(--fg-muted)" }}
+          >
+            {subtitle}
+          </p>
+          <h2
+            style={{
+              fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
+              fontWeight: 400,
+              lineHeight: 1.2,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {title}
+          </h2>
+        </div>
       </div>
 
       {/* ── 2 by 2 Grid Layout (8 projects total: 2 columns x 4 rows) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 lg:gap-x-12 gap-y-0">
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 gap-x-8 lg:gap-x-12 gap-y-0"
+        style={{ paddingInline: "var(--container-px)" }}
+      >
         {projects.map((project, index) => {
           const isHovered = hoveredIndex === index
           const isLastRow = index >= projects.length - 2

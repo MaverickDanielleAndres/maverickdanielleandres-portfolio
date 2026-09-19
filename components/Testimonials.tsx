@@ -345,7 +345,7 @@ export default function Testimonials() {
       id="testimonials"
       ref={sectionRef}
       style={{
-        paddingTop: "clamp(4rem, 10vh, 7rem)",
+        paddingTop: "1.5rem",
         paddingBottom: "clamp(2rem, 5vh, 4rem)",
         position: "relative",
         overflow: "hidden",
