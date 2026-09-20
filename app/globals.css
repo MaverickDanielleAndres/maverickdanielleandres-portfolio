@@ -895,13 +895,24 @@ html.lenis, html.lenis body { height: auto; }
     font-size: 1.05rem !important;
   }
 
+  .hero-text-col .hero-buttons-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    gap: 0.75rem !important;
+    margin-top: 2rem !important;
+  }
+
   .hero-text-col .hero-availability-row {
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
     text-align: left !important;
     gap: 1.5rem !important;
-    margin-top: 2rem !important;
+    margin-top: 1.25rem !important;
+    width: 100% !important;
   }
 
   .hero-text-col .hero-availability-block {
@@ -916,13 +927,10 @@ html.lenis, html.lenis body { height: auto; }
     font-size: 0.75rem !important;
   }
 
-  .hero-text-col .hero-buttons-row {
-    justify-content: flex-start !important;
-    margin-top: 2rem !important;
-  }
-
   .hero-text-col .hero-buttons-wrapper {
     align-items: flex-start !important;
+    width: 360px !important;
+    max-width: 360px !important;
   }
 
   /* Image container: full size on desktop, beside text */

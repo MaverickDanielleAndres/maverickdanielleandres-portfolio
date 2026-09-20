@@ -224,14 +224,52 @@ export default function Hero() {
 
           {/* Availability and Buttons Wrapper */}
           <div className="hero-buttons-wrapper flex flex-col w-full max-w-[320px] sm:max-w-[340px] lg:w-[360px] lg:max-w-[360px] items-center lg:items-start">
-            {/* Availability and Get Started */}
+            {/* Top row: 3 Action Buttons (Resume, GitHub, LinkedIn) */}
             <m.div
               variants={slideUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               custom={0.34}
-              className="hero-availability-row mt-5 sm:mt-6 lg:mt-8 flex flex-row items-center justify-center lg:justify-between w-full gap-3 lg:gap-0 text-left"
+              className="hero-buttons-row mt-5 sm:mt-6 lg:mt-8 flex flex-row items-center justify-between w-full gap-2 sm:gap-2.5 lg:gap-3"
+            >
+              {[
+                { label: "Resume", href: null, onClick: true },
+                { label: "GitHub", href: "https://github.com/MaverickDanielleAndres" },
+                { label: "LinkedIn", href: "https://linkedin.com/in/maverick-danielle-andres-641564373" },
+              ].map(({ label, href, onClick }) =>
+                href ? (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hero-pill-btn flex-1 justify-center !px-2.5 sm:!px-3.5 lg:!px-4 !py-1.5 sm:!py-2 lg:!py-2.5 text-xs sm:text-sm lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)] transition-transform duration-150 hover:scale-[1.03] active:scale-97 text-center whitespace-nowrap"
+                  >
+                    <span>{label}</span>
+                    <ArrowUpRight size={14} className="inline-block shrink-0" />
+                  </a>
+                ) : (
+                  <button
+                    suppressHydrationWarning
+                    key={label}
+                    onClick={handleDownloadResume}
+                    className="hero-pill-btn flex-1 justify-center !px-2.5 sm:!px-3.5 lg:!px-4 !py-1.5 sm:!py-2 lg:!py-2.5 text-xs sm:text-sm lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)] transition-transform duration-150 hover:scale-[1.03] active:scale-97 text-center whitespace-nowrap cursor-pointer"
+                  >
+                    <span>{label}</span>
+                  </button>
+                )
+              )}
+            </m.div>
+
+            {/* Bottom row: Availability and Get Started */}
+            <m.div
+              variants={slideUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={0.46}
+              className="hero-availability-row mt-4 sm:mt-5 lg:mt-6 flex flex-row items-center justify-between w-full gap-3 text-left"
             >
               <div className="hero-availability-block flex flex-col gap-0.5 sm:gap-1 text-left min-w-0">
                 <p className="hero-availability-label text-[9.5px] sm:text-xs tracking-[0.2em] uppercase font-semibold text-[var(--fg)] drop-shadow-md leading-tight whitespace-nowrap">
@@ -244,43 +282,6 @@ export default function Hero() {
               </div>
               <GetStartedButton onClick={() => window.dispatchEvent(new CustomEvent('open-inquiry-modal'))} />
             </m.div>
-
-            {/* Buttons */}
-            <m.div
-              variants={slideUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              custom={0.46}
-              className="hero-buttons-row mt-4 sm:mt-5 lg:mt-8 flex flex-wrap gap-2.5 sm:gap-3 justify-center lg:justify-between w-full"
-            >
-            {[
-              { label: "Resume", href: null, onClick: true },
-              { label: "GitHub", href: "https://github.com/MaverickDanielleAndres" },
-              { label: "LinkedIn", href: "https://linkedin.com/in/maverick-danielle-andres-641564373" },
-            ].map(({ label, href, onClick }) =>
-              href ? (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hero-pill-btn !px-3.5 !py-1.5 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
-                >
-                  {label} <ArrowUpRight size={14} className="inline-block" />
-                </a>
-              ) : (
-                <button
-                  suppressHydrationWarning
-                  key={label}
-                  onClick={handleDownloadResume}
-                  className="hero-pill-btn !px-3.5 !py-1.5 text-xs sm:!px-4 sm:!py-2 sm:text-sm lg:!px-5 lg:!py-2.5 lg:text-[0.95rem] !border-[var(--fg)] !text-[var(--fg)] bg-[var(--fg)]/10 backdrop-blur-sm hover:!bg-[var(--fg)] hover:!text-[var(--bg)]"
-                >
-                  {label}
-                </button>
-              )
-            )}
-          </m.div>
           </div>
         </div>
 

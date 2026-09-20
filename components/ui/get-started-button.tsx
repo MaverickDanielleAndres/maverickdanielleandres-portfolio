@@ -7,12 +7,9 @@ import { cn } from "@/lib/utils";
  * shares a single prefetch handle — first hover/touch on any trigger
  * downloads & parses the modal ahead of the click, removing the ~150-400ms
  * dynamic-chunk wait that previously made the click feel laggy.
- *
- * The promise is intentionally not awaited at module load: the chunk is only
- * fetched once we know the user is interacting with a trigger.
  */
 let inquiryChunkPrefetched: Promise<unknown> | null = null;
-function prefetchInquiryChunk(): void {
+export function prefetchInquiryChunk(): void {
   if (typeof window === "undefined") return;
   if (!inquiryChunkPrefetched) {
     inquiryChunkPrefetched = import(
@@ -30,7 +27,7 @@ export function GetStartedButton({ className, ...props }: ButtonProps) {
       onFocus={prefetchInquiryChunk}
       onTouchStart={prefetchInquiryChunk}
       className={cn(
-        "group flex items-center justify-center overflow-hidden rounded-md bg-[#1A1A1A] hover:bg-[#2A2A2A] !text-[#FFFFFF] border border-[#FFFFFF]/20 transition-colors duration-150 h-9 px-4 sm:h-10 sm:px-5 lg:h-11 lg:px-8 text-xs sm:text-sm shrink-0 whitespace-nowrap",
+        "group flex items-center justify-center overflow-hidden rounded-full bg-[#1A1A1A] hover:bg-[#2A2A2A] !text-[#FFFFFF] border border-[#FFFFFF]/20 transition-all duration-150 h-9 px-4 sm:h-10 sm:px-5 lg:h-11 lg:px-7 text-xs sm:text-sm lg:text-sm font-medium shrink-0 whitespace-nowrap cursor-pointer shadow-sm hover:scale-[1.02] active:scale-98",
         className
       )}
       {...props}

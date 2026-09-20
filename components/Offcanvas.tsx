@@ -3,10 +3,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, m, type Variants } from 'framer-motion';
 import Link from 'next/link';
-import { X, Menu } from 'lucide-react';
+import { X, Menu, ArrowUpRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import ThemeToggle from './ThemeToggle';
+import { prefetchInquiryChunk } from '@/components/ui/get-started-button';
 
 /* Inline SVG icons. Replacing the react-icons/fa import for these two
    cuts the entire `react-icons` FontAwesome subset (10-30 KiB) out of
@@ -110,6 +111,11 @@ export function Offcanvas() {
 
   const toggle = useCallback(() => setOpen(v => !v), []);
 
+  const handleOpenInquiry = useCallback(() => {
+    if (isOpen) setOpen(false);
+    window.dispatchEvent(new CustomEvent('open-inquiry-modal'));
+  }, [isOpen]);
+
   /* ── Shared button style matching ThemeToggle ─────────── */
   const btnStyle: React.CSSProperties = {
     background: isDark ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.85)',
@@ -133,13 +139,27 @@ export function Offcanvas() {
     : btnStyle;
 
   const btnClasses =
-    'flex h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full transition-transform duration-200 hover:scale-105 cursor-pointer';
+    'flex h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer shrink-0';
 
   return (
     <>
       {/* ── Fixed top action buttons (centered on mobile, right on desktop) ── */}
-      <div className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-6 lg:top-5 z-50 flex items-center justify-center lg:justify-end gap-2.5 sm:gap-3">
+      <div className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-6 lg:top-5 z-50 flex items-center justify-center lg:justify-end gap-1.5 xs:gap-2 sm:gap-2.5 lg:gap-3 max-w-[98vw] px-1">
         <ThemeToggle />
+
+        {/* Get Started button beside ThemeToggle and Messenger */}
+        <button
+          type="button"
+          onClick={handleOpenInquiry}
+          onMouseEnter={prefetchInquiryChunk}
+          onFocus={prefetchInquiryChunk}
+          onTouchStart={prefetchInquiryChunk}
+          className="flex h-10 sm:h-11 lg:h-12 items-center justify-center rounded-full px-3 xs:px-3.5 sm:px-4 lg:px-5 transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer shrink-0 font-medium whitespace-nowrap text-xs xs:text-[13px] sm:text-sm lg:text-[15px]"
+          style={btnStyle}
+          aria-label="Get Started"
+        >
+          <span>Get Started</span>
+        </button>
 
         {/* Messenger */}
         <a
@@ -215,8 +235,8 @@ export function Offcanvas() {
             >
               {/* Nav links */}
               <div>
-                <p className="mb-2.5 sm:mb-4 text-[11px] sm:text-xs uppercase tracking-[0.14em] opacity-40 font-medium">Navigation</p>
-                <ul className="flex flex-col gap-1 sm:gap-1.5 md:gap-2" onMouseLeave={() => setActiveHref(pathname)}>
+                <p className="mb-2.5 sm:mb-4 text-xs uppercase tracking-[0.16em] opacity-45 font-medium">Navigation</p>
+                <ul className="flex flex-col gap-1.5 xs:gap-2 sm:gap-1.5 md:gap-2" onMouseLeave={() => setActiveHref(pathname)}>
                   {NAV_LINKS.map(({ href, label }, i) => (
                     <m.li
                       key={href}
@@ -229,20 +249,41 @@ export function Offcanvas() {
                     >
                       {/* Active dot */}
                       <m.span
-                        className="absolute -left-3.5 sm:-left-4 md:-left-5 top-1/2 -translate-y-1/2 h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-current"
+                        className="absolute -left-4 sm:-left-4 md:-left-5 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-current"
                         animate={{ scale: activeHref === href ? 1 : 0, opacity: activeHref === href ? 1 : 0 }}
                         transition={{ duration: 0.2 }}
                       />
                       <Link
                         href={href}
                         onClick={() => setOpen(false)}
-                        className="font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200 text-[1.4rem] sm:text-[1.75rem] md:text-[2rem] lg:text-[2.25rem] leading-[1.28]"
+                        className="font-light capitalize tracking-tight hover:opacity-70 transition-opacity duration-200 text-[1.95rem] xs:text-[2.1rem] sm:text-[1.75rem] md:text-[2rem] lg:text-[2.25rem] leading-[1.22]"
                       >
                         {label}
                       </Link>
                     </m.li>
                   ))}
                 </ul>
+
+                {/* Get Started in drawer */}
+                <div className="mt-5 mb-2">
+                  <button
+                    type="button"
+                    onClick={handleOpenInquiry}
+                    onMouseEnter={prefetchInquiryChunk}
+                    onTouchStart={prefetchInquiryChunk}
+                    className="w-full group flex items-center justify-between rounded-full px-5 py-3 sm:py-3.5 transition-transform duration-200 hover:scale-[1.02] active:scale-98 cursor-pointer"
+                    style={{
+                      background: isDark ? '#ffffff' : '#111111',
+                      color: isDark ? '#111111' : '#ffffff',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                    }}
+                  >
+                    <span className="text-sm xs:text-base sm:text-base font-semibold tracking-wide">
+                      Get Started
+                    </span>
+                    <ArrowUpRight size={18} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </button>
+                </div>
               </div>
 
               {/* Social links */}
@@ -269,3 +310,4 @@ export function Offcanvas() {
     </>
   );
 }
+
