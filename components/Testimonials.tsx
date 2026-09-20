@@ -108,6 +108,7 @@ const TestimonialCard = React.memo(function TestimonialCard({
   return (
     <article
       className="testimonial-card group relative flex flex-col justify-between"
+      onDragStart={(e) => e.preventDefault()}
       aria-label={`Testimonial from ${item.name}`}
     >
       {/* Top Row: Avatar & Subtle Quote Icon */}
@@ -171,6 +172,7 @@ export default function Testimonials() {
 
   const isVisibleRef = useRef(false);
   const hasEnteredViewRef = useRef(false);
+  const isInitializedRef = useRef(false);
 
   // Position, physics, glide, and drag tracking (all in refs for 120fps GPU updates)
   const posRef = useRef(0);
@@ -213,8 +215,17 @@ export default function Testimonials() {
 
       if (isVisibleRef.current && trackRef.current) {
         const track = trackRef.current;
-        const totalWidth = track.scrollWidth || 1;
-        const oneSetWidth = totalWidth / 3;
+        const firstChild = track.children[0] as HTMLElement | undefined;
+        const nthChild = track.children[TESTIMONIALS.length] as HTMLElement | undefined;
+        const oneSetWidth = (nthChild && firstChild && nthChild.offsetLeft > firstChild.offsetLeft)
+          ? (nthChild.offsetLeft - firstChild.offsetLeft)
+          : ((track.scrollWidth || 1) / 3);
+
+        // Center on middle set upon initial measurement
+        if (!isInitializedRef.current && oneSetWidth > 200) {
+          isInitializedRef.current = true;
+          posRef.current = -oneSetWidth;
+        }
 
         // When not user-dragging:
         if (!dragRef.current.active) {
@@ -232,9 +243,11 @@ export default function Testimonials() {
           }
 
           // 3. Momentum inertia decay after dragging
-          if (Math.abs(velocityRef.current) > 5) {
+          if (Math.abs(velocityRef.current) > 10) {
             posRef.current += velocityRef.current * dt;
-            velocityRef.current *= 0.92;
+            velocityRef.current *= 0.94;
+          } else {
+            velocityRef.current = 0;
           }
         }
 
@@ -242,7 +255,7 @@ export default function Testimonials() {
         while (posRef.current <= -oneSetWidth * 2) {
           posRef.current += oneSetWidth;
         }
-        while (posRef.current > -oneSetWidth) {
+        while (posRef.current >= 0) {
           posRef.current -= oneSetWidth;
         }
 
@@ -295,6 +308,10 @@ export default function Testimonials() {
     const track = trackRef.current;
     if (!track) return;
 
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch (_) {}
+
     glideRef.current = 0;
     velocityRef.current = 0;
 
@@ -313,29 +330,42 @@ export default function Testimonials() {
       const dtMs = now - dragRef.current.lastTime;
       const deltaX = ev.clientX - dragRef.current.lastX;
       if (dtMs > 0) {
-        velocityRef.current = (deltaX / dtMs) * 1000;
+        const instV = (deltaX / dtMs) * 1000;
+        velocityRef.current = velocityRef.current * 0.3 + instV * 0.7;
       }
       dragRef.current.lastX = ev.clientX;
       dragRef.current.lastTime = now;
-      if (Math.abs(ev.clientX - dragRef.current.startX) > 6) {
+      if (Math.abs(ev.clientX - dragRef.current.startX) > 5) {
         dragRef.current.hasMoved = true;
       }
 
       posRef.current += deltaX;
     };
 
-    const onUp = () => {
+    const onUp = (ev: PointerEvent) => {
       if (!dragRef.current.active) return;
       dragRef.current.active = false;
       setIsDragging(false);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
+
+      try {
+        if (outerRef.current) {
+          outerRef.current.releasePointerCapture(ev.pointerId);
+        }
+      } catch (_) {}
+
+      if (performance.now() - dragRef.current.lastTime > 80) {
+        velocityRef.current = 0;
+      } else {
+        velocityRef.current = Math.max(-2500, Math.min(2500, velocityRef.current));
+      }
     };
 
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerup", onUp, { passive: true });
+    window.addEventListener("pointercancel", onUp, { passive: true });
   };
 
   const inView = hasEnteredView;
@@ -440,6 +470,7 @@ export default function Testimonials() {
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 0.8, delay: 0.25 }}
         onPointerDown={onPointerDown}
+        onDragStart={(e) => e.preventDefault()}
         onMouseEnter={() => { isHoveredRef.current = true; }}
         onMouseLeave={() => { isHoveredRef.current = false; }}
         style={{ paddingBlock: "1rem", userSelect: "none" }}

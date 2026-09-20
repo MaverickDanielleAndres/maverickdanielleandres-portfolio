@@ -272,6 +272,9 @@ html.lenis, html.lenis body { height: auto; }
 
 .project-card__image-wrap img {
   transition: opacity 120ms ease-out;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .project-card:hover .project-card__image-wrap img {
@@ -414,6 +417,9 @@ html.lenis, html.lenis body { height: auto; }
   overflow: hidden;
   cursor: grab;
   touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 }
 .projects-marquee-outer.is-dragging {
   cursor: grabbing;
@@ -615,6 +621,9 @@ html.lenis, html.lenis body { height: auto; }
 }
 .cert-card__image {
   transition: opacity 120ms ease-out;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .cert-card:hover .cert-card__image {
   opacity: 0.92;
@@ -1001,65 +1010,18 @@ section[id] {
   contain-intrinsic-size: auto 700px;
 }
 
-/* Promote the marquee tracks to their own compositor layer once visible.
-   The previous code set `will-change: transform` only at certain points;
-   here we keep it persistent because the track is animated almost every
-   frame while on-screen, and dropping the layer repeatedly costs more
-   than keeping it. */
+/* Promote the marquee tracks to their own compositor layer once visible. */
 .projects-marquee-track {
   will-change: transform;
-  /* `transform: translateZ(0)` is a fallback for browsers that don't
-     honor will-change without an initial transform. */
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
+  user-select: none;
 }
 
-/* ── GPU-composited marquee animations ───────────────────────────────── */
-/*
-   The marquee tracks used to drive their auto-scroll via a JavaScript
-   requestAnimationFrame loop that wrote `el.style.transform` every frame.
-   That JS rAF:
-     - burned a frame slot, competing with the browser's scroll handler
-     - triggered style recalculation + composite every frame, even when the
-       user wasn't looking at the section
-     - interacted badly with Lenis's smooth-scroll interpolation (now removed)
-
-   These CSS animations:
-     - run on the browser's compositor (no main thread per-frame work)
-     - pause automatically when the section is off-screen via IntersectionObserver
-       toggling the `.marquee-paused` class
-     - pause on hover via the `:hover` selector
-     - resume via `animation-play-state: running`
-*/
-@keyframes marquee-scroll-x {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
-}
-
-.projects-marquee-track {
-  /* 60s loop matches the previous `LOOP_DURATION_S` constant. */
-  animation: marquee-scroll-x 60s linear infinite;
-  /* When the parent gets `.marquee-paused`, freeze the animation. */
-}
-.projects-marquee-track.marquee-paused {
-  animation-play-state: paused;
-}
-/* Pause on hover when the user is inspecting cards (desktop only). */
-@media (hover: hover) {
-  .projects-marquee-outer:hover .projects-marquee-track {
-    animation-play-state: paused;
-  }
-}
-/* Respect reduced-motion preference. */
 @media (prefers-reduced-motion: reduce) {
   .projects-marquee-track {
     animation: none !important;
   }
-}
-
-/* Disable transitions that would interfere with the smooth CSS animation. */
-.projects-marquee-track {
-  transition: none !important;
 }
 
 /* ── Project Inquiry Modal: CSS-only step transitions ──────────────────── */
