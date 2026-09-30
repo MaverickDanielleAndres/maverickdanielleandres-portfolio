@@ -1133,10 +1133,6 @@ export default function Projects() {
     const track = trackRef.current;
     if (!track) return;
 
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch (_) {}
-
     glideRef.current = 0;
     velocityRef.current = 0;
 
@@ -1147,7 +1143,6 @@ export default function Projects() {
       lastTime: performance.now(),
       hasMoved: false,
     };
-    setIsDragging(true);
 
     const onMove = (ev: PointerEvent) => {
       if (!dragRef.current.active) return;
@@ -1160,31 +1155,38 @@ export default function Projects() {
       }
       dragRef.current.lastX = ev.clientX;
       dragRef.current.lastTime = now;
-      if (Math.abs(ev.clientX - dragRef.current.startX) > 5) {
-        dragRef.current.hasMoved = true;
+
+      if (Math.abs(ev.clientX - dragRef.current.startX) > 8) {
+        if (!dragRef.current.hasMoved) {
+          dragRef.current.hasMoved = true;
+          setIsDragging(true);
+        }
       }
 
-      posRef.current += deltaX;
+      if (dragRef.current.hasMoved) {
+        posRef.current += deltaX;
+      }
     };
 
-    const onUp = (ev: PointerEvent) => {
+    const onUp = () => {
       if (!dragRef.current.active) return;
       dragRef.current.active = false;
-      setIsDragging(false);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
 
-      try {
-        if (outerRef.current) {
-          outerRef.current.releasePointerCapture(ev.pointerId);
-        }
-      } catch (_) {}
+      const wasMoved = dragRef.current.hasMoved;
+      setIsDragging(false);
 
-      if (performance.now() - dragRef.current.lastTime > 80) {
-        velocityRef.current = 0;
-      } else {
-        velocityRef.current = Math.max(-2500, Math.min(2500, velocityRef.current));
+      if (wasMoved) {
+        if (performance.now() - dragRef.current.lastTime > 80) {
+          velocityRef.current = 0;
+        } else {
+          velocityRef.current = Math.max(-2500, Math.min(2500, velocityRef.current));
+        }
+        setTimeout(() => {
+          dragRef.current.hasMoved = false;
+        }, 120);
       }
     };
 
