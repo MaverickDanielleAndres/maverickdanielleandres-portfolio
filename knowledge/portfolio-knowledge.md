@@ -465,9 +465,99 @@ Maverick has built a large number of projects across web, mobile, AI, e-commerce
 - **Technologies:** Next.js, Tailwind CSS, Framer Motion
 - **Features:** Property Consulting, Renovation Management, Smooth Scrolling, Lifestyle Branding
 - **Contributions:**
-  - Built a visually stunning, premium landing page reflecting the brand's aesthetics
-  - Integrated smooth scrolling, fade-in animations, and high-quality image reveals
-  - Designed clean, responsive layouts centered around lifestyle property transformations
+-   Built a visually stunning, premium landing page reflecting the brand's aesthetics
+-   Integrated smooth scrolling, fade-in animations, and high-quality image reveals
+-   Designed clean, responsive layouts centered around lifestyle property transformations
+
+---
+
+### 16. Fire Stop Sydney
+- **Category:** Fire Stopping & Building Compliance
+- **Year:** 2026
+- **Summary:** A specialized commercial fire protection portal delivering fire penetration sealing and essential building fire services across Greater Sydney. Features interactive site inquiry forms, clear compliance documentation, and responsive architectural UI.
+- **Live:** https://fire-stop-sydney.vercel.app/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Features:** Fire Penetration Sealing, Essential Fire Services, Site Inspection Matrix, Compliance Documentation, Interactive Inquiry Flow, Responsive Architectural UI
+- **Contributions:**
+  - Engineered the entire project from scratch, from start to finish, as sole developer
+  - Designed and implemented high-performance responsive UI tailored to Sydney building compliance standards
+  - Created visual breakdowns of fire penetration sealing systems, penetration types, and site inspection scopes
+  - Engineered multi-step site assessment inquiry forms and interactive service navigation
+
+---
+
+### 17. Fire Penetration Sydney
+- **Category:** Passive Fire Protection & Sealing
+- **Year:** 2026
+- **Summary:** A specialist technical platform by All Fire Services focused on fire penetration sealing, inspection, rectification, and compliance documentation for service openings across Greater Sydney.
+- **Live:** https://fire-penetration-website.vercel.app/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Features:** Service Opening Sealing, Before & After Inspection Flow, Approved Products Catalog, Compliance Resources Hub, Interactive Case Studies, High-Converting Quote CTAs
+- **Contributions:**
+  - Engineered the entire project from scratch, from start to finish, as sole developer
+  - Architected the opening sealing system visualizer demonstrating before, during, and after rectification workflows
+  - Engineered dedicated product directories, technical compliance resources, and field sample galleries
+  - Integrated fast-response quote intake forms and mobile-optimized service navigation
+
+---
+
+### 18. Arjay Fabrication
+- **Category:** Industrial Metalwork & Fabrication
+- **Year:** 2026
+- **Summary:** A rugged, modern industrial website for Arjay Fabrication based in Wingham, NSW. Showcases custom steel and aluminium metalwork, heavy equipment repairs, precision welding, and quote requests across the Mid North Coast.
+- **Live:** https://arjayfabrication.vercel.app/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Features:** Steel & Aluminium Custom Builds, Heavy Equipment Repairs, Interactive Portfolio Showcase, Instant Quote Request Engine, Mid North Coast Service Coverage, Industrial High-Contrast UI
+- **Contributions:**
+  - Engineered the entire project from scratch, from start to finish, as sole developer
+  - Designed an industrial-grade, brand-aligned visual identity tailored to heavy trade and agricultural clients
+  - Built dynamic project galleries highlighting custom ute trays, structural steel, and machinery repairs
+  - Implemented interactive quote request system with instant form validation and smooth scroll navigation
+
+---
+
+### 19. Monistar Building
+- **Category:** Luxury Construction & Renovations
+- **Year:** 2026
+- **Summary:** A high-end architectural construction website for Monistar Building, delivering luxury new home builds, whole-house renovations, structural extensions, and property developments across Sydney and NSW.
+- **Live:** https://monistarbuilding-phi.vercel.app/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Features:** Architectural New Builds, Full Home Renovations, Interior Craftsmanship Showcase, Interactive Project Gallery, Consultation Booking Flow, Editorial Aesthetic Layout
+- **Contributions:**
+  - Engineered the entire project from scratch, from start to finish, as sole developer
+  - Crafted an editorial-style luxury visual layout showcasing high-resolution craftsmanship photography
+  - Developed an interactive multi-category project gallery, service detail breakdowns, and transparent process timelines
+  - Built seamless consultation scheduling flows and mobile-responsive navigation
+
+---
+
+### 20. Optrizo
+- **Category:** Software Studio & Automation
+- **Year:** 2026
+- **Summary:** Official website for a Manila software studio engineering bespoke internal tools, customized business ERP systems, and AI automation for growing Philippine companies, educational institutions, and automotive brands.
+- **Live:** https://www.optrizo.com/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Features:** Custom Internal ERP Systems, AI Workflow Automation, Interactive Solutions Matrix, Case Study Portfolio, Online Consultation Booking, Dark-Mode Bento Architecture
+- **Contributions:**
+  - Contributed as part of the developer team who built the platform
+  - Developed responsive front-end interfaces, dark-mode bento layouts, and interactive service demonstrations
+  - Collaborated on client case study presentations and automated consultation booking flows
+  - Optimized web performance, micro-interactions, and cross-device compatibility
+
+---
+
+### 21. Sylink Digital Solutions
+- **Category:** Digital Agency & Web Solutions
+- **Year:** 2026
+- **Summary:** A modern digital agency and growth platform providing custom websites, e-commerce architectures, web applications, and strategic digital expansion for ambitious businesses.
+- **Live:** https://sylink.vercel.app/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Features:** Full-Stack Web Development, E-Commerce Systems, Interactive Service Matrix, Curated Client Portfolio, Transparent Pricing Tiers, Modern Brutalist Grid System
+- **Contributions:**
+  - Engineered the entire project from scratch, from start to finish, as sole developer
+  - Created an edgy, modern brutalist grid design system with typographic hierarchy and fluid layout shifts
+  - Built comprehensive service breakdowns, interactive solution explorers, and transparent pricing cards
+  - Integrated dynamic case study displays and high-converting client inquiry funnels
 
 ---
 
@@ -837,7 +927,7 @@ Yes. At NexVision he led a team of 6+ and handled task delegation, architecture,
 He served as Lead Full-Stack Developer, leading the development of two enterprise applications, designing REST APIs (Node.js, PostgreSQL, Supabase), managing 50+ features, conducting system testing, and ensuring stakeholder requirements were met.
 
 ### What projects has Maverick built?
-Logistics System, LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, and more.
+Logistics System, LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, Fire Stop Sydney, Fire Penetration Sydney, Arjay Fabrication, Monistar Building, Optrizo, Sylink Digital Solutions, and more.
 
 ### Tell me about Logistics System.
 Logistics System is an enterprise cloud logistics operating system designed to manage and orchestrate the full lifecycle of supply chains, fleet dispatch, hub sortation, last-mile distribution, workforce payroll, and financial settlement across 20 specialized multi-tenant personas. Built with Next.js 16, React 19, TypeScript, Tailwind CSS, Supabase, and PostgreSQL. Live at https://logistics-system-two.vercel.app/.
