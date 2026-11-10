@@ -591,6 +591,21 @@ Maverick has built a large number of projects across web, mobile, AI, e-commerce
 
 ---
 
+### 24. NexCRM AI
+- **Category:** AI-Powered Sales CRM & Automation
+- **Year:** 2026
+- **Summary:** An enterprise AI-powered sales CRM and workflow automation platform built for growing Philippine businesses by Nexvision Innovations. Unifies multi-channel lead capture, Kanban deal pipelines, proposal generation, project delivery, and human-in-the-loop AI assistants (NexAgent) with strict workspace row-level security and MCP integration.
+- **Live:** https://nexcrm-ai.com/
+- **Technologies:** Next.js, TypeScript, Node.js, PostgreSQL, Supabase, Tailwind CSS, AI Agents / MCP
+- **Features:** NexAgent AI Copilot, Approval-Gated AI Actions, Kanban Sales Pipeline, Lead Capture & Routing Engine, Omnichannel & MCP Server, Multi-Tenant RLS Workspaces
+- **Contributions:**
+  - Engineered the core backend architecture, REST APIs, and database schemas for leads, pipelines, proposals, and automated follow-ups
+  - Implemented multi-tenant workspace isolation using PostgreSQL Row-Level Security (RLS), role-based permissions, and monthly AI credit metering
+  - Architected backend workflows for NexAgent human-in-the-loop approval cards, automated lead routing rules, and omnichannel integrations (Gmail, Messenger, Google Calendar, MCP)
+  - Built scalable server-side pipelines for deal stage tracking, proposal-to-project conversion, and real-time sales analytics
+
+---
+
 ### Other Projects in Portfolio Asset Directories (image folders exist, not yet in the main showcase array)
 The portfolio's `/public/Projects` directory contains additional image folders that are not currently featured in the marquee:
 - `Barangay Health System/`
@@ -957,7 +972,7 @@ Yes. At NexVision he led a team of 6+ and handled task delegation, architecture,
 He served as Lead Full-Stack Developer, leading the development of two enterprise applications, designing REST APIs (Node.js, PostgreSQL, Supabase), managing 50+ features, conducting system testing, and ensuring stakeholder requirements were met.
 
 ### What projects has Maverick built?
-Logistics System, LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, Fire Stop Sydney, Fire Penetration Sydney, Arjay Fabrication, Monistar Building, Optrizo, Sylink Digital Solutions, Stealth Concreting, Budsletsmeet, and more.
+Logistics System, LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, Fire Stop Sydney, Fire Penetration Sydney, Arjay Fabrication, Monistar Building, NexCRM AI, Optrizo, Sylink Digital Solutions, Stealth Concreting, Budsletsmeet, and more.
 
 ### Tell me about Logistics System.
 Logistics System is an enterprise cloud logistics operating system designed to manage and orchestrate the full lifecycle of supply chains, fleet dispatch, hub sortation, last-mile distribution, workforce payroll, and financial settlement across 20 specialized multi-tenant personas. Built with Next.js 16, React 19, TypeScript, Tailwind CSS, Supabase, and PostgreSQL. Live at https://logistics-system-two.vercel.app/.
