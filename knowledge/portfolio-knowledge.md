@@ -561,6 +561,36 @@ Maverick has built a large number of projects across web, mobile, AI, e-commerce
 
 ---
 
+### 22. Stealth Concreting
+- **Category:** Residential, Commercial & Civil Concreting
+- **Year:** 2026
+- **Summary:** A high-impact construction and concreting platform for Stealth Concreting Pty Ltd, a family-owned business serving Newcastle and the Hunter, NSW. Showcases residential driveways, structural slabs, exposed aggregate, commercial & civil concreting, interactive before-and-after transformations, on-site project films, and a streamlined free quote funnel.
+- **Live:** https://stealthconcreting.vercel.app/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Features:** Before & After Comparison Slider, Multi-Category Project Archive, On-Site Film & Media Hub, Residential & Civil Service Scopes, Verified Google Reviews Showcase, Instant Free Quote Funnel
+- **Contributions:**
+  - Built the entire project from scratch, from start to finish, as sole developer using Next.js
+  - Engineered interactive before-and-after driveway transformation sliders and a filterable 15-project case study archive
+  - Designed dedicated service scopes covering residential driveways, structural slabs, exposed aggregate, tank bases, and civil concreting
+  - Built the 'In Motion' on-site film gallery, verified 5.0 Google review showcase, and conversion-focused quote inquiry flow
+
+---
+
+### 23. Budsletsmeet
+- **Category:** Social Event & Group Scheduling Platform
+- **Year:** 2026
+- **Summary:** A full-stack social planning and group availability web application that eliminates back-and-forth group chat scheduling. Organizers create event circles with multiple date-time options, decision rules (everyone-free or quorum), and shareable link/QR invitations, while guests reply in their local timezone without needing an account.
+- **Live:** https://budsletsmeet.vercel.app/
+- **Technologies:** Next.js, React, TypeScript, Tailwind CSS, Supabase, Framer Motion
+- **Features:** Passwordless Guest RSVP Voting, Interactive Live Availability Matrix, Timezone-Aware Slot Scheduling, Shareable Links & QR Invitations, Quorum & Consensus Engine, Reusable Crew Groups & Updates
+- **Contributions:**
+  - Built the full-stack application from scratch as sole developer using Next.js, TypeScript, Tailwind CSS, and Supabase
+  - Engineered the multi-step circle creation studio with timezone-aware date slots, reply deadlines, and Everyone-Free vs. Quorum consensus rules
+  - Developed tokenized invitation links with QR code generation, configurable link expiration/revocation, and passwordless guest RSVP voting
+  - Built the organizer dashboard and reusable crew group system supporting saved member rosters, approval-gated follow links, and group update feeds
+
+---
+
 ### Other Projects in Portfolio Asset Directories (image folders exist, not yet in the main showcase array)
 The portfolio's `/public/Projects` directory contains additional image folders that are not currently featured in the marquee:
 - `Barangay Health System/`
@@ -927,7 +957,7 @@ Yes. At NexVision he led a team of 6+ and handled task delegation, architecture,
 He served as Lead Full-Stack Developer, leading the development of two enterprise applications, designing REST APIs (Node.js, PostgreSQL, Supabase), managing 50+ features, conducting system testing, and ensuring stakeholder requirements were met.
 
 ### What projects has Maverick built?
-Logistics System, LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, Fire Stop Sydney, Fire Penetration Sydney, Arjay Fabrication, Monistar Building, Optrizo, Sylink Digital Solutions, and more.
+Logistics System, LMS, Beauty Connect, BazaarX, JJZ TECH repair site, HRMS, Monitoring & Payroll System, Wedding Invitation site, M-Chat, E-Community, PhotoSnap, SuperFit Webapp, WordPress/Shopify sites (Mojde Beauty, Gym site), All Fire Services Australia, Shimmeur, Fire Stop Sydney, Fire Penetration Sydney, Arjay Fabrication, Monistar Building, Optrizo, Sylink Digital Solutions, Stealth Concreting, Budsletsmeet, and more.
 
 ### Tell me about Logistics System.
 Logistics System is an enterprise cloud logistics operating system designed to manage and orchestrate the full lifecycle of supply chains, fleet dispatch, hub sortation, last-mile distribution, workforce payroll, and financial settlement across 20 specialized multi-tenant personas. Built with Next.js 16, React 19, TypeScript, Tailwind CSS, Supabase, and PostgreSQL. Live at https://logistics-system-two.vercel.app/.
